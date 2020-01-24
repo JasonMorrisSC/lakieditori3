@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="document">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="title" type="xs:string"/>
+        <xs:element name="intro" type="xs:string" minOccurs="0"/>
+        <xs:element name="content" type="xs:string" minOccurs="0"/>
+        <xs:choice>
+          <xs:element name="chapter" minOccurs="0" maxOccurs="unbounded" type="chapterType"/>
+          <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
+        </xs:choice>
+      </xs:sequence>
+      <xs:attribute name="number" type="xs:string" use="required"/>
+      <xs:attribute name="createdBy" type="xs:string"/>
+      <xs:attribute name="createdDate" type="xs:dateTime"/>
+      <xs:attribute name="lastModifiedBy" type="xs:string"/>
+      <xs:attribute name="lastModifiedDate" type="xs:dateTime"/>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:complexType name="chapterType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines fields for chapter (in finnish "luku").
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="intro" type="xs:string" minOccurs="0"/>
+      <xs:element name="content" type="xs:string" minOccurs="0"/>
+      <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="sectionType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines fields for section (in finnish "pykälä").
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="title" type="xs:string"/>
+      <xs:element name="content" type="xs:string" minOccurs="0"/>
+      <xs:element name="subsection" minOccurs="0" maxOccurs="unbounded" type="subsectionType"/>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="subsectionType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines fields for subsection (in finnish "momentti").
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="content" type="xs:string"/>
+      <xs:element name="paragraph" minOccurs="0" maxOccurs="unbounded" type="paragraphType"/>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="paragraphType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines fields for paragraph (in finnish "kohta").
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="content" type="xs:string"/>
+      <xs:element name="subparagraph" minOccurs="0" maxOccurs="unbounded" type="subparagraphType"/>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="subparagraphType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines fields for subparagraph (in finnish "alakohta").
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="content" type="xs:string"/>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+</xs:schema>

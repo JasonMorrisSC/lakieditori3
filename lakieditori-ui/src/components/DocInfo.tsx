@@ -1,0 +1,71 @@
+import React from "react";
+import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
+import {Link} from "react-router-dom";
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material.css";
+import "codemirror/theme/eclipse.css";
+import "codemirror/mode/xml/xml";
+import {queryFirstText} from "../utils/xml-utils";
+import {encodeIdForUrl} from "../utils/id-utils";
+import LayoutWithRightBar from "./LayoutWithRightBar";
+import {XmlEditorProperties} from "./XmlEditorProperties";
+import "./DocInfo.css";
+
+const DocInfo: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+  const number = queryFirstText(document, currentElement, "@number");
+  const title = queryFirstText(document, currentElement, "title");
+
+  const createdBy = queryFirstText(document, currentElement, "@createdBy");
+  const createdDate = queryFirstText(document, currentElement, "@createdDate");
+  const lastModifiedBy = queryFirstText(document, currentElement, "@lastModifiedBy");
+  const lastModifiedDate = queryFirstText(document, currentElement, "@lastModifiedDate");
+
+  const topBar =
+      <div style={{
+        display: "flex",
+        justifyContent: "space-between",
+        alignItems: "flex-end"
+      }}>
+        <Text style={{maxWidth: "600px"}}>
+          {title} / Lisätietoja
+        </Text>
+        <div>
+          <Link to={`/documents/${encodeIdForUrl(number)}`}>
+            <Button.secondaryNoborder
+                icon={"close"}
+                style={{background: "none", marginRight: sdt.spacing.s}}>
+              Sulje
+            </Button.secondaryNoborder>
+          </Link>
+        </div>
+      </div>;
+
+  return (
+      <LayoutWithRightBar topContent={topBar}>
+        <div style={{margin: sdt.spacing.xl}}>
+          <Heading.h1hero>
+            <small style={{color: sdt.colors.depthDark27}}>Lisätietoja</small>
+            <br/>
+            {title}
+          </Heading.h1hero>
+          <br/>
+          <table>
+            <tbody>
+            <tr>
+              <th>Lisätty</th>
+              <td>{new Date(createdDate).toLocaleString('fi-Fi')}</td>
+              <td>{createdBy}</td>
+            </tr>
+            <tr>
+              <th>Muokattu</th>
+              <td>{new Date(lastModifiedDate).toLocaleString('fi-FI')}</td>
+              <td>{lastModifiedBy}</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+      </LayoutWithRightBar>
+  );
+};
+
+export default DocInfo;

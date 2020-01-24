@@ -1,0 +1,86 @@
+import React, {useState} from "react";
+import {Button, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
+import {useHistory} from "react-router-dom";
+import axios, {AxiosResponse} from "axios";
+import {UnControlled as CodeMirror} from 'react-codemirror2';
+import "codemirror/lib/codemirror.css";
+import "codemirror/theme/material.css";
+import "codemirror/theme/eclipse.css";
+import "codemirror/mode/xml/xml";
+import {queryFirstText} from "../utils/xml-utils";
+import {encodeIdForUrl} from "../utils/id-utils";
+import LayoutWithRightBar from "./LayoutWithRightBar";
+import {XmlEditorProperties} from "./XmlEditorProperties";
+import "./DocSource.css";
+
+const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+  const [editorData, updateEditorData] = useState<string>(new XMLSerializer().serializeToString(document));
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const history = useHistory();
+
+  const number = queryFirstText(document, currentElement, "@number");
+  const title = queryFirstText(document, currentElement, "title");
+
+  function validateDocument(data: string): Promise<AxiosResponse> {
+    return axios.post('/api/validate', data, {
+      headers: {'Content-Type': 'text/xml'}
+    });
+  }
+
+  function updateDocumentAndCloseEditorIfValid() {
+    validateDocument(editorData).then(() => {
+      updateDocument(new DOMParser().parseFromString(editorData, 'text/xml'));
+      history.push(`/documents/${encodeIdForUrl(number)}`);
+    }).catch((error) => {
+      setErrorMessage(error.response.data.message);
+    });
+  }
+
+  const topBar = <div>
+    <div style={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "flex-end"
+    }}>
+      <Text style={{maxWidth: "600px"}}>
+        {title} / XML
+      </Text>
+      <div>
+        <Button.secondaryNoborder
+            icon={"close"}
+            style={{background: "none", marginRight: sdt.spacing.s}}
+            onClick={updateDocumentAndCloseEditorIfValid}>
+          Sulje
+        </Button.secondaryNoborder>
+      </div>
+    </div>
+    <div style={{
+      backgroundColor: sdt.colors.alertLight47,
+      display: errorMessage ? 'block' : 'none',
+      padding: sdt.spacing.m,
+    }}>
+      XML dokumentissa on virhe:<br/>
+      {errorMessage ? errorMessage : ''}<br/>
+    </div>
+  </div>;
+
+  return (
+      <LayoutWithRightBar topContent={topBar}>
+        <CodeMirror
+            value={new XMLSerializer().serializeToString(document)}
+            options={{
+              mode: 'xml',
+              theme: 'eclipse',
+              lineNumbers: true,
+              lineWrapping: true
+            }}
+            autoCursor={false}
+            onChange={(editor, data, value) => {
+              updateEditorData(value);
+            }}
+        />
+      </LayoutWithRightBar>
+  );
+};
+
+export default DocSource;
