@@ -87,11 +87,11 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
         </Heading.h2>
 
         <textarea value={content}
-                  placeholder={`Luvun ${number} valinnainen tekstisisältö`}
+                  placeholder={`Luvun ${number} tekstisisältö`}
                   onChange={updateContent}
                   onSelect={resizeContent}
                   style={{...inputStyle, marginTop: sdt.spacing.xs}}
-                  rows={2}/>
+                  rows={1}/>
 
         {queryElements(document, currentElement, 'section').map((section, i) => {
           return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>

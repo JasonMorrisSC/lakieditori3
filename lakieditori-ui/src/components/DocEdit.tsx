@@ -132,7 +132,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
             <small style={{color: sdt.colors.accentBase}}>{number}</small>
             <br/>
             <input type="text" value={title}
-                   placeholder="Kirjoita otsikko (pakollinen)"
+                   placeholder="Otsikko (pakollinen)"
                    onChange={updateTitle}
                    style={{
                      ...inputStyle,
@@ -142,7 +142,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           </Heading.h1hero>
 
           <input type="text" value={intro}
-                 placeholder="Valinnainen johtolause"
+                 placeholder="Johtolause"
                  onChange={updateIntro}
                  style={{
                    ...inputStyle,
@@ -151,7 +151,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
                    marginTop: sdt.spacing.xs
                  }}/>
           <textarea value={content}
-                    placeholder="Valinnainen tekstisisältö"
+                    placeholder="Tekstisisältö"
                     onChange={updateContent}
                     onSelect={resizeContent}
                     style={{...inputStyle, marginTop: sdt.spacing.xs}}

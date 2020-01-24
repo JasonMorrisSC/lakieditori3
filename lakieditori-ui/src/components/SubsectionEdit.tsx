@@ -40,7 +40,7 @@ const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement
                   onChange={updateContent}
                   onSelect={resizeContent}
                   style={{...inputStyle, marginTop: sdt.spacing.xxs, verticalAlign: "middle"}}
-                  rows={2}/>
+                  rows={3}/>
         {/*
         <ul style={{padding: 0}}>
           {queryElements(document, currentElement, 'paragraph').map((paragraph, i) => {

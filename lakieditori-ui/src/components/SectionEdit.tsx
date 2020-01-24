@@ -86,7 +86,7 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
                  }}/>
         </Heading.h3>
         <textarea value={content}
-                  placeholder={`Pykälän ${number} valinnainen tekstisisältö`}
+                  placeholder={`Pykälän ${number} tekstisisältö`}
                   onChange={updateContent}
                   onSelect={resizeContent}
                   style={{...inputStyle, marginTop: sdt.spacing.xs}}
