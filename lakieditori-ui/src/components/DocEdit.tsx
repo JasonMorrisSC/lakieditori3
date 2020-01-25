@@ -154,9 +154,9 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
             </div>
           })}
 
-          <Button icon="plus" onClick={appendNewChapter}>
+          <Button.secondaryNoborder icon="plus" onClick={appendNewChapter}>
             Lisää uusi luku
-          </Button>
+          </Button.secondaryNoborder>
         </div>
       </LayoutWithRightBar>
   );

@@ -98,9 +98,12 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
           </div>
         })}
 
-        <Button icon="plus" onClick={appendNewSection} style={{marginTop: sdt.spacing.m}}>
+        <Button.secondaryNoborder icon="plus" onClick={appendNewSection}
+                                  style={{marginTop: sdt.spacing.l}}>
           Lisää uusi pykälä lukuun {number}
-        </Button>
+        </Button.secondaryNoborder>
+
+        <hr style={{border: 0, borderBottom: `1px solid ${sdt.colors.depthLight13}`}}/>
       </div>
   );
 };
