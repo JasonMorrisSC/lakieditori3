@@ -2,8 +2,10 @@ import React, {SyntheticEvent} from "react";
 import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {
   cloneDocument,
+  countNodes,
   ensureElementAndUpdate,
   queryElements,
+  queryFirstNode,
   queryFirstText,
   updateElement
 } from "../utils/xml-utils";
@@ -38,6 +40,20 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
     updateDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "content", ["section"], (el) => el.textContent = newValue);
+    });
+  }
+
+  function appendNewSection() {
+    updateDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+      const sectionCount = countNodes(newDocument, currentPath + '/section');
+
+      const sectionElement = newDocument.createElement("section");
+      sectionElement.setAttribute('number', (sectionCount + 1) + "");
+      sectionElement.appendChild(newDocument.createElement("title"));
+
+      queryFirstNode(newDocument, null, currentPath)?.appendChild(sectionElement);
+      return newDocument;
     });
   }
 
@@ -82,7 +98,7 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
           </div>
         })}
 
-        <Button icon="plus" style={{marginTop: sdt.spacing.m}}>
+        <Button icon="plus" onClick={appendNewSection} style={{marginTop: sdt.spacing.m}}>
           Lisää uusi pykälä lukuun {number}
         </Button>
       </div>
