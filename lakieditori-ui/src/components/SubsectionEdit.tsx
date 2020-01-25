@@ -22,7 +22,7 @@ const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement
   }
 
   return (
-      <li className="subsection" style={{color: sdt.colors.highlightLight4}}>
+      <li className="subsection" style={{color: sdt.colors.depthBase}}>
         <TextArea value={content}
                   placeholder={`Momentin ${number} pakollinen tekstisisältö`}
                   onChange={updateContent}

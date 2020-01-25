@@ -2,7 +2,7 @@ import {CSSProperties} from "react";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 
 export const inputStyle: CSSProperties = {
-  backgroundColor: sdt.colors.highlightLight50,
+  backgroundColor: sdt.colors.accentSecondaryLight40,
   border: 0,
   boxSizing: 'border-box',
   fontFamily: sdt.values.typography.bodyText.fontFamily,

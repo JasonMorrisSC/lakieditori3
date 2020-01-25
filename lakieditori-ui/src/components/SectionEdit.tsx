@@ -102,7 +102,7 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
             icon="plus"
             onClick={appendNewSubsection}
             style={{
-              backgroundColor: sdt.colors.highlightLight50,
+              backgroundColor: sdt.colors.accentSecondaryLight40,
               margin: `${sdt.spacing.xxs} 0`
             }}>
           Lisää uusi momentti
