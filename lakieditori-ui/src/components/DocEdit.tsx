@@ -1,4 +1,4 @@
-import React, {CSSProperties, SyntheticEvent} from "react";
+import React, {SyntheticEvent} from "react";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {Link} from "react-router-dom";
 import "codemirror/lib/codemirror.css";
@@ -7,6 +7,7 @@ import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
 import {
   cloneDocument,
+  countNodes,
   ensureElementAndUpdate,
   queryElements,
   queryFirstNode,
@@ -19,6 +20,8 @@ import {XmlEditorProperties} from "./XmlEditorProperties";
 import ChapterEdit from "./ChapterEdit";
 import Toc from "./Toc";
 import NavItemProps from "./NavItemProps";
+import {inputStyle} from "./inputStyle";
+import TextArea from "./TextArea";
 
 const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const navTree: NavItemProps[] =
@@ -44,20 +47,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
   const intro = queryFirstText(document, currentElement, "intro").replace(/\s+/g, ' ').trimLeft();
   const content = queryFirstText(document, currentElement, "content").replace(/\s+/g, ' ').trimLeft();
 
-  const inputStyle: CSSProperties = {
-    backgroundColor: sdt.colors.highlightLight53,
-    border: 0,
-    boxSizing: 'border-box',
-    fontFamily: sdt.values.typography.bodyText.fontFamily,
-    fontSize: sdt.values.typography.bodyText.fontSize.value,
-    fontWeight: sdt.values.typography.bodyText.fontWeight,
-    lineHeight: sdt.values.typography.bodyText.lineHeight.value,
-    margin: 0,
-    padding: sdt.spacing.s,
-    width: '100%',
-  };
-
-  function updateTitle(e: SyntheticEvent<HTMLInputElement>) {
+  function updateTitle(e: SyntheticEvent<HTMLTextAreaElement>) {
     const newValue = e.currentTarget.value;
     updateDocument((prevDocument) => {
       // title element is expected to be in the document
@@ -66,7 +56,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
     });
   }
 
-  function updateIntro(e: SyntheticEvent<HTMLInputElement>) {
+  function updateIntro(e: SyntheticEvent<HTMLTextAreaElement>) {
     const newValue = e.currentTarget.value;
     updateDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
@@ -90,7 +80,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
   function appendNewChapter() {
     updateDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
-      const chapterCount = newDocument.evaluate('count(' + currentPath + '/chapter)', newDocument, null, XPathResult.NUMBER_TYPE, null).numberValue;
+      const chapterCount = countNodes(newDocument, currentPath + '/chapter');
 
       const chapterElement = newDocument.createElement("chapter");
       chapterElement.setAttribute('number', (chapterCount + 1) + "");
@@ -131,30 +121,28 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           <Heading.h1hero>
             <small style={{color: sdt.colors.accentBase}}>{number}</small>
             <br/>
-            <input type="text" value={title}
-                   placeholder="Otsikko (pakollinen)"
-                   onChange={updateTitle}
-                   style={{
-                     ...inputStyle,
-                     fontSize: sdt.values.typography.heading1Hero.fontSize.value,
-                     fontWeight: sdt.values.typography.heading1Hero.fontWeight,
-                   }}/>
+            <TextArea value={title}
+                      placeholder="Otsikko (pakollinen)"
+                      onChange={updateTitle}
+                      style={{
+                        ...inputStyle,
+                        fontSize: sdt.values.typography.heading1Hero.fontSize.value,
+                        fontWeight: sdt.values.typography.heading1Hero.fontWeight,
+                      }}/>
           </Heading.h1hero>
 
-          <input type="text" value={intro}
-                 placeholder="Johtolause"
-                 onChange={updateIntro}
-                 style={{
-                   ...inputStyle,
-                   fontSize: sdt.values.typography.leadText.fontSize.value,
-                   fontWeight: sdt.values.typography.leadText.fontWeight,
-                   marginTop: sdt.spacing.xs
-                 }}/>
-          <textarea value={content}
+          <TextArea value={intro}
+                    placeholder="Johtolause"
+                    onChange={updateIntro}
+                    style={{
+                      ...inputStyle,
+                      fontSize: sdt.values.typography.leadText.fontSize.value,
+                      fontWeight: sdt.values.typography.leadText.fontWeight,
+                    }}/>
+
+          <TextArea value={content}
                     placeholder="Tekstisisältö"
                     onChange={updateContent}
-                    onSelect={resizeContent}
-                    style={{...inputStyle, marginTop: sdt.spacing.xs}}
                     rows={1}/>
 
           {queryElements(document, currentElement, 'chapter').map((chapter, i) => {
@@ -166,7 +154,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
             </div>
           })}
 
-          <Button icon="plus" onClick={appendNewChapter} style={{marginRight: sdt.spacing.s}}>
+          <Button icon="plus" onClick={appendNewChapter}>
             Lisää uusi luku
           </Button>
         </div>

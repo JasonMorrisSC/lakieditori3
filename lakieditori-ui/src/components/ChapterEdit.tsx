@@ -1,4 +1,4 @@
-import React, {CSSProperties, SyntheticEvent} from "react";
+import React, {SyntheticEvent} from "react";
 import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {
   cloneDocument,
@@ -9,24 +9,13 @@ import {
 } from "../utils/xml-utils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import SectionEdit from "./SectionEdit";
+import {inputStyle} from "./inputStyle";
+import TextArea from "./TextArea";
 
 const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   let number = queryFirstText(document, currentElement, "@number");
   let title = queryFirstText(document, currentElement, "title").replace(/\s+/g, ' ').trimLeft();
   let content = queryFirstText(document, currentElement, "content").replace(/\s+/g, ' ').trimLeft();
-
-  const inputStyle: CSSProperties = {
-    backgroundColor: sdt.colors.highlightLight53,
-    border: 0,
-    boxSizing: 'border-box',
-    fontFamily: sdt.values.typography.bodyText.fontFamily,
-    fontSize: sdt.values.typography.bodyText.fontSize.value,
-    fontWeight: sdt.values.typography.bodyText.fontWeight,
-    lineHeight: sdt.values.typography.bodyText.lineHeight.value,
-    margin: 0,
-    padding: sdt.spacing.s,
-    width: '100%',
-  };
 
   function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value;
@@ -36,17 +25,12 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
     });
   }
 
-  function updateTitle(e: SyntheticEvent<HTMLInputElement>) {
+  function updateTitle(e: SyntheticEvent<HTMLTextAreaElement>) {
     const newValue = e.currentTarget.value;
     updateDocument((prevDocument) => {
-      // title element is expected to be in the document
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
           (el) => el.textContent = newValue);
     });
-  }
-
-  function resizeContent(e: SyntheticEvent<HTMLTextAreaElement>) {
-    e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
   }
 
   function updateContent(e: SyntheticEvent<HTMLTextAreaElement>) {
@@ -55,7 +39,6 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "content", ["section"], (el) => el.textContent = newValue);
     });
-    resizeContent(e);
   }
 
   return (
@@ -75,22 +58,19 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
             luku
           </span>
 
-          <input type="text" value={title}
-                 placeholder={`Luvun ${number} pakollinen otsikko`}
-                 onChange={updateTitle}
-                 style={{
-                   ...inputStyle,
-                   fontSize: sdt.values.typography.heading2.fontSize.value,
-                   fontWeight: sdt.values.typography.heading2.fontWeight,
-                   marginTop: sdt.spacing.xs
-                 }}/>
+          <TextArea value={title}
+                    placeholder={`Luvun ${number} pakollinen otsikko`}
+                    onChange={updateTitle}
+                    style={{
+                      ...inputStyle,
+                      fontSize: sdt.values.typography.heading2.fontSize.value,
+                      fontWeight: sdt.values.typography.heading2.fontWeight,
+                    }}/>
         </Heading.h2>
 
-        <textarea value={content}
+        <TextArea value={content}
                   placeholder={`Luvun ${number} tekstisisältö`}
                   onChange={updateContent}
-                  onSelect={resizeContent}
-                  style={{...inputStyle, marginTop: sdt.spacing.xs}}
                   rows={1}/>
 
         {queryElements(document, currentElement, 'section').map((section, i) => {

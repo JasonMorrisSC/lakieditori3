@@ -100,6 +100,10 @@ export function queryElements(document: Document, context: Node | null, xPathExp
   return nodes as Element[];
 }
 
+export function countNodes(document: Document, xPathExpression: string): number {
+  return document.evaluate('count(' + xPathExpression + ')', document, null, XPathResult.NUMBER_TYPE, null).numberValue
+}
+
 export function toElementsArr(nodes: NodeListOf<Node>, predicate: (v: Element) => boolean = (x: Element) => true): Element[] {
   const result = new Array<Element>();
 
