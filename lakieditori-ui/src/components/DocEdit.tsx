@@ -64,17 +64,12 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
     });
   }
 
-  function resizeContent(e: SyntheticEvent<HTMLTextAreaElement>) {
-    e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
-  }
-
   function updateContent(e: SyntheticEvent<HTMLTextAreaElement>) {
     const newValue = e.currentTarget.value;
     updateDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "content", ["chapter", "section"], (el) => el.textContent = newValue);
     });
-    resizeContent(e);
   }
 
   function appendNewChapter() {

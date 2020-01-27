@@ -1,4 +1,5 @@
 import React from "react";
+import {Link} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {queryElements, queryFirstText} from "../utils/xml-utils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
@@ -7,7 +8,6 @@ import NavItemProps from "./NavItemProps";
 import Chapter from "./Chapter";
 import Section from "./Section";
 import Toc from "./Toc";
-import {Link} from "react-router-dom";
 import {encodeIdForUrl} from "../utils/id-utils";
 
 const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
@@ -51,6 +51,7 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           XML
         </Button.secondaryNoborder>
       </Link>
+      {/*
       <Link to={`/documents/${encodeIdForUrl(number)}/info`}>
         <Button.secondary icon={"info"} style={{marginRight: sdt.spacing.xs}}>
           Lisätietoja
@@ -61,6 +62,7 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           Muokkaa
         </Button.secondary>
       </Link>
+      */}
     </div>
   </div>;
 

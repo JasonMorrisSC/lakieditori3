@@ -1,5 +1,5 @@
 {
-  "name": "lakied-ui",
+  "name": "lakieditori-ui",
   "version": "0.1.0",
   "private": true,
   "proxy": "http://localhost:8080",
