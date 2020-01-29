@@ -1,19 +1,77 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+# Pipeline for building and deploying the application
+# See: https://aka.ms/yaml
 
 trigger:
-- develop
+  - master
 
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+jobs:
+  - job: build
+    displayName: Build Web Application
+    steps:
+      - task: Gradle@2
+        displayName: Build API
+        inputs:
+          gradleWrapperFile: 'lakieditori-api/gradlew'
+          workingDirectory: 'lakieditori-api'
+          tasks: 'publishToMavenLocal'
+          publishJUnitResults: true
+          testResultsFiles: '**/TEST-*.xml'
+          javaHomeOption: 'JDKVersion'
+          sonarQubeRunAnalysis: false
+      - task: Maven@3
+        displayName: Build UI
+        inputs:
+          mavenPomFile: 'lakieditori-ui/pom.xml'
+          goals: 'install'
+          publishJUnitResults: false
+          javaHomeOption: 'JDKVersion'
+          mavenVersionOption: 'Default'
+          mavenAuthenticateFeed: false
+          effectivePomSkip: false
+          sonarQubeRunAnalysis: false
+      - task: Maven@3
+        displayName: Build JAR
+        inputs:
+          mavenPomFile: 'lakieditori-jar/pom.xml'
+          goals: 'package'
+          publishJUnitResults: false
+          javaHomeOption: 'JDKVersion'
+          mavenVersionOption: 'Default'
+          mavenAuthenticateFeed: false
+          effectivePomSkip: false
+          sonarQubeRunAnalysis: false
+      - task: CopyFiles@2
+        displayName: Copy JAR to Staging
+        inputs:
+          sourceFolder: 'lakieditori-jar/target'
+          contents: '*.jar'
+          targetFolder: '$(Build.ArtifactStagingDirectory)'
+      - task: PublishBuildArtifacts@1
+        displayName: Publish JAR
+        inputs:
+          pathtoPublish: '$(Build.ArtifactStagingDirectory)'
+          artifactName: 'buildOutput'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - deployment: deploy
+    displayName: Deploy Web Application
+    dependsOn: build
+    environment:
+      name: dev
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+            - download: current
+              displayName: Download JAR
+              artifact: buildOutput
+            - task: AzureWebApp@1
+              displayName: Deploy JAR
+              inputs:
+                azureSubscription: 'AzureLakieditoriServiceConnection'
+                appType: 'webAppLinux'
+                appName: 'lakieditori3'
+                package: '$(Pipeline.Workspace)/**/*.jar'
+                runtimeStack: 'JAVA|8-jre8'
