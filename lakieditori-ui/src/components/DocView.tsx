@@ -51,7 +51,6 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           XML
         </Button.secondaryNoborder>
       </Link>
-      {/*
       <Link to={`/documents/${encodeIdForUrl(number)}/info`}>
         <Button.secondary icon={"info"} style={{marginRight: sdt.spacing.xs}}>
           Lisätietoja
@@ -62,7 +61,6 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           Muokkaa
         </Button.secondary>
       </Link>
-      */}
     </div>
   </div>;
 
