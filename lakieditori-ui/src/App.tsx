@@ -9,6 +9,8 @@ import Navigation from "./components/Navigation";
 import TwoWayBindTest from "./test/TwoWayBindTest";
 import TwoWayBindTest2 from "./test/TwoWayBindTest2";
 import LayoutTest from "./test/LayoutTest";
+import RichTextEditorTest from "./test/RichTextEditorTest";
+import RichTextEditorTest2 from "./test/RichTextEditorTest2";
 
 const App: React.FC = () => {
   return (
@@ -38,6 +40,12 @@ const App: React.FC = () => {
             </Route>
             <Route path="/layout-test">
               <LayoutTest/>
+            </Route>
+            <Route path="/rich-text-editor-test">
+              <RichTextEditorTest/>
+            </Route>
+            <Route path="/rich-text-editor-test-2">
+              <RichTextEditorTest2/>
             </Route>
             <Route path="/">
               <Home/>
