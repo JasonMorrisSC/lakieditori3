@@ -1,12 +1,56 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:group name="formattingElements">
+    <xs:choice>
+      <xs:element name="em" type="formattedTextWithLinksType"/>
+      <xs:element name="strong" type="formattedTextWithLinksType"/>
+    </xs:choice>
+  </xs:group>
+
+  <xs:complexType name="formattedTextType" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines type for text content that can contain formatting tags (e.g. 'em').
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="formattingElements"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="formattedTextWithLinksType" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        This type extends formatted text content with links ('a'). This is used as a basic type for
+        user entered text content.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="formattingElements"/>
+      <xs:element name="a" type="linkType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="linkType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines attributes and a base type for link.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="formattedTextType">
+        <xs:attribute name="href" type="xs:anyURI" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:element name="document">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="title" type="xs:string"/>
-        <xs:element name="intro" type="xs:string" minOccurs="0"/>
-        <xs:element name="content" type="xs:string" minOccurs="0"/>
+        <xs:element name="title" type="formattedTextWithLinksType"/>
+        <xs:element name="intro" type="formattedTextWithLinksType" minOccurs="0"/>
+        <xs:element name="content" type="formattedTextWithLinksType" minOccurs="0"/>
         <xs:choice>
           <xs:element name="chapter" minOccurs="0" maxOccurs="unbounded" type="chapterType"/>
           <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
@@ -27,9 +71,9 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="xs:string"/>
-      <xs:element name="intro" type="xs:string" minOccurs="0"/>
-      <xs:element name="content" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="formattedTextWithLinksType"/>
+      <xs:element name="intro" type="formattedTextWithLinksType" minOccurs="0"/>
+      <xs:element name="content" type="formattedTextWithLinksType" minOccurs="0"/>
       <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
@@ -42,8 +86,8 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="xs:string"/>
-      <xs:element name="content" type="xs:string" minOccurs="0"/>
+      <xs:element name="title" type="formattedTextWithLinksType"/>
+      <xs:element name="content" type="formattedTextWithLinksType" minOccurs="0"/>
       <xs:element name="subsection" minOccurs="0" maxOccurs="unbounded" type="subsectionType"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
@@ -56,7 +100,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="xs:string"/>
+      <xs:element name="content" type="formattedTextWithLinksType"/>
       <xs:element name="paragraph" minOccurs="0" maxOccurs="unbounded" type="paragraphType"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
@@ -69,7 +113,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="xs:string"/>
+      <xs:element name="content" type="formattedTextWithLinksType"/>
       <xs:element name="subparagraph" minOccurs="0" maxOccurs="unbounded" type="subparagraphType"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
@@ -82,7 +126,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="xs:string"/>
+      <xs:element name="content" type="formattedTextWithLinksType"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
   </xs:complexType>
