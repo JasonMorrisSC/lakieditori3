@@ -1,14 +1,15 @@
 import React from "react";
 import {Link} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import {queryElements, queryFirstText} from "../utils/xml-utils";
+import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
+import {encodeIdForUrl} from "../utils/id-utils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import NavItemProps from "./NavItemProps";
 import Chapter from "./Chapter";
 import Section from "./Section";
 import Toc from "./Toc";
-import {encodeIdForUrl} from "../utils/id-utils";
+import SanitizedHtml from "./SanitizedHtml";
 
 const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const navTree: NavItemProps[] =
@@ -30,16 +31,17 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
       });
 
   const number = queryFirstText(document, currentElement, "@number");
-  const title = queryFirstText(document, currentElement, "title");
-  const intro = queryFirstText(document, currentElement, "intro");
-  const content = queryFirstText(document, currentElement, "content");
+  const title = queryFirstElement(document, currentElement, "title");
+  const titleText = title?.textContent || '';
+  const intro = queryFirstElement(document, currentElement, "intro");
+  const content = queryFirstElement(document, currentElement, "content");
 
   const topBar = <div style={{
     display: "flex",
     justifyContent: "space-between",
     alignItems: "flex-end"
   }}>
-    <Text style={{maxWidth: "600px"}}>{title}</Text>
+    <Text style={{maxWidth: "600px"}}>{titleText}</Text>
     <div>
       <Link to={`/documents/${encodeIdForUrl(number)}/source`}>
         <Button.secondaryNoborder
@@ -65,7 +67,7 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
   </div>;
 
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`,}}>
-    <Toc tocTitle={title} tocItems={navTree}/>
+    <Toc tocTitle={titleText} tocItems={navTree}/>
   </div>;
 
   return (
@@ -74,16 +76,18 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           <Heading.h1hero>
             <small style={{color: sdt.colors.accentBase}}>{number}</small>
             <br/>
-            {title}
+            <SanitizedHtml element={title}/>
           </Heading.h1hero>
 
           <p>
             <Text.lead>
-              {intro}
+              <SanitizedHtml element={intro}/>
             </Text.lead>
           </p>
 
-          <p>{content}</p>
+          <p>
+            <SanitizedHtml element={content}/>
+          </p>
 
           {queryElements(document, currentElement, 'section').map((section, i) => {
             return <div key={i} id={`section-${section.getAttribute('number')}`}>
