@@ -1,9 +1,6 @@
 # Pipeline for building and deploying the application
 # See: https://aka.ms/yaml
 
-trigger:
-  - master
-
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -58,6 +55,7 @@ jobs:
   - deployment: deploy
     displayName: Deploy Web Application
     dependsOn: build
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     environment:
       name: dev
     strategy:
