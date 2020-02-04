@@ -22,6 +22,7 @@ import Toc from "./Toc";
 import NavItemProps from "./NavItemProps";
 import {inputStyle} from "./inputStyle";
 import TextArea from "./TextArea";
+import FormattedTextEditor from "./FormattedTextEditor";
 
 const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const navTree: NavItemProps[] =
@@ -56,11 +57,10 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
     });
   }
 
-  function updateIntro(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
+  function updateIntro(newValue: string) {
     updateDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "intro", ["content", "chapter", "section"], (el) => el.textContent = newValue);
+          "intro", ["content", "chapter", "section"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -126,14 +126,15 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
                       }}/>
           </Heading.h1hero>
 
-          <TextArea value={intro}
-                    placeholder="Johtolause"
-                    onChange={updateIntro}
-                    style={{
-                      ...inputStyle,
-                      fontSize: sdt.values.typography.leadText.fontSize.value,
-                      fontWeight: sdt.values.typography.leadText.fontWeight,
-                    }}/>
+          <FormattedTextEditor
+              value={intro}
+              placeholder="Johtolause"
+              onChange={updateIntro}
+              style={{
+                ...inputStyle,
+                fontSize: sdt.values.typography.leadText.fontSize.value,
+                fontWeight: sdt.values.typography.leadText.fontWeight,
+              }}/>
 
           <TextArea value={content}
                     placeholder="Tekstisisältö"

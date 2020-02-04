@@ -1,46 +1,31 @@
-import React from 'react'
+import React, {useEffect, useMemo, useState} from 'react'
 import Layout from "../components/Layout";
-import {convertToRaw, Editor, EditorState, RichUtils} from 'draft-js';
+import {createEditor, Node} from "slate";
+import {Editable, Slate, withReact} from "slate-react";
+import {withHistory} from 'slate-history'
 
 const RichTextEditorTest: React.FC = () => {
-  const [editorState, setEditorState] = React.useState<EditorState>(EditorState.createEmpty());
-  const [editorHtmlState, setEditorHtmlState] = React.useState<string>('');
+  const editor = useMemo(() => withReact(withHistory(createEditor())), []);
+  const [value, setValue] = useState<Node[]>([
+    {
+      type: 'paragraph',
+      children: [{text: 'A line of text in a paragraph.'}],
+    },
+  ]);
 
-  function handleKeyCommand(command: any, editorState: any) {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-
-    if (newState) {
-      setEditorState(newState);
-      return 'handled';
-    }
-
-    return 'not-handled';
-  }
-
-  function onBoldClick() {
-    setEditorState(RichUtils.toggleInlineStyle(editorState, 'BOLD'));
-  }
-
-  function saveAndUpdateEditorState(newState: EditorState) {
-    setEditorState(newState);
-
-    const rawState = convertToRaw(newState.getCurrentContent());
-
-    rawState.blocks.forEach(block => {
-    });
-  }
+  // Remove 'onChange' when editor is unmounted to avoid errors when this component is unmounted.
+  useEffect(() => {
+    return () => {
+      editor.onChange = () => null
+    };
+  }, [editor]);
 
   return <Layout title="Testi">
-    <button onClick={onBoldClick}>Bold</button>
-
-    <Editor
-        editorState={editorState}
-        handleKeyCommand={handleKeyCommand}
-        onChange={saveAndUpdateEditorState}/>
-
-    <pre>
-      {editorHtmlState}
-    </pre>
+    <Slate editor={editor} value={value} onChange={value => {
+      setValue(value);
+    }}>
+      <Editable/>
+    </Slate>
   </Layout>;
 };
 

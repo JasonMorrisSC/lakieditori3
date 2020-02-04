@@ -1558,14 +1558,6 @@
   dependencies:
     "@types/domhandler" "*"
 
-"@types/draft-js@^0.10.38":
-  version "0.10.38"
-  resolved "https://registry.yarnpkg.com/@types/draft-js/-/draft-js-0.10.38.tgz#19a37d97e696df5749754f8bbd7761a4d56b16b0"
-  integrity sha512-iDg8fJATjGVfQVv/dysAMMcPwORyJix2AyAm8OdwseteYh1jV+Xwlz+1HddoCWxQWqzWf/MDkNQH5sLYG47e0w==
-  dependencies:
-    "@types/react" "*"
-    immutable "~3.7.4"
-
 "@types/eslint-visitor-keys@^1.0.0":
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/@types/eslint-visitor-keys/-/eslint-visitor-keys-1.0.0.tgz#1ee30d79544ca84d68d4b3cdb0af4f205663dd2d"
@@ -3377,11 +3369,6 @@ core-js@^2.4.0:
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.10.tgz#8a5b8391f8cc7013da703411ce5b585706300d7f"
   integrity sha512-I39t74+4t+zau64EN1fE5v2W31Adtc/REhzWN+gWRRXg6WH5qAsZm62DHpQ1+Yhe4047T55jvzz7MUqF/dBBlA==
 
-core-js@^2.4.1:
-  version "2.6.11"
-  resolved "https://registry.yarnpkg.com/core-js/-/core-js-2.6.11.tgz#38831469f9922bded8ee21c9dc46985e0399308c"
-  integrity sha512-5wjnpaT/3dV+XB4borEsnAYQchn00XSgTAWKDkEqv+K8KevjbzmofK6hfJ9TZIlpj2N0xQpazy7PiRQiWHqzWg==
-
 core-js@^3.4.1:
   version "3.5.0"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.5.0.tgz#66df8e49be4bd775e6f952a9d083b756ad41c1ed"
@@ -4078,15 +4065,6 @@ dotenv@8.2.0:
   resolved "https://registry.yarnpkg.com/dotenv/-/dotenv-8.2.0.tgz#97e619259ada750eea3e4ea3e26bceea5424b16a"
   integrity sha512-8sJ78ElpbDJBHNeBzUbUVLsqKdccaa/BXF1uPTw3GrvQTBgrQrtObr2mUrE38vzYd8cEv+m/JBfDLioYcfXoaw==
 
-draft-js@^0.11.4:
-  version "0.11.4"
-  resolved "https://registry.yarnpkg.com/draft-js/-/draft-js-0.11.4.tgz#e48782b96b90a5c14f2cb34c164c2a1a359d8a48"
-  integrity sha512-BLZ59s0vkDj/zI8UPo9Nit/hPsl11ztDejxDCQlVbvEXJSWrTXqO6ZYgdw3hXLtuojq/URqq3wTrpnb3dvzvLA==
-  dependencies:
-    fbjs "^1.0.0"
-    immutable "~3.7.4"
-    object-assign "^4.1.1"
-
 duplexer@^0.1.1:
   version "0.1.1"
   resolved "https://registry.yarnpkg.com/duplexer/-/duplexer-0.1.1.tgz#ace6ff808c1ce66b57d1ebf97977acb02334cfc1"
@@ -4722,31 +4700,12 @@ fb-watchman@^2.0.0:
   dependencies:
     bser "^2.0.0"
 
-fbjs-css-vars@^1.0.0:
-  version "1.0.2"
-  resolved "https://registry.yarnpkg.com/fbjs-css-vars/-/fbjs-css-vars-1.0.2.tgz#216551136ae02fe255932c3ec8775f18e2c078b8"
-  integrity sha512-b2XGFAFdWZWg0phtAWLHCk836A1Xann+I+Dgd3Gk64MHKZO44FfoD1KxyvbSh0qZsIoXQGGlVztIY+oitJPpRQ==
-
 fbjs@^0.8.0:
   version "0.8.17"
   resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-0.8.17.tgz#c4d598ead6949112653d6588b01a5cdcd9f90fdd"
   integrity sha1-xNWY6taUkRJlPWWIsBpc3Nn5D90=
   dependencies:
     core-js "^1.0.0"
-    isomorphic-fetch "^2.1.1"
-    loose-envify "^1.0.0"
-    object-assign "^4.1.0"
-    promise "^7.1.1"
-    setimmediate "^1.0.5"
-    ua-parser-js "^0.7.18"
-
-fbjs@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/fbjs/-/fbjs-1.0.0.tgz#52c215e0883a3c86af2a7a776ed51525ae8e0a5a"
-  integrity sha512-MUgcMEJaFhCaF1QtWGnmq9ZDRAzECTCRAF7O6UZIlAlkTs1SasiX9aP0Iw7wfD2mJ7wDTNfg2w7u5fSCwJk1OA==
-  dependencies:
-    core-js "^2.4.1"
-    fbjs-css-vars "^1.0.0"
     isomorphic-fetch "^2.1.1"
     loose-envify "^1.0.0"
     object-assign "^4.1.0"
@@ -5614,11 +5573,6 @@ immer@^5.0.0:
   version "5.3.2"
   resolved "https://registry.yarnpkg.com/immer/-/immer-5.3.2.tgz#e3a1c9f3550f925278fd86b8d2d644f7d5e9561b"
   integrity sha512-wPWsSV0fv8iT7QQVs3rxBDWTbi5pHrVgnQv/McMfaRGJTLfQ3jFMEr08UibqS8hM17KCQXcjjYYzQzYe5e7BIA==
-
-immutable@~3.7.4:
-  version "3.7.6"
-  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.7.6.tgz#13b4d3cb12befa15482a26fe1b2ebae640071e4b"
-  integrity sha1-E7TTyxK++hVIKib+Gy665kAHHks=
 
 import-cwd@^2.0.0:
   version "2.1.0"
@@ -10123,6 +10077,14 @@ slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/slash/-/slash-3.0.0.tgz#6539be870c165adbd5240220dbe361f1bc4d4634"
   integrity sha512-g9Q1haeby36OSStwb4ntCGGGaKsaVSjQ68fBxoQcutl5fS1vuY18H3wSt3jFyFtrkx+Kz0V1G85A4MyAdDMi2Q==
+
+slate-history@^0.57.1:
+  version "0.57.1"
+  resolved "https://registry.yarnpkg.com/slate-history/-/slate-history-0.57.1.tgz#2938537f3f95768a69460ec5035be0333216c278"
+  integrity sha512-pSUmGcIzFJ1ClaF2S5dFm7TBS30ZG3sqkwAowTxvD0+jafG/2I3N6M6M0anhkgBEGMU1rdNQqX4O6b/qKUJPgg==
+  dependencies:
+    immer "^5.0.0"
+    is-plain-object "^3.0.0"
 
 slate-react@^0.57.1:
   version "0.57.1"
