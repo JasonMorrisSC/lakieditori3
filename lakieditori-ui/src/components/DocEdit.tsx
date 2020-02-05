@@ -10,6 +10,7 @@ import {
   countNodes,
   ensureElementAndUpdate,
   queryElements,
+  queryFirstElement,
   queryFirstNode,
   queryFirstText,
   updateElement
@@ -45,7 +46,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
 
   const number = queryFirstText(document, currentElement, "@number");
   const title = queryFirstText(document, currentElement, "title").replace(/\s+/g, ' ').trimLeft();
-  const intro = queryFirstText(document, currentElement, "intro").replace(/\s+/g, ' ').trimLeft();
+  const intro = queryFirstElement(document, currentElement, "intro");//.replace(/\s+/g, ' ').trimLeft();
   const content = queryFirstText(document, currentElement, "content").replace(/\s+/g, ' ').trimLeft();
 
   function updateTitle(e: SyntheticEvent<HTMLTextAreaElement>) {

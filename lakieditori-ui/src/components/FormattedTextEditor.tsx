@@ -1,6 +1,6 @@
 import React, {CSSProperties, ReactNode, useEffect, useMemo, useRef, useState} from "react";
 import {createPortal} from "react-dom";
-import {createEditor, Editor, Node, Range, Text, Transforms} from 'slate'
+import {createEditor, Editor, Node as SlateNode, Range, Text, Transforms} from 'slate'
 import {
   Editable,
   ReactEditor,
@@ -13,18 +13,22 @@ import {
 import {css, cx} from "emotion";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {withHistory} from "slate-history";
+import escapeHtml from "escape-html";
+import {deserialize} from "../utils/slateUtils";
 
 const initialEmptyValue = [{children: [{text: ''}]}];
 
 const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
-  const [editorValue, setEditorValue] = useState<Node[]>(initialEmptyValue);
+  const [editorValue, setEditorValue] = useState<SlateNode[]>(initialEmptyValue);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
   // Set "real" initial editor value from properties after it is available
   useEffect(() => {
     if (value && editorValue === initialEmptyValue) {
-      // TODO: de-serialize value
-      setEditorValue([{children: [{text: value}]}]);
+      let deserializedInitialValue = deserialize(value);
+      if (deserializedInitialValue && deserializedInitialValue.length > 0) {
+        setEditorValue([{children: deserializedInitialValue}]);
+      }
     }
   }, [value, editorValue]);
 
@@ -45,8 +49,8 @@ const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, pla
       }}>
     <HoveringToolbar/>
     <Editable
-        renderElement={props => <Element {...props} />}
-        renderLeaf={props => <Leaf {...props} />}
+        renderElement={props => <EditorElement {...props} />}
+        renderLeaf={props => <EditorLeaf {...props} />}
         placeholder={placeholder || ''}
         style={style}
         onDOMBeforeInput={event => {
@@ -62,16 +66,15 @@ const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, pla
 };
 
 interface Props {
-  value: string,
+  value: Element | null,
   placeholder?: string,
   onChange?: (newValue: string) => void,
   style?: CSSProperties
 }
 
-const serialize = (node: Node): string => {
+const serialize = (node: SlateNode): string => {
   if (Text.isText(node)) {
-    // TODO: escape html
-    let text = node.text;
+    let text = escapeHtml(node.text);
 
     if (node.bold) {
       text = `<strong>${text}</strong>`
@@ -162,7 +165,7 @@ const unwrapLink = (editor: Editor) => {
   Transforms.unwrapNodes(editor, {match: n => n.type === 'link'});
 };
 
-const Element = ({attributes, children, element}: RenderElementProps) => {
+const EditorElement = ({attributes, children, element}: RenderElementProps) => {
   if (element.type === 'link') {
     return <a {...attributes} href={element.url} style={{
       color: sdt.colors.highlightBase,
@@ -173,7 +176,7 @@ const Element = ({attributes, children, element}: RenderElementProps) => {
   }
 };
 
-const Leaf = ({attributes, children, leaf}: RenderLeafProps) => {
+const EditorLeaf = ({attributes, children, leaf}: RenderLeafProps) => {
   if (leaf.bold) {
     children = <strong>{children}</strong>
   }
