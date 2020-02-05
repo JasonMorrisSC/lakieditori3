@@ -22,12 +22,12 @@ const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, pla
   const [editorValue, setEditorValue] = useState<SlateNode[]>(initialEmptyValue);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
-  // Set "real" initial editor value from properties after it is available
+  // Set real initial editor value from properties after it is available
   useEffect(() => {
     if (value && editorValue === initialEmptyValue) {
-      let deserializedInitialValue = deserialize(value);
-      if (deserializedInitialValue && deserializedInitialValue.length > 0) {
-        setEditorValue([{children: deserializedInitialValue}]);
+      let initialValue = deserialize(value);
+      if (initialValue && initialValue.length > 0) {
+        setEditorValue([{children: initialValue}]);
       }
     }
   }, [value, editorValue]);
@@ -53,6 +53,11 @@ const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, pla
         renderLeaf={props => <EditorLeaf {...props} />}
         placeholder={placeholder || ''}
         style={style}
+        onKeyDown={event => {
+          if (event.keyCode === 13 /* enter */) {
+            event.preventDefault();
+          }
+        }}
         onDOMBeforeInput={event => {
           switch ((event as InputEvent).inputType) {
             case 'formatBold':
