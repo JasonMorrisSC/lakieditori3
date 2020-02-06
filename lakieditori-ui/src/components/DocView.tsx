@@ -72,7 +72,7 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
 
   return (
       <LayoutWithRightBar topContent={topBar} rhsContent={toc}>
-        <div className="document" style={{margin: sdt.spacing.xl}}>
+        <article className="document" style={{margin: sdt.spacing.xl}}>
           <Heading.h1hero>
             <small style={{color: sdt.colors.accentBase}}>{number}</small>
             <br/>
@@ -105,7 +105,7 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           })}
 
           <br/>
-        </div>
+        </article>
       </LayoutWithRightBar>
   );
 };

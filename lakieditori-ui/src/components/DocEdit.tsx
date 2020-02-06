@@ -111,7 +111,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
 
   return (
       <LayoutWithRightBar topContent={topBar} rhsContent={toc}>
-        <div style={{margin: sdt.spacing.xl}}>
+        <article style={{margin: sdt.spacing.xl}}>
           <Heading.h1hero>
             <small style={{color: sdt.colors.accentBase}}>{number}</small>
             <br/>
@@ -154,7 +154,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           <Button.secondaryNoborder icon="plus" onClick={appendNewChapter}>
             Lisää uusi luku
           </Button.secondaryNoborder>
-        </div>
+        </article>
       </LayoutWithRightBar>
   );
 };

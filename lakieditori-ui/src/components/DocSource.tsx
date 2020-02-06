@@ -54,31 +54,33 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
         </Button.secondaryNoborder>
       </div>
     </div>
-    <div style={{
-      backgroundColor: sdt.colors.alertLight47,
-      display: errorMessage ? 'block' : 'none',
-      padding: sdt.spacing.m,
-    }}>
-      XML dokumentissa on virhe:<br/>
-      {errorMessage ? errorMessage : ''}<br/>
-    </div>
+    {errorMessage ?
+        <div style={{
+          backgroundColor: sdt.colors.alertLight47,
+          padding: sdt.spacing.m,
+        }}>
+          XML dokumentissa on virhe:<br/>
+          {errorMessage ? errorMessage : ''}<br/>
+        </div> : ''}
   </div>;
 
   return (
       <LayoutWithRightBar topContent={topBar}>
-        <CodeMirror
-            value={new XMLSerializer().serializeToString(document)}
-            options={{
-              mode: 'xml',
-              theme: 'eclipse',
-              lineNumbers: true,
-              lineWrapping: true
-            }}
-            autoCursor={false}
-            onChange={(editor, data, value) => {
-              updateEditorData(value);
-            }}
-        />
+        <article>
+          <CodeMirror
+              value={new XMLSerializer().serializeToString(document)}
+              options={{
+                mode: 'xml',
+                theme: 'eclipse',
+                lineNumbers: true,
+                lineWrapping: true
+              }}
+              autoCursor={false}
+              onChange={(editor, data, value) => {
+                updateEditorData(value);
+              }}
+          />
+        </article>
       </LayoutWithRightBar>
   );
 };
