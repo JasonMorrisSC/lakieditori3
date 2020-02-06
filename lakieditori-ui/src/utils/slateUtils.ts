@@ -12,7 +12,7 @@ const TEXT_TAGS: { [key: string]: (e: Element) => Object; } = {
 
 export const deserialize = (el: Node): SlateNode[] | null => {
   if (el.nodeType === Node.TEXT_NODE || el.nodeType !== Node.ELEMENT_NODE) {
-    return [jsx('text', {text: el.textContent || ''})];
+    return [jsx('text', {text: el.textContent?.replace(/\s+/g, ' ').trimLeft() || ''})];
   }
 
   const {nodeName} = el;
