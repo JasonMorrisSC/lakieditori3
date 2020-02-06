@@ -19,10 +19,6 @@ const Chapter: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           {title}
         </Heading.h2>
 
-        <p>
-          {content}
-        </p>
-
         {queryElements(document, currentElement, 'section').map((section, i) => {
           return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>
             <Section section={section}/>

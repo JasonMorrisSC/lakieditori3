@@ -1,4 +1,4 @@
-import React, {SyntheticEvent} from "react";
+import React from "react";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {Link} from "react-router-dom";
 import "codemirror/lib/codemirror.css";
@@ -22,7 +22,6 @@ import ChapterEdit from "./ChapterEdit";
 import Toc from "./Toc";
 import NavItemProps from "./NavItemProps";
 import {inputStyle} from "./inputStyle";
-import TextArea from "./TextArea";
 import FormattedTextEditor from "./FormattedTextEditor";
 
 const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
@@ -45,31 +44,30 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
       });
 
   const number = queryFirstText(document, currentElement, "@number");
-  const title = queryFirstText(document, currentElement, "title").replace(/\s+/g, ' ').trimLeft();
-  const intro = queryFirstElement(document, currentElement, "intro");//.replace(/\s+/g, ' ').trimLeft();
-  const content = queryFirstText(document, currentElement, "content").replace(/\s+/g, ' ').trimLeft();
+  const title = queryFirstElement(document, currentElement, "title");
+  const titleText = title?.textContent || '';
+  const note = queryFirstElement(document, currentElement, "note");
+  const intro = queryFirstElement(document, currentElement, "intro");
 
-  function updateTitle(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
+  function updateTitle(newValue: string) {
     updateDocument((prevDocument) => {
       // title element is expected to be in the document
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
-          (el) => el.textContent = newValue);
+          (el) => el.innerHTML = newValue);
+    });
+  }
+
+  function updateNote(newValue: string) {
+    updateDocument((prevDocument) => {
+      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
+          "note", ["intro", "chapter", "section"], (el) => el.innerHTML = newValue);
     });
   }
 
   function updateIntro(newValue: string) {
     updateDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "intro", ["content", "chapter", "section"], (el) => el.innerHTML = newValue);
-    });
-  }
-
-  function updateContent(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
-    updateDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["chapter", "section"], (el) => el.textContent = newValue);
+          "intro", ["chapter", "section"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -94,7 +92,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
         alignItems: "flex-end"
       }}>
         <Text style={{maxWidth: "600px"}}>
-          {title} / Muokkaa
+          {titleText} / Muokkaa
         </Text>
         <div>
           <Link to={`/documents/${encodeIdForUrl(number)}`}>
@@ -108,7 +106,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
       </div>;
 
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`}}>
-    <Toc tocTitle={title} tocItems={navTree}/>
+    <Toc tocTitle={titleText} tocItems={navTree}/>
   </div>;
 
   return (
@@ -117,15 +115,22 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           <Heading.h1hero>
             <small style={{color: sdt.colors.accentBase}}>{number}</small>
             <br/>
-            <TextArea value={title}
-                      placeholder="Otsikko (pakollinen)"
-                      onChange={updateTitle}
-                      style={{
-                        ...inputStyle,
-                        fontSize: sdt.values.typography.heading1Hero.fontSize.value,
-                        fontWeight: sdt.values.typography.heading1Hero.fontWeight,
-                      }}/>
+            <FormattedTextEditor
+                value={title}
+                placeholder="Otsikko (pakollinen)"
+                onChange={updateTitle}
+                style={{
+                  ...inputStyle,
+                  fontSize: sdt.values.typography.heading1Hero.fontSize.value,
+                  fontWeight: sdt.values.typography.heading1Hero.fontWeight,
+                }}/>
           </Heading.h1hero>
+
+          <FormattedTextEditor
+              value={note}
+              placeholder="Huomautus"
+              onChange={updateNote}
+              style={inputStyle}/>
 
           <FormattedTextEditor
               value={intro}
@@ -136,11 +141,6 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
                 fontSize: sdt.values.typography.leadText.fontSize.value,
                 fontWeight: sdt.values.typography.leadText.fontWeight,
               }}/>
-
-          <TextArea value={content}
-                    placeholder="Tekstisisältö"
-                    onChange={updateContent}
-                    rows={1}/>
 
           {queryElements(document, currentElement, 'chapter').map((chapter, i) => {
             return <div key={i} id={`chapter-${chapter.getAttribute('number')}`}>

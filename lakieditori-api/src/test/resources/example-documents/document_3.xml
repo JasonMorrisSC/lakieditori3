@@ -12,9 +12,11 @@
     <title>Yleiset säännökset</title>
     <section number="1">
       <title>Lain soveltamisala</title>
-      <content>
-        Tässä laissa säädetään verotusmenettelystä ja muutoksenhausta verotukseen.
-      </content>
+      <subsection number="1">
+        <content>
+          Tässä laissa säädetään verotusmenettelystä ja muutoksenhausta verotukseen.
+        </content>
+      </subsection>
     </section>
     <section number="2">
       <title>Lakia sovelletaan seuraaviin veroihin ja maksuihin:</title>

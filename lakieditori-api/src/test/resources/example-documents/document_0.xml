@@ -11,13 +11,15 @@
     <title>Maahantuontiin ja maastavientiin liittyvät rikokset</title>
     <section number="4">
       <title>Salakuljetus</title>
-      <content>
-        Salakuljetuksesta tuomitaan myös se, joka tahallaan tai törkeästä huolimattomuudesta
-        eläinlääkinnällisestä rajatarkastuksesta annetun lain (1192/1996) 5 §:n tai sen nojalla
-        annettujen säännösten tai yleisten tai yksittäistapausta koskevien määräysten vastaisesti
-        tuo tai tahallaan yrittää tuoda maahan taikka kuljettaa, käsittelee tai säilyttää eläimiä
-        tai tavaroita taikka laiminlyö velvollisuutensa tarkastuttaa eläimet tai tavarat.
-      </content>
+      <subsection number="3">
+        <content>
+          Salakuljetuksesta tuomitaan myös se, joka tahallaan tai törkeästä huolimattomuudesta
+          eläinlääkinnällisestä rajatarkastuksesta annetun lain (1192/1996) 5 §:n tai sen nojalla
+          annettujen säännösten tai yleisten tai yksittäistapausta koskevien määräysten vastaisesti
+          tuo tai tahallaan yrittää tuoda maahan taikka kuljettaa, käsittelee tai säilyttää eläimiä
+          tai tavaroita taikka laiminlyö velvollisuutensa tarkastuttaa eläimet tai tavarat.
+        </content>
+      </subsection>
     </section>
   </chapter>
 </document>

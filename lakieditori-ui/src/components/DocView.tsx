@@ -33,8 +33,8 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
   const number = queryFirstText(document, currentElement, "@number");
   const title = queryFirstElement(document, currentElement, "title");
   const titleText = title?.textContent || '';
+  const note = queryFirstElement(document, currentElement, "note");
   const intro = queryFirstElement(document, currentElement, "intro");
-  const content = queryFirstElement(document, currentElement, "content");
 
   const topBar = <div style={{
     display: "flex",
@@ -80,13 +80,13 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           </Heading.h1hero>
 
           <p>
-            <Text.lead>
-              <SanitizedHtml element={intro}/>
-            </Text.lead>
+            <SanitizedHtml element={note}/>
           </p>
 
           <p>
-            <SanitizedHtml element={content}/>
+            <Text.lead>
+              <SanitizedHtml element={intro}/>
+            </Text.lead>
           </p>
 
           {queryElements(document, currentElement, 'section').map((section, i) => {

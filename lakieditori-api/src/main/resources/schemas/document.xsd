@@ -49,8 +49,8 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="title" type="formattedTextWithLinksType"/>
+        <xs:element name="note" type="formattedTextWithLinksType" minOccurs="0"/>
         <xs:element name="intro" type="formattedTextWithLinksType" minOccurs="0"/>
-        <xs:element name="content" type="formattedTextWithLinksType" minOccurs="0"/>
         <xs:choice>
           <xs:element name="chapter" minOccurs="0" maxOccurs="unbounded" type="chapterType"/>
           <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
@@ -72,8 +72,6 @@
     </xs:annotation>
     <xs:sequence>
       <xs:element name="title" type="formattedTextWithLinksType"/>
-      <xs:element name="intro" type="formattedTextWithLinksType" minOccurs="0"/>
-      <xs:element name="content" type="formattedTextWithLinksType" minOccurs="0"/>
       <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
@@ -87,7 +85,6 @@
     </xs:annotation>
     <xs:sequence>
       <xs:element name="title" type="formattedTextWithLinksType"/>
-      <xs:element name="content" type="formattedTextWithLinksType" minOccurs="0"/>
       <xs:element name="subsection" minOccurs="0" maxOccurs="unbounded" type="subsectionType"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>

@@ -5,7 +5,7 @@ import Subsection from "./Subsection";
 
 const Section: React.FC<Props> = ({section}: Props) => {
   return (
-      <div className="section">
+      <div className="section" style={{marginTop: sdt.spacing.l}}>
         <Heading.h3>
           <span style={{color: sdt.colors.highlightBase}}>
             {section.getAttribute('number')} §
@@ -13,10 +13,6 @@ const Section: React.FC<Props> = ({section}: Props) => {
           <br/>
           {firstChildByTagName(section, 'title')?.textContent}
         </Heading.h3>
-
-        <p>
-          {firstChildByTagName(section, 'content')?.textContent}
-        </p>
 
         <ul style={{padding: 0}}>
           {toElementsArr(section.childNodes, e => e.tagName === 'subsection').map((subsection, i) => {

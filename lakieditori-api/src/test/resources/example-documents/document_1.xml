@@ -10,45 +10,59 @@
   </intro>
   <section number="1">
     <title>Ilmoitusvelvollisuus makroeliöstä</title>
-    <content>
-      Kasvinterveyslain 8 §:n 2 momentissa tarkoitetussa ilmoituksessa alkuperäisestä
-      makroeliölajista ja Euroopan ja välimerenmaiden kasvinsuojelujärjestön standardiin
-      hyväksytystä makroeliöstä on tuotekohtaisesti oltava:
-
-      1) ilmoittajan nimi, yhteystiedot, yritys- ja yhteisötunnus sekä yhteyshenkilön nimi ja
-      yhteystiedot;
-
-      2) tieto siitä, onko tarkoituksena maahantuonti, markkinointi tai käyttö;
-
-      3) yksityiskohtainen käyttötarkoitus;
-
-      4) tuotteen kauppanimi ja valmistaja;
-
-      5) makroeliön tieteellinen nimi ja alkuperä;
-
-      6) lajin määrityksessä käytetty menetelmä;
-
-      7) tieto siitä, onko kanta luonnosta kerätty vai laboratoriossa kasvatettu;
-
-      8) alkuperäisen lajin osalta viite tieteelliseen kirjallisuuteen, jonka perusteella
-      alkuperäisyys voidaan varmistaa;
-
-      9) valmistajan tai tuottajan tuoteseloste ja käyttöohjeet.
-    </content>
-  </section>
-  <section number="2">
-    <title>Hakemus makroeliön hyväksymiseksi</title>
-    <content>
-      Kasvinterveyslain 8 §:n 3 momentissa tarkoitetussa hakemuksessa makroeliön hyväksymiseksi on
-      tuotekohtaisesti oltava:
-
-      1) hakijan nimi, yhteystiedot, yritys- ja yhteisötunnus sekä yhteyshenkilön nimi ja
-      yhteystiedot;
-
-      2) liitteessä I määritellyt tiedot;
-
-      3) liitteessä II määritellyt tiedot, jos hakemus koskee tutkimusta, joka tehdään suljetussa
-      tilassa.
-    </content>
+    <subsection number="1">
+      <content>
+        Kasvinterveyslain 8 §:n 2 momentissa tarkoitetussa ilmoituksessa alkuperäisestä
+        makroeliölajista ja Euroopan ja välimerenmaiden kasvinsuojelujärjestön standardiin
+        hyväksytystä makroeliöstä on tuotekohtaisesti oltava:
+      </content>
+      <paragraph number="1">
+        <content>
+          1) ilmoittajan nimi, yhteystiedot, yritys- ja yhteisötunnus sekä yhteyshenkilön
+          nimi ja yhteystiedot;
+        </content>
+      </paragraph>
+      <paragraph number="2">
+        <content>
+          2) tieto siitä, onko tarkoituksena maahantuonti, markkinointi tai käyttö;
+        </content>
+      </paragraph>
+      <paragraph number="3">
+        <content>
+          3) yksityiskohtainen käyttötarkoitus;
+        </content>
+      </paragraph>
+      <paragraph number="4">
+        <content>
+          4) tuotteen kauppanimi ja valmistaja;
+        </content>
+      </paragraph>
+      <paragraph number="5">
+        <content>
+          5) makroeliön tieteellinen nimi ja alkuperä;
+        </content>
+      </paragraph>
+      <paragraph number="6">
+        <content>
+          6) lajin määrityksessä käytetty menetelmä;
+        </content>
+      </paragraph>
+      <paragraph number="7">
+        <content>
+          7) tieto siitä, onko kanta luonnosta kerätty vai laboratoriossa kasvatettu;
+        </content>
+      </paragraph>
+      <paragraph number="8">
+        <content>
+          8) alkuperäisen lajin osalta viite tieteelliseen kirjallisuuteen, jonka perusteella
+          alkuperäisyys voidaan varmistaa;
+        </content>
+      </paragraph>
+      <paragraph number="9">
+        <content>
+          9) valmistajan tai tuottajan tuoteseloste ja käyttöohjeet.
+        </content>
+      </paragraph>
+    </subsection>
   </section>
 </document>

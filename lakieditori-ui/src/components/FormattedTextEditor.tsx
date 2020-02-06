@@ -177,7 +177,7 @@ const EditorElement = ({attributes, children, element}: RenderElementProps) => {
       textDecoration: "none"
     }}>{children}</a>;
   } else {
-    return <p {...attributes}>{children}</p>
+    return <div {...attributes}>{children}</div>
   }
 };
 

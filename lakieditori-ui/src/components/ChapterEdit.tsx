@@ -3,7 +3,6 @@ import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components
 import {
   cloneDocument,
   countNodes,
-  ensureElementAndUpdate,
   queryElements,
   queryFirstNode,
   queryFirstText,
@@ -32,14 +31,6 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
     updateDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
           (el) => el.textContent = newValue);
-    });
-  }
-
-  function updateContent(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
-    updateDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["section"], (el) => el.textContent = newValue);
     });
   }
 
@@ -83,11 +74,6 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
                       fontWeight: sdt.values.typography.heading2.fontWeight,
                     }}/>
         </Heading.h2>
-
-        <TextArea value={content}
-                  placeholder={`Luvun ${number} tekstisisältö`}
-                  onChange={updateContent}
-                  rows={1}/>
 
         {queryElements(document, currentElement, 'section').map((section, i) => {
           return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>

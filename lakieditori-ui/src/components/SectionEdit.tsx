@@ -3,7 +3,6 @@ import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components
 import {
   cloneDocument,
   countNodes,
-  ensureElementAndUpdate,
   queryElements,
   queryFirstNode,
   queryFirstText,
@@ -17,7 +16,6 @@ import {inputStyle} from "./inputStyle";
 const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   let number = queryFirstText(document, currentElement, "@number");
   let title = queryFirstText(document, currentElement, "title").replace(/\s+/g, ' ').trimLeft();
-  let content = queryFirstText(document, currentElement, "content").replace(/\s+/g, ' ').trimLeft();
 
   function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value;
@@ -32,14 +30,6 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
     updateDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
           (el) => el.textContent = newValue);
-    });
-  }
-
-  function updateContent(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
-    updateDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["subsection"], (el) => el.textContent = newValue);
     });
   }
 
@@ -83,10 +73,6 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
                       fontWeight: sdt.values.typography.heading3.fontWeight,
                     }}/>
         </Heading.h3>
-
-        <TextArea value={content}
-                  placeholder={`Pykälän ${number} tekstisisältö`}
-                  onChange={updateContent}/>
 
         <ul style={{padding: 0, margin: 0}}>
           {queryElements(document, currentElement, 'subsection').map((subsection, i) => {

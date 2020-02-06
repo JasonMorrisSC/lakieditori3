@@ -12,10 +12,12 @@
     <title>Yleiset säännökset</title>
     <section number="1">
       <title>Lain tarkoitus</title>
-      <content>
-        Tässä laissa säädetään oikeusturvan ja oikeudenmukaisen oikeudenkäynnin takeista
-        hallintoasiaa ja muuta julkisoikeudellista oikeussuhdetta koskevassa oikeudenkäynnissä.
-      </content>
+      <subsection number="1">
+        <content>
+          Tässä laissa säädetään oikeusturvan ja oikeudenmukaisen oikeudenkäynnin takeista
+          hallintoasiaa ja muuta julkisoikeudellista oikeussuhdetta koskevassa oikeudenkäynnissä.
+        </content>
+      </subsection>
     </section>
     <section number="2">
       <title>Lain soveltamisala</title>
@@ -54,10 +56,12 @@
     </section>
     <section number="3">
       <title>Suhde muuhun lainsäädäntöön</title>
-      <content>
-        Jos muussa laissa on tästä laista poikkeavia säännöksiä, niitä sovelletaan tämän lain
-        asemesta.
-      </content>
+      <subsection number="1">
+        <content>
+          Jos muussa laissa on tästä laista poikkeavia säännöksiä, niitä sovelletaan tämän lain
+          asemesta.
+        </content>
+      </subsection>
     </section>
     <section number="4">
       <title>Määritelmät</title>
