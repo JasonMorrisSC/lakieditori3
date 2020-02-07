@@ -103,27 +103,3 @@ export function queryElements(document: Document, context: Node | null, xPathExp
 export function countNodes(document: Document, xPathExpression: string): number {
   return document.evaluate('count(' + xPathExpression + ')', document, null, XPathResult.NUMBER_TYPE, null).numberValue
 }
-
-export function toElementsArr(nodes: NodeListOf<Node>, predicate: (v: Element) => boolean = (x: Element) => true): Element[] {
-  const result = new Array<Element>();
-
-  nodes.forEach(child => {
-    if (child.nodeType === Node.ELEMENT_NODE && predicate(child as Element)) {
-      result.push(child as Element);
-    }
-  });
-
-  return result;
-}
-
-export function firstChildByTagName(element: Element, tagName: string): Element | undefined {
-  return firstChild(element, e => e.localName === tagName);
-}
-
-export function firstChild(element: Element, predicate: (v: Element) => boolean = (x: Element) => true): Element | undefined {
-  for (let i = 0, length = element.children.length; i < length; i++) {
-    if (predicate(element.children[i])) {
-      return element.children[i]
-    }
-  }
-}

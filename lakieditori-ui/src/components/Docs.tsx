@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Link, Route, Switch, useParams, useRouteMatch} from "react-router-dom";
 import axios from 'axios';
 import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {toElementsArr} from "../utils/xml-utils";
 import {encodeIdForUrl} from "../utils/id-utils";
 import Layout from "./Layout";
 import DocView from "./DocView";
@@ -39,7 +38,8 @@ const ListAllDocs: React.FC = () => {
 
   return (
       <Layout title="Lakiluonnokset">
-        {toElementsArr(documents.childNodes).map((e, i) => {
+        {Array.from(documents.childNodes).map((n, i) => {
+          const e = n as Element;
           return <div key={i} style={{marginBottom: sdt.spacing.m}}>
             <Link to={`${match.url}/${encodeIdForUrl(e.getAttribute('number')!)}`}
                   style={{
