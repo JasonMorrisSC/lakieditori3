@@ -4,18 +4,19 @@ import {
   cloneDocument,
   countNodes,
   queryElements,
+  queryFirstElement,
   queryFirstNode,
   queryFirstText,
   updateElement
 } from "../utils/xml-utils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import SubsectionEdit from "./SubsectionEdit";
-import TextArea from "./TextArea";
 import {inputStyle} from "./inputStyle";
+import FormattedTextEditor from "./FormattedTextEditor";
 
 const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
-  let number = queryFirstText(document, currentElement, "@number");
-  let title = queryFirstText(document, currentElement, "title").replace(/\s+/g, ' ').trimLeft();
+  const number = queryFirstText(document, currentElement, "@number");
+  const title = queryFirstElement(document, currentElement, "title");
 
   function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value;
@@ -25,11 +26,10 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
     });
   }
 
-  function updateTitle(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
+  function updateTitle(newValue: string) {
     updateDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
-          (el) => el.textContent = newValue);
+          (el) => el.innerHTML = newValue);
     });
   }
 
@@ -64,14 +64,15 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
             §
           </span>
 
-          <TextArea value={title}
-                    placeholder={`Pykälän ${number} pakollinen otsikko`}
-                    onChange={updateTitle}
-                    style={{
-                      ...inputStyle,
-                      fontSize: sdt.values.typography.heading3.fontSize.value,
-                      fontWeight: sdt.values.typography.heading3.fontWeight,
-                    }}/>
+          <FormattedTextEditor
+              value={title}
+              placeholder={`Pykälän ${number} pakollinen otsikko`}
+              onChange={updateTitle}
+              style={{
+                ...inputStyle,
+                fontSize: sdt.values.typography.heading3.fontSize.value,
+                fontWeight: sdt.values.typography.heading3.fontWeight,
+              }}/>
         </Heading.h3>
 
         <ul style={{padding: 0, margin: 0}}>

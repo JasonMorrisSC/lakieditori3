@@ -1,32 +1,36 @@
-import React, {SyntheticEvent} from "react";
+import React from "react";
 import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {cloneDocument, ensureElementAndUpdate, queryFirstText} from "../utils/xml-utils";
+import {
+  cloneDocument,
+  ensureElementAndUpdate,
+  queryFirstElement,
+  queryFirstText
+} from "../utils/xml-utils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
-import TextArea from "./TextArea";
+import FormattedTextEditor from "./FormattedTextEditor";
+import {inputStyle} from "./inputStyle";
 
 const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
-  let number = queryFirstText(document, currentElement, "@number");
-  let content = queryFirstText(document, currentElement, "content").replace(/\s+/g, ' ').trimLeft();
+  const number = queryFirstText(document, currentElement, "@number");
+  const content = queryFirstElement(document, currentElement, "content");
 
-  function resizeContent(e: SyntheticEvent<HTMLTextAreaElement>) {
-    e.currentTarget.style.height = e.currentTarget.scrollHeight + "px";
-  }
-
-  function updateContent(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
+  function updateContent(newValue: string) {
     updateDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["subsection"], (el) => el.textContent = newValue);
+          "content", ["subsection"], (el) => el.innerHTML = newValue);
     });
-    resizeContent(e);
   }
 
   return (
       <li className="subsection" style={{color: sdt.colors.depthBase}}>
-        <TextArea value={content}
-                  placeholder={`Momentin ${number} pakollinen tekstisisältö`}
-                  onChange={updateContent}
-                  style={{verticalAlign: "middle"}}/>
+        <FormattedTextEditor
+            value={content}
+            placeholder={`Momentin ${number} pakollinen tekstisisältö`}
+            onChange={updateContent}
+            style={{
+              ...inputStyle,
+              color: sdt.colors.blackBase
+            }}/>
         {/*
         <ul style={{padding: 0}}>
           {queryElements(document, currentElement, 'paragraph').map((paragraph, i) => {

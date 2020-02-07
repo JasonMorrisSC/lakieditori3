@@ -16,21 +16,19 @@ import escapeHtml from "escape-html";
 import {jsx} from "slate-hyperscript";
 import {Button, Icon, Menu, Portal} from "./ToolbarComponents";
 
-const initialEmptyValue = [{children: [{text: ''}]}];
-
 const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
-  const [editorValue, setEditorValue] = useState<SlateNode[]>(initialEmptyValue);
+  const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
   // Set real initial editor value from properties after it is available
   useEffect(() => {
-    if (value && editorValue === initialEmptyValue) {
+    if (value) {
       let initialValue = deserialize(value);
       if (initialValue && initialValue.length > 0) {
         setEditorValue([{children: initialValue}]);
       }
     }
-  }, [value, editorValue]);
+  }, [value]);
 
   // Remove 'onChange' when editor is unmounted to avoid errors when this component is unmounted.
   useEffect(() => {
@@ -43,8 +41,6 @@ const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, pla
       editor={editor}
       value={editorValue}
       onChange={nodes => {
-        const xmlValue = serialize({children: nodes});
-        onChange(xmlValue);
         setEditorValue(nodes);
       }}>
     <HoveringToolbar/>
@@ -57,6 +53,9 @@ const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, pla
           if (event.keyCode === 13 /* enter */) {
             event.preventDefault();
           }
+        }}
+        onBlur={() => {
+          onChange(serialize({children: editorValue}));
         }}
         onDOMBeforeInput={event => {
           switch ((event as InputEvent).inputType) {
