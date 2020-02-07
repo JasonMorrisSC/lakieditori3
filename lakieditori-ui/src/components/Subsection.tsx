@@ -1,26 +1,31 @@
 import React from "react";
 import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {firstChildByTagName, toElementsArr} from "../utils/xml-utils";
+import {queryElements, queryFirstElement} from "../utils/xml-utils";
 import Paragraph from "./Paragraph";
+import {XmlEditorProperties} from "./XmlEditorProperties";
+import SanitizedHtml from "./SanitizedHtml";
 
-const Subsection: React.FC<Props> = ({subsection}: Props) => {
+const Subsection: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+  const content = queryFirstElement(document, currentElement, "content");
+
   return (
-      <li className="subsection" style={{color: sdt.colors.highlightLight45}}>
+      <div className="subsection">
         <p style={{color: sdt.colors.blackBase}}>
-          {firstChildByTagName(subsection, 'content')?.textContent}
+          <SanitizedHtml element={content}/>
         </p>
 
         <ul style={{padding: 0}}>
-          {toElementsArr(subsection.childNodes, e => e.tagName === 'paragraph').map((paragraph, i) => {
-            return <Paragraph key={i} paragraph={paragraph}/>
+          {queryElements(document, currentElement, 'paragraph').map((paragraph, i) => {
+            return <li key={i} style={{color: sdt.colors.highlightLight45}}>
+              <Paragraph document={document}
+                         currentElement={paragraph}
+                         currentPath={currentPath + "/paragraph[" + (i + 1) + "]"}
+                         updateDocument={updateDocument}/>
+            </li>
           })}
         </ul>
-      </li>
+      </div>
   );
 };
-
-interface Props {
-  subsection: Element;
-}
 
 export default Subsection;

@@ -93,7 +93,10 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
 
           {queryElements(document, currentElement, 'section').map((section, i) => {
             return <div key={i} id={`section-${section.getAttribute('number')}`}>
-              <Section section={section}/>
+              <Section document={document}
+                       currentElement={section}
+                       currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
+                       updateDocument={updateDocument}/>
             </div>
           })}
 

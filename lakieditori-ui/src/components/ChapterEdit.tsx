@@ -4,6 +4,7 @@ import {
   cloneDocument,
   countNodes,
   queryElements,
+  queryFirstElement,
   queryFirstNode,
   queryFirstText,
   updateElement
@@ -11,12 +12,11 @@ import {
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import SectionEdit from "./SectionEdit";
 import {inputStyle} from "./inputStyle";
-import TextArea from "./TextArea";
+import FormattedTextEditor from "./FormattedTextEditor";
 
 const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   let number = queryFirstText(document, currentElement, "@number");
-  let title = queryFirstText(document, currentElement, "title").replace(/\s+/g, ' ').trimLeft();
-  let content = queryFirstText(document, currentElement, "content").replace(/\s+/g, ' ').trimLeft();
+  const title = queryFirstElement(document, currentElement, "title");
 
   function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value;
@@ -26,11 +26,10 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
     });
   }
 
-  function updateTitle(e: SyntheticEvent<HTMLTextAreaElement>) {
-    const newValue = e.currentTarget.value;
+  function updateTitle(newValue: string) {
     updateDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
-          (el) => el.textContent = newValue);
+          (el) => el.innerHTML = newValue);
     });
   }
 
@@ -65,14 +64,15 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
             luku
           </span>
 
-          <TextArea value={title}
-                    placeholder={`Luvun ${number} pakollinen otsikko`}
-                    onChange={updateTitle}
-                    style={{
-                      ...inputStyle,
-                      fontSize: sdt.values.typography.heading2.fontSize.value,
-                      fontWeight: sdt.values.typography.heading2.fontWeight,
-                    }}/>
+          <FormattedTextEditor
+              value={title}
+              placeholder={`Luvun ${number} pakollinen otsikko`}
+              onChange={updateTitle}
+              style={{
+                ...inputStyle,
+                fontSize: sdt.values.typography.heading2.fontSize.value,
+                fontWeight: sdt.values.typography.heading2.fontWeight,
+              }}/>
         </Heading.h2>
 
         {queryElements(document, currentElement, 'section').map((section, i) => {

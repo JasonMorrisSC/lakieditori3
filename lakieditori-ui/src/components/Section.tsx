@@ -1,30 +1,36 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {firstChildByTagName, toElementsArr} from "../utils/xml-utils";
+import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
 import Subsection from "./Subsection";
+import {XmlEditorProperties} from "./XmlEditorProperties";
+import SanitizedHtml from "./SanitizedHtml";
 
-const Section: React.FC<Props> = ({section}: Props) => {
+const Section: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+  let number = queryFirstText(document, currentElement, "@number");
+  const title = queryFirstElement(document, currentElement, "title");
+
   return (
       <div className="section" style={{marginTop: sdt.spacing.l}}>
         <Heading.h3>
           <span style={{color: sdt.colors.highlightBase}}>
-            {section.getAttribute('number')} §
+            {number} §
           </span>
           <br/>
-          {firstChildByTagName(section, 'title')?.textContent}
+          <SanitizedHtml element={title}/>
         </Heading.h3>
 
         <ul style={{padding: 0}}>
-          {toElementsArr(section.childNodes, e => e.tagName === 'subsection').map((subsection, i) => {
-            return <Subsection key={i} subsection={subsection}/>
+          {queryElements(document, currentElement, 'subsection').map((subsection, i) => {
+            return <li key={i} style={{color: sdt.colors.highlightLight45}}>
+              <Subsection document={document}
+                          currentElement={subsection}
+                          currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
+                          updateDocument={updateDocument}/>
+            </li>
           })}
         </ul>
       </div>
   );
 };
-
-interface Props {
-  section: Element;
-}
 
 export default Section;

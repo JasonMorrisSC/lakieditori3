@@ -1,13 +1,13 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {queryElements, queryFirstText} from "../utils/xml-utils";
+import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import Section from "./Section";
+import SanitizedHtml from "./SanitizedHtml";
 
 const Chapter: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   let number = queryFirstText(document, currentElement, "@number");
-  let title = queryFirstText(document, currentElement, "title");
-  let content = queryFirstText(document, currentElement, "content");
+  const title = queryFirstElement(document, currentElement, "title");
 
   return (
       <div className="chapter" style={{margin: `${sdt.spacing.xl} 0`}}>
@@ -16,12 +16,15 @@ const Chapter: React.FC<XmlEditorProperties> = ({document, currentElement, curre
             {number} luku
           </span>
           <br/>
-          {title}
+          <SanitizedHtml element={title}/>
         </Heading.h2>
 
         {queryElements(document, currentElement, 'section').map((section, i) => {
           return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>
-            <Section section={section}/>
+            <Section document={document}
+                     currentElement={section}
+                     currentPath={currentPath + "/section[" + (i + 1) + "]"}
+                     updateDocument={updateDocument}/>
           </div>
         })}
       </div>
