@@ -1,5 +1,4 @@
-import React, {CSSProperties, ReactNode, useEffect, useMemo, useRef, useState} from "react";
-import {createPortal} from "react-dom";
+import React, {CSSProperties, useEffect, useMemo, useRef, useState} from "react";
 import {createEditor, Editor, Node as SlateNode, Range, Text, Transforms} from 'slate'
 import {
   Editable,
@@ -10,11 +9,12 @@ import {
   useSlate,
   withReact
 } from 'slate-react'
-import {css, cx} from "emotion";
+import {css} from "emotion";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {withHistory} from "slate-history";
 import escapeHtml from "escape-html";
 import {jsx} from "slate-hyperscript";
+import {Button, Icon, Menu, Portal} from "./ToolbarComponents";
 
 const initialEmptyValue = [{children: [{text: ''}]}];
 
@@ -79,7 +79,7 @@ interface Props {
 
 const deserialize = (el: Node): SlateNode[] | null => {
   if (el.nodeType === Node.TEXT_NODE || el.nodeType !== Node.ELEMENT_NODE) {
-    return [jsx('text', {text: el.textContent?.replace(/\s+/g, ' ').trimLeft() || ''})];
+    return [jsx('text', {text: el.textContent?.replace(/\s+/g, ' ') || ''})];
   }
 
   const {nodeName} = el;
@@ -315,84 +315,6 @@ const LinkButton = () => {
 interface FormatButtonProps {
   format: string,
   icon: string
-}
-
-const Menu = React.forwardRef(({className, ...props}: MenuProps, ref: any) => (
-    <div
-        {...props}
-        ref={ref}
-        className={cx(
-            className,
-            css`
-        & > * {
-          display: inline-block;
-        }
-        & > * + * {
-          margin-left: 15px;
-        }`)}
-    />
-));
-
-interface MenuProps {
-  className: any,
-  children: any
-}
-
-const Button = React.forwardRef(
-    ({className, active, reversed = true, onMouseDown, ...props}: ButtonProps, ref: any) => (
-        <span
-            {...props}
-            onMouseDown={onMouseDown}
-            ref={ref}
-            className={cx(
-                className,
-                css`
-          cursor: pointer;
-          color: ${reversed
-                    ? active
-                        ? 'white'
-                        : '#aaa'
-                    : active
-                        ? 'black'
-                        : '#ccc'};
-        `)}
-        />
-    )
-);
-
-interface ButtonProps {
-  className?: any,
-  active: boolean,
-  reversed?: boolean,
-  onMouseDown: (e: any) => void,
-  children: any
-}
-
-export const Icon = React.forwardRef(({className, ...props}: IconProps, ref: any) => (
-    <span
-        {...props}
-        ref={ref}
-        className={cx(
-            'material-icons',
-            className,
-            css`
-        font-size: 18px;
-        vertical-align: text-bottom;
-      `)}
-    />
-));
-
-interface IconProps {
-  className?: any,
-  children: any
-}
-
-const Portal = ({children}: PortalProps) => {
-  return createPortal(children, document.body)
-};
-
-interface PortalProps {
-  children: ReactNode
 }
 
 export default FormattedTextEditor;
