@@ -1,6 +1,6 @@
 import React from "react";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import {Link} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
@@ -12,6 +12,8 @@ import {XmlEditorProperties} from "./XmlEditorProperties";
 import "./DocInfo.css";
 
 const DocInfo: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+  const history = useHistory();
+
   const number = queryFirstText(document, currentElement, "@number");
   const title = queryFirstText(document, currentElement, "title");
 
@@ -30,13 +32,12 @@ const DocInfo: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           {title} / Lisätietoja
         </Text>
         <div>
-          <Link to={`/documents/${encodeIdForUrl(number)}`}>
-            <Button.secondaryNoborder
-                icon={"close"}
-                style={{background: "none", marginRight: sdt.spacing.s}}>
-              Sulje
-            </Button.secondaryNoborder>
-          </Link>
+          <Button.secondaryNoborder
+              icon={"close"}
+              style={{background: "none", marginRight: sdt.spacing.s}}
+              onClick={() => history.push(`/documents/${encodeIdForUrl(number)}`)}>
+            Sulje
+          </Button.secondaryNoborder>
         </div>
       </div>;
 

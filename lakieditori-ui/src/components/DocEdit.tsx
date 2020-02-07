@@ -1,6 +1,5 @@
 import React from "react";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import {Link} from "react-router-dom";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
@@ -23,8 +22,11 @@ import Toc from "./Toc";
 import NavItemProps from "./NavItemProps";
 import {inputStyle} from "./inputStyle";
 import FormattedTextEditor from "./FormattedTextEditor";
+import {useHistory} from "react-router-dom";
 
 const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+  const history = useHistory();
+
   const navTree: NavItemProps[] =
       queryElements(document, currentElement, 'chapter').map(chapter => {
         const chapterNumber = queryFirstText(document, chapter, "@number");
@@ -95,13 +97,12 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           {titleText} / Muokkaa
         </Text>
         <div>
-          <Link to={`/documents/${encodeIdForUrl(number)}`}>
-            <Button.secondaryNoborder
-                icon={"close"}
-                style={{background: "none", marginRight: sdt.spacing.s}}>
-              Sulje
-            </Button.secondaryNoborder>
-          </Link>
+          <Button.secondaryNoborder
+              icon={"close"}
+              style={{background: "none", marginRight: sdt.spacing.s}}
+              onClick={() => history.push(`/documents/${encodeIdForUrl(number)}`)}>
+            Sulje
+          </Button.secondaryNoborder>
         </div>
       </div>;
 
