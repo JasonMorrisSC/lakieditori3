@@ -14,7 +14,7 @@ import {css, cx} from "emotion";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {withHistory} from "slate-history";
 import escapeHtml from "escape-html";
-import {deserialize} from "../utils/slateUtils";
+import {jsx} from "slate-hyperscript";
 
 const initialEmptyValue = [{children: [{text: ''}]}];
 
@@ -76,6 +76,29 @@ interface Props {
   onChange?: (newValue: string) => void,
   style?: CSSProperties
 }
+
+const deserialize = (el: Node): SlateNode[] | null => {
+  if (el.nodeType === Node.TEXT_NODE || el.nodeType !== Node.ELEMENT_NODE) {
+    return [jsx('text', {text: el.textContent?.replace(/\s+/g, ' ').trimLeft() || ''})];
+  }
+
+  const {nodeName} = el;
+
+  const children = Array.from(el.childNodes)
+  .map(deserialize)
+  .flat();
+
+  if (nodeName === 'a') {
+    return [jsx('element', {type: 'link', url: (el as Element).getAttribute('href')}, children)];
+  }
+  if (nodeName === 'strong') {
+    return children.map(child => jsx('text', {bold: true}, child));
+  }
+  if (nodeName === 'em') {
+    return children.map(child => jsx('text', {italic: true}, child));
+  }
+  return jsx('fragment', {}, children);
+};
 
 const serialize = (node: SlateNode): string => {
   if (Text.isText(node)) {
