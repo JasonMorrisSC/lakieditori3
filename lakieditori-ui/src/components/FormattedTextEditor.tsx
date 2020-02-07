@@ -17,18 +17,20 @@ import {jsx} from "slate-hyperscript";
 import {Button, Icon, Menu, Portal} from "./ToolbarComponents";
 
 const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
+  const [initialized, setInitialized] = useState<boolean>(false);
   const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
   // Set real initial editor value from properties after it is available
   useEffect(() => {
-    if (value) {
+    if (value && !initialized) {
       let initialValue = deserialize(value);
       if (initialValue && initialValue.length > 0) {
         setEditorValue([{children: initialValue}]);
       }
+      setInitialized(true);
     }
-  }, [value]);
+  }, [value, initialized]);
 
   // Remove 'onChange' when editor is unmounted to avoid errors when this component is unmounted.
   useEffect(() => {
