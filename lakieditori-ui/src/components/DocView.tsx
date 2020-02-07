@@ -1,5 +1,5 @@
 import React from "react";
-import {Link} from "react-router-dom";
+import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
 import {encodeIdForUrl} from "../utils/id-utils";
@@ -12,6 +12,8 @@ import Toc from "./Toc";
 import SanitizedHtml from "./SanitizedHtml";
 
 const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+  const history = useHistory();
+
   const navTree: NavItemProps[] =
       queryElements(document, currentElement, 'chapter').map(chapter => {
         const chapterNumber = queryFirstText(document, chapter, "@number");
@@ -43,26 +45,26 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
   }}>
     <Text style={{maxWidth: "600px"}}>{titleText}</Text>
     <div>
-      <Link to={`/documents/${encodeIdForUrl(number)}/source`}>
-        <Button.secondaryNoborder
-            icon={"registers"}
-            style={{
-              background: "none",
-              marginRight: sdt.spacing.xs
-            }}>
-          XML
-        </Button.secondaryNoborder>
-      </Link>
-      <Link to={`/documents/${encodeIdForUrl(number)}/info`}>
-        <Button.secondary icon={"info"} style={{marginRight: sdt.spacing.xs}}>
-          Lisätietoja
-        </Button.secondary>
-      </Link>
-      <Link to={`/documents/${encodeIdForUrl(number)}/edit`}>
-        <Button.secondary icon={"edit"}>
-          Muokkaa
-        </Button.secondary>
-      </Link>
+      <Button.secondaryNoborder
+          icon={"registers"}
+          style={{
+            background: "none",
+            marginRight: sdt.spacing.xs
+          }}
+          onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/source`)}>
+        XML
+      </Button.secondaryNoborder>
+      <Button.secondary
+          icon={"info"}
+          style={{marginRight: sdt.spacing.xs}}
+          onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/info`)}>
+        Lisätietoja
+      </Button.secondary>
+      <Button.secondary
+          icon={"edit"}
+          onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/edit`)}>
+        Muokkaa
+      </Button.secondary>
     </div>
   </div>;
 
