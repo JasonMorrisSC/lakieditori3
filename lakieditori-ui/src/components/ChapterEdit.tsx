@@ -12,7 +12,7 @@ import {
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import SectionEdit from "./SectionEdit";
 import {inputStyle} from "./inputStyle";
-import FormattedTextEditor from "./FormattedTextEditor";
+import RichTextEditor from "./RichTextEditor";
 
 const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   let number = queryFirstText(document, currentElement, "@number");
@@ -64,7 +64,7 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
             luku
           </span>
 
-          <FormattedTextEditor
+          <RichTextEditor
               value={title}
               placeholder={`Luvun ${number} pakollinen otsikko`}
               onChange={updateTitle}

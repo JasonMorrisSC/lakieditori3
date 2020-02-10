@@ -1,5 +1,5 @@
 import React, {CSSProperties, useEffect, useMemo, useRef, useState} from "react";
-import {createEditor, Editor, Node as SlateNode, Range, Text, Transforms} from 'slate'
+import {createEditor, Editor, Node as SlateNode, Range} from 'slate'
 import {
   Editable,
   ReactEditor,
@@ -9,19 +9,24 @@ import {
   useSlate,
   withReact
 } from 'slate-react'
-import {css} from "emotion";
-import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {withHistory} from "slate-history";
-import escapeHtml from "escape-html";
-import {jsx} from "slate-hyperscript";
-import {Button, Icon, Menu, Portal} from "./ToolbarComponents";
+import {css} from "emotion";
+import {Button, Icon, Menu, Portal} from "./RichTextEditorUtilComponents";
+import {
+  deserialize,
+  insertLink,
+  isFormatActive,
+  isLinkActive,
+  serialize,
+  toggleFormat
+} from "./RichTextEditorFunctions";
 
-const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
+const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
-  // Set real initial editor value from properties after it is available
+  // Sets real initial editor value from properties after it is available
   useEffect(() => {
     if (value && !initialized) {
       let initialValue = deserialize(value);
@@ -32,7 +37,7 @@ const FormattedTextEditor: React.FC<Props> = ({value, onChange = () => null, pla
     }
   }, [value, initialized]);
 
-  // Remove 'onChange' when editor is unmounted to avoid errors when this component is unmounted.
+  // Removes 'onChange' when editor is unmounted to avoid errors when this component is unmounted.
   useEffect(() => {
     return () => {
       editor.onChange = () => null
@@ -78,53 +83,6 @@ interface Props {
   style?: CSSProperties
 }
 
-const deserialize = (el: Node): SlateNode[] | null => {
-  if (el.nodeType === Node.TEXT_NODE || el.nodeType !== Node.ELEMENT_NODE) {
-    return [jsx('text', {text: el.textContent?.replace(/\s+/g, ' ') || ''})];
-  }
-
-  const {nodeName} = el;
-
-  const children = Array.from(el.childNodes)
-  .map(deserialize)
-  .flat();
-
-  if (nodeName === 'a') {
-    return [jsx('element', {type: 'link', url: (el as Element).getAttribute('href')}, children)];
-  }
-  if (nodeName === 'strong') {
-    return children.map(child => jsx('text', {bold: true}, child));
-  }
-  if (nodeName === 'em') {
-    return children.map(child => jsx('text', {italic: true}, child));
-  }
-  return jsx('fragment', {}, children);
-};
-
-const serialize = (node: SlateNode): string => {
-  if (Text.isText(node)) {
-    let text = escapeHtml(node.text);
-
-    if (node.bold) {
-      text = `<strong>${text}</strong>`
-    }
-
-    if (node.italic) {
-      text = `<em>${text}</em>`
-    }
-
-    return text;
-  }
-
-  const children = node.children.map(n => serialize(n)).join('');
-
-  if (node.type === 'link') {
-    return `<a href="${encodeURI(node.url)}">${children}</a>`;
-  }
-
-  return children;
-};
-
 const withInlineLinks = (editor: ReactEditor): ReactEditor => {
   const {isInline} = editor;
 
@@ -135,71 +93,9 @@ const withInlineLinks = (editor: ReactEditor): ReactEditor => {
   return editor
 };
 
-const isFormatActive = (editor: Editor, format: string) => {
-  const [match] = Array.from(Editor.nodes(editor, {
-    match: n => n[format] === true,
-    mode: 'all',
-  }));
-  return !!match;
-};
-
-const toggleFormat = (editor: Editor, format: string) => {
-  const isActive = isFormatActive(editor, format);
-  Transforms.setNodes(
-      editor,
-      {[format]: isActive ? null : true},
-      {match: Text.isText, split: true}
-  )
-};
-
-const isLinkActive = (editor: Editor) => {
-  const [link] = Array.from(Editor.nodes(editor, {
-    match: n => n.type === 'link'
-  }));
-  return !!link
-};
-
-const insertLink = (editor: Editor, url: string | null) => {
-  if (editor.selection) {
-    if (url) {
-      wrapLink(editor, url);
-    } else {
-      unwrapLink(editor);
-    }
-  }
-};
-
-const wrapLink = (editor: Editor, url: string) => {
-  if (isLinkActive(editor)) {
-    unwrapLink(editor)
-  }
-
-  const {selection} = editor;
-  const isCollapsed = selection && Range.isCollapsed(selection);
-  const link = {
-    type: 'link',
-    url,
-    children: isCollapsed ? [{text: url}] : [],
-  };
-
-  if (isCollapsed) {
-    Transforms.insertNodes(editor, link);
-  } else {
-    Transforms.wrapNodes(editor, link, {split: true});
-    Transforms.collapse(editor, {edge: 'end'});
-  }
-};
-
-const unwrapLink = (editor: Editor) => {
-  Transforms.unwrapNodes(editor, {match: n => n.type === 'link'});
-};
-
 const EditorElement = ({attributes, children, element}: RenderElementProps) => {
   if (element.type === 'link') {
-    return <a {...attributes} href={element.url} style={{
-      color: sdt.colors.highlightBase,
-      textDecoration: "none"
-    }}>{children}</a>;
+    return <a {...attributes} href={element.url}>{children}</a>;
   } else {
     return <div {...attributes}>{children}</div>
   }
@@ -318,4 +214,4 @@ interface FormatButtonProps {
   icon: string
 }
 
-export default FormattedTextEditor;
+export default RichTextEditor;

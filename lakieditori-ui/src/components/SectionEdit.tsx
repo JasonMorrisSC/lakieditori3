@@ -12,7 +12,7 @@ import {
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import SubsectionEdit from "./SubsectionEdit";
 import {inputStyle} from "./inputStyle";
-import FormattedTextEditor from "./FormattedTextEditor";
+import RichTextEditor from "./RichTextEditor";
 
 const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const number = queryFirstText(document, currentElement, "@number");
@@ -64,7 +64,7 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
             §
           </span>
 
-          <FormattedTextEditor
+          <RichTextEditor
               value={title}
               placeholder={`Pykälän ${number} pakollinen otsikko`}
               onChange={updateTitle}

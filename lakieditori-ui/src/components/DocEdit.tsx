@@ -21,7 +21,7 @@ import ChapterEdit from "./ChapterEdit";
 import Toc from "./Toc";
 import NavItemProps from "./NavItemProps";
 import {inputStyle} from "./inputStyle";
-import FormattedTextEditor from "./FormattedTextEditor";
+import RichTextEditor from "./RichTextEditor";
 import {useHistory} from "react-router-dom";
 
 const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
@@ -116,7 +116,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           <Heading.h1hero>
             <small style={{color: sdt.colors.accentBase}}>{number}</small>
             <br/>
-            <FormattedTextEditor
+            <RichTextEditor
                 value={title}
                 placeholder="Otsikko (pakollinen)"
                 onChange={updateTitle}
@@ -127,13 +127,13 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
                 }}/>
           </Heading.h1hero>
 
-          <FormattedTextEditor
+          <RichTextEditor
               value={note}
               placeholder="Huomautus"
               onChange={updateNote}
               style={inputStyle}/>
 
-          <FormattedTextEditor
+          <RichTextEditor
               value={intro}
               placeholder="Johtolause"
               onChange={updateIntro}

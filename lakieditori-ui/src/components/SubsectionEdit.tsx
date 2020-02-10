@@ -7,7 +7,7 @@ import {
   queryFirstText
 } from "../utils/xml-utils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
-import FormattedTextEditor from "./FormattedTextEditor";
+import RichTextEditor from "./RichTextEditor";
 import {inputStyle} from "./inputStyle";
 
 const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
@@ -23,7 +23,7 @@ const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement
 
   return (
       <li className="subsection" style={{color: sdt.colors.depthBase}}>
-        <FormattedTextEditor
+        <RichTextEditor
             value={content}
             placeholder={`Momentin ${number} pakollinen tekstisisältö`}
             onChange={updateContent}
