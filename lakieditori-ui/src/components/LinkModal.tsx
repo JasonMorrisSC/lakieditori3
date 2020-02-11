@@ -4,16 +4,40 @@ import {useSlate} from 'slate-react'
 import Modal from 'react-modal';
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
 
-const LinkModal = ({modalIsOpen, closeModal, selection, selectedText, selectedUrl}: Props) => {
+const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
   const editor = useSlate();
 
   const [linkText, setLinkText] = React.useState<string>('');
   const [linkUrl, setLinkUrl] = React.useState<string>('');
 
   useEffect(() => {
-    setLinkText(selectedText);
-    setLinkUrl(selectedUrl);
-  }, [selectedText, selectedUrl]);
+    if (modalIsOpen && selection) {
+      setLinkText(Editor.string(editor, selection));
+      const [link] = Array.from(Editor.nodes(editor, {
+        match: n => n.type === 'link',
+        at: selection
+      }));
+      setLinkUrl((link && link.length) > 0 ? link[0].url : '');
+    }
+  }, [modalIsOpen, selection, editor]);
+
+  function insertLinkAndCloseModal() {
+    editor.selection = selection;
+
+    if (linkUrl) {
+      if (selection && Editor.string(editor, selection) !== linkText) {
+        Editor.insertText(editor, '');
+      }
+      insertLink(editor, linkUrl, linkText);
+    } else {
+      unwrapLink(editor);
+    }
+
+    setLinkText('');
+    setLinkUrl('');
+
+    closeModal();
+  }
 
   return (
       <Modal isOpen={modalIsOpen} contentLabel="Lisää linkki"
@@ -41,20 +65,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection, selectedText, selectedUr
 
         <br/>
 
-        <button onClick={() => {
-          editor.selection = selection;
-
-          if (linkUrl) {
-            if (selection && Editor.string(editor, selection) !== linkText) {
-              Editor.insertText(editor, '');
-            }
-            insertLink(editor, linkUrl, linkText);
-          } else {
-            unwrapLink(editor);
-          }
-
-          closeModal();
-        }}>
+        <button onClick={insertLinkAndCloseModal}>
           Sulje
         </button>
       </Modal>
@@ -65,8 +76,6 @@ interface Props {
   modalIsOpen: boolean,
   closeModal: () => void,
   selection: Range | null,
-  selectedText: string,
-  selectedUrl: string,
 }
 
 export default LinkModal;

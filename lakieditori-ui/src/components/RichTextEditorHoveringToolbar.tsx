@@ -84,8 +84,6 @@ const FormatButton = ({format, icon}: FormatButtonProps) => {
 const LinkButton = () => {
   const editor = useSlate();
   const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
-  const [selectedText, setSelectedText] = React.useState<string>('');
-  const [selectedUrl, setSelectedUrl] = React.useState<string>('');
   const [selection, setSelection] = React.useState<Range | null>(null);
 
   return (
@@ -94,15 +92,6 @@ const LinkButton = () => {
             active={isLinkActive(editor)}
             onMouseDown={(e) => {
               e.preventDefault();
-              if (editor.selection) {
-                setSelectedText(Editor.string(editor, editor.selection));
-              }
-              if (isLinkActive(editor)) {
-                const [link] = Array.from(Editor.nodes(editor, {
-                  match: n => n.type === 'link'
-                }));
-                setSelectedUrl(link[0].url);
-              }
               setSelection(editor.selection);
               setModalIsOpen(true);
             }}>
@@ -110,16 +99,9 @@ const LinkButton = () => {
         </Button>
 
         <LinkModal
-            closeModal={() => {
-              setSelectedText('');
-              setSelectedUrl('');
-              setModalIsOpen(false);
-            }}
+            closeModal={() => setModalIsOpen(false)}
             modalIsOpen={modalIsOpen}
-            selection={selection}
-            selectedText={selectedText}
-            selectedUrl={selectedUrl}
-        />
+            selection={selection}/>
       </div>
   )
 };
