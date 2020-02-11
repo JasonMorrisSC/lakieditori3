@@ -73,17 +73,13 @@ export function isLinkActive(editor: Editor) {
   return !!link
 }
 
-export function insertLink(editor: Editor, url: string | null) {
+export function insertLink(editor: Editor, url: string, text?: string) {
   if (editor.selection) {
-    if (url) {
-      wrapLink(editor, url);
-    } else {
-      unwrapLink(editor);
-    }
+    wrapLink(editor, url, text);
   }
 }
 
-export function wrapLink(editor: Editor, url: string) {
+export function wrapLink(editor: Editor, url: string, text?: string) {
   if (isLinkActive(editor)) {
     unwrapLink(editor)
   }
@@ -92,8 +88,8 @@ export function wrapLink(editor: Editor, url: string) {
   const isCollapsed = selection && Range.isCollapsed(selection);
   const link = {
     type: 'link',
-    url,
-    children: isCollapsed ? [{text: url}] : [],
+    url: url,
+    children: isCollapsed ? [{text: text || url}] : [],
   };
 
   if (isCollapsed) {

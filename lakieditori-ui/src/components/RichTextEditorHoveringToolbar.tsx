@@ -3,7 +3,8 @@ import {Editor, Range} from 'slate'
 import {ReactEditor, useSlate} from 'slate-react'
 import {css} from "emotion";
 import {Button, Icon, Menu, Portal} from "./RichTextEditorUtilComponents";
-import {insertLink, isFormatActive, isLinkActive, toggleFormat} from "./RichTextEditorFunctions";
+import {isFormatActive, isLinkActive, toggleFormat} from "./RichTextEditorFunctions";
+import LinkModal from "./LinkModal";
 
 const HoveringToolbar = () => {
   const ref = useRef<HTMLDivElement>();
@@ -82,24 +83,44 @@ const FormatButton = ({format, icon}: FormatButtonProps) => {
 
 const LinkButton = () => {
   const editor = useSlate();
+  const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
+  const [selectedText, setSelectedText] = React.useState<string>('');
+  const [selectedUrl, setSelectedUrl] = React.useState<string>('');
+  const [selection, setSelection] = React.useState<Range | null>(null);
+
   return (
-      <Button
-          active={isLinkActive(editor)}
-          onMouseDown={event => {
-            event.preventDefault();
-            if (!isLinkActive(editor)) {
-              insertLink(editor, window.prompt('Enter the URL of the link:'));
-            } else {
-              const [link] = Array.from(Editor.nodes(editor, {
-                match: n => n.type === 'link'
-              }));
-              const oldUrl = link[0].url;
-              const newUrl = window.prompt('Enter the URL of the link:', oldUrl);
-              insertLink(editor, newUrl === null ? oldUrl : newUrl);
-            }
-          }}>
-        <Icon>link</Icon>
-      </Button>
+      <div>
+        <Button
+            active={isLinkActive(editor)}
+            onMouseDown={(e) => {
+              e.preventDefault();
+              if (editor.selection) {
+                setSelectedText(Editor.string(editor, editor.selection));
+              }
+              if (isLinkActive(editor)) {
+                const [link] = Array.from(Editor.nodes(editor, {
+                  match: n => n.type === 'link'
+                }));
+                setSelectedUrl(link[0].url);
+              }
+              setSelection(editor.selection);
+              setModalIsOpen(true);
+            }}>
+          <Icon>link</Icon>
+        </Button>
+
+        <LinkModal
+            closeModal={() => {
+              setSelectedText('');
+              setSelectedUrl('');
+              setModalIsOpen(false);
+            }}
+            modalIsOpen={modalIsOpen}
+            selection={selection}
+            selectedText={selectedText}
+            selectedUrl={selectedUrl}
+        />
+      </div>
   )
 };
 
