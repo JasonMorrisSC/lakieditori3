@@ -2,6 +2,7 @@ import React, {useEffect} from "react";
 import {Editor, Range} from 'slate'
 import {useSlate} from 'slate-react'
 import Modal from 'react-modal';
+import {Button, Heading, suomifiDesignTokens as sdt, TextInput} from "suomifi-ui-components";
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
 
 const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
@@ -43,31 +44,48 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
       <Modal isOpen={modalIsOpen} contentLabel="Lisää linkki"
              style={{
                content: {
-                 maxWidth: 1000,
+                 display: "grid",
+                 gridTemplateRows: `100px auto 40px`,
+                 height: "80%",
                  marginLeft: "auto",
-                 marginRight: "auto"
+                 marginRight: "auto",
+                 maxWidth: 1000,
+                 padding: `${sdt.spacing.l}`,
                }
              }}>
 
-        <h1>Lisää linkki</h1>
+        <div>
+          <Heading.h1>
+            Lisää linkki
+          </Heading.h1>
+          <hr style={{
+            border: 0,
+            borderBottom: `1px solid ${sdt.colors.depthLight13}`,
+            marginBottom: sdt.spacing.l
+          }}/>
+        </div>
 
-        <hr/>
+        <div style={{overflowY: "auto"}}>
 
-        <label htmlFor="linkText">Linkin teksti</label>
-        <input name="linkText" type="text" value={linkText}
-               onChange={(e) => setLinkText(e.currentTarget.value)}/>
+          <TextInput labelText={"Linkin osoite (URL)"}
+                     value={linkUrl}
+                     style={{width: "100%"}}
+                     onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
 
-        <br/>
+          <br/>
 
-        <label htmlFor="linkUrl">Linkin osoite</label>
-        <input name="linkUrl" type="text" value={linkUrl}
-               onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
+          <TextInput labelText={"Linkin teksti"}
+                     value={linkText}
+                     style={{width: "100%"}}
+                     onChange={(e) => setLinkText(e.currentTarget.value)}/>
 
-        <br/>
+        </div>
 
-        <button onClick={insertLinkAndCloseModal}>
-          Sulje
-        </button>
+        <div>
+          <Button onClick={insertLinkAndCloseModal}>
+            Lisää
+          </Button>
+        </div>
       </Modal>
   )
 };
