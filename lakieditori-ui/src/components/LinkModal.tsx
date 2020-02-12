@@ -22,7 +22,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
     }
   }, [modalIsOpen, selection, editor]);
 
-  function insertLinkAndCloseModal() {
+  function insertLinkAndClose() {
     editor.selection = selection;
 
     if (linkUrl) {
@@ -34,9 +34,12 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
       unwrapLink(editor);
     }
 
+    close();
+  }
+
+  function close() {
     setLinkText('');
     setLinkUrl('');
-
     closeModal();
   }
 
@@ -82,9 +85,14 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
         </div>
 
         <div>
-          <Button onClick={insertLinkAndCloseModal}>
+          <Button onClick={insertLinkAndClose}>
             Lisää
           </Button>
+          <Button.secondaryNoborder
+              onClick={close}
+              style={{marginLeft: sdt.spacing.s}}>
+            Peruuta
+          </Button.secondaryNoborder>
         </div>
       </Modal>
   )
