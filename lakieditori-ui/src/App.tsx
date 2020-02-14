@@ -1,59 +1,70 @@
 import React from "react";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
+import {css, Global} from '@emotion/core'
+import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {ContentContainer, HeaderBackground, TopNavigationBackground} from "./components/CommonComponents";
 import About from "./components/About";
 import Home from "./components/Home";
 import Docs from "./components/Docs";
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
-import TwoWayBindTest from "./test/TwoWayBindTest";
-import TwoWayBindTest2 from "./test/TwoWayBindTest2";
-import LayoutTest from "./test/LayoutTest";
-import RichTextEditorTest from "./test/RichTextEditorTest";
-import RichTextEditorTest2 from "./test/RichTextEditorTest2";
 
 const App: React.FC = () => {
+  const bodyText = tokens.values.typography.bodyText;
+
   return (
-      <div style={{
-        fontFamily: sdt.values.typography.bodyText.fontFamily,
-        fontSize: sdt.values.typography.bodyText.fontSize.value,
-        color: sdt.colors.blackBase,
-        lineHeight: sdt.values.typography.bodyText.lineHeight.value
-      }}>
-        <Header/>
+      <>
+        <Global styles={css`
+            body {
+              background-color: ${tokens.colors.depthLight30};
+              font-family: ${bodyText.fontFamily};
+              font-size: ${bodyText.fontSize.value}${bodyText.fontSize.unit};
+              -webkit-font-smoothing: antialiased;
+              -moz-osx-font-smoothing: grayscale;
+              line-height: ${bodyText.lineHeight.value}${bodyText.lineHeight.unit};
+              margin: 0;
+            }
+            a {
+              color: ${tokens.colors.highlightBase};
+              text-decoration: none; 
+            }
+            a:visited {
+              color: ${tokens.colors.accentTertiaryDark9}
+            }
+            code {
+              white-space: pre-wrap !important;
+            }
+          `}
+        />
 
         <Router>
-          <Navigation/>
+          <HeaderBackground>
+            <ContentContainer>
+              <Header/>
+            </ContentContainer>
+          </HeaderBackground>
 
-          <Switch>
-            <Route path="/documents">
-              <Docs/>
-            </Route>
-            <Route path="/about">
-              <About/>
-            </Route>
-            <Route path="/two-way-bind-test">
-              <TwoWayBindTest/>
-            </Route>
-            <Route path="/two-way-bind-test-2">
-              <TwoWayBindTest2/>
-            </Route>
-            <Route path="/layout-test">
-              <LayoutTest/>
-            </Route>
-            <Route path="/rich-text-editor-test">
-              <RichTextEditorTest/>
-            </Route>
-            <Route path="/rich-text-editor-test-2">
-              <RichTextEditorTest2/>
-            </Route>
-            <Route path="/">
-              <Home/>
-            </Route>
-          </Switch>
+          <TopNavigationBackground>
+            <ContentContainer>
+              <Navigation/>
+            </ContentContainer>
+          </TopNavigationBackground>
+
+          <ContentContainer>
+            <Switch>
+              <Route path="/documents">
+                <Docs/>
+              </Route>
+              <Route path="/about">
+                <About/>
+              </Route>
+              <Route path="/">
+                <Home/>
+              </Route>
+            </Switch>
+          </ContentContainer>
         </Router>
-
-      </div>
+      </>
   );
 };
 

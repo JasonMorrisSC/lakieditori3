@@ -1,23 +1,15 @@
 import React from 'react';
 import {Link, useRouteMatch} from "react-router-dom";
-import {suomifiDesignTokens as sdt} from 'suomifi-ui-components';
+import {suomifiDesignTokens as tokens} from 'suomifi-ui-components';
 
 const Navigation: React.FC = () => {
   return (
-      <nav style={{
-        background: `${sdt.colors.whiteBase}`,
-        borderBottom: `1px solid ${sdt.colors.depthLight13}`,
-        display: 'flex',
-        justifyContent: 'center',
-        padding: `0 ${sdt.spacing.m}`,
-      }}>
+      <nav>
         <ul style={{
           display: 'flex',
           listStyle: 'none',
-          maxWidth: 1200,
           margin: 0,
           padding: 0,
-          width: 1200,
         }}>
           <li>
             <NavItem to="/" label="Etusivu"/>
@@ -41,11 +33,11 @@ const NavItem: React.FC<NavItemProps> = ({to, label}: NavItemProps) => {
 
   return (
       <Link to={to} style={{
-        color: sdt.colors.blackBase,
-        borderBottom: match ? `4px solid ${sdt.colors.highlightBase}` : `none`,
+        color: tokens.colors.blackBase,
+        borderBottom: match ? `4px solid ${tokens.colors.highlightBase}` : `none`,
         lineHeight: 2.5,
-        padding: `${sdt.spacing.s} 0`,
-        marginRight: sdt.spacing.l,
+        padding: `${tokens.spacing.s} 0`,
+        marginRight: tokens.spacing.l,
         textDecoration: 'none',
         whiteSpace: 'nowrap',
       }}>
