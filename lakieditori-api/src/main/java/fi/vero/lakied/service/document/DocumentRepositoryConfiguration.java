@@ -6,6 +6,7 @@ import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
+import fi.vero.lakied.util.xml.DocumentValidatingWriteRepository;
 import fi.vero.lakied.util.xml.XmlUtils;
 import javax.sql.DataSource;
 import javax.xml.validation.Schema;
@@ -32,7 +33,7 @@ public class DocumentRepositoryConfiguration {
       PlatformTransactionManager txm,
       DataSource ds) {
     return
-        new ValidatingDocumentWriteRepository(
+        new DocumentValidatingWriteRepository<>(
             new TransactionalJdbcWriteRepository<>(
                 new JdbcDocumentWriteRepository(ds), txm),
             documentSchema());

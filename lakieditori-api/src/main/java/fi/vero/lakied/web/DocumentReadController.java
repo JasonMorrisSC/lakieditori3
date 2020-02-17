@@ -7,7 +7,7 @@ import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.xml.GetXmlMapping;
-import fi.vero.lakied.util.xml.XmlUtils;
+import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import java.util.stream.Stream;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,17 +20,18 @@ import org.w3c.dom.Element;
 @RequestMapping("/api/documents")
 public class DocumentReadController {
 
-  private final ReadRepository<String, Audited<Document>> repository;
+  private final ReadRepository<String, Audited<Document>> documentReadRepository;
 
-  public DocumentReadController(ReadRepository<String, Audited<Document>> repository) {
-    this.repository = repository;
+  public DocumentReadController(ReadRepository<String, Audited<Document>> documentReadRepository) {
+    this.documentReadRepository = documentReadRepository;
   }
 
   @GetXmlMapping("/{id}")
   public Document get(
       @PathVariable("id") String id,
       @AuthenticationPrincipal User user) {
-    try (Stream<Audited<Document>> documents = repository.values(DocumentCriteria.byId(id), user)) {
+    try (Stream<Audited<Document>> documents = documentReadRepository
+        .values(DocumentCriteria.byId(id), user)) {
       Audited<Document> auditedDocument = documents.findAny().orElseThrow(NotFoundException::new);
 
       Document document = auditedDocument.value;
@@ -45,17 +46,13 @@ public class DocumentReadController {
   }
 
   @GetXmlMapping
-  public Document get(
-      @AuthenticationPrincipal User user) {
-    Document result = XmlUtils.newDocument();
+  public Document get(@AuthenticationPrincipal User user) {
+    XmlDocumentBuilder builder = new XmlDocumentBuilder().pushElement("documents");
 
-    Element documents = result.createElement("documents");
-    result.appendChild(documents);
+    documentReadRepository.forEachEntry(Criteria.matchAll(), user,
+        (id, document) -> builder.pushExternal(document.value.getDocumentElement()).pop());
 
-    repository.forEachEntry(Criteria.matchAll(), user, (id, document) ->
-        documents.appendChild(result.importNode(document.value.getDocumentElement(), true)));
-
-    return result;
+    return builder.build();
   }
 
 }

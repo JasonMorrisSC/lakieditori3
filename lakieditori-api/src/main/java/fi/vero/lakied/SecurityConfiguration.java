@@ -52,7 +52,7 @@ public class SecurityConfiguration {
     public void configure(AuthenticationManagerBuilder auth) throws Exception {
       UserDetailsService userDetailsService = username -> userRepository
           .value(
-              Criteria.withSql((k, v) -> k.equals(username), "username = ?", username),
+              Criteria.sql((k, v) -> k.equals(username), "username = ?", username),
               User.of("userDetailsService"))
           .orElseThrow(() -> new UsernameNotFoundException(""));
 

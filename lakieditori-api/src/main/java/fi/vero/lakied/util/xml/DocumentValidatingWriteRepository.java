@@ -1,4 +1,4 @@
-package fi.vero.lakied.service.document;
+package fi.vero.lakied.util.xml;
 
 import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
@@ -10,26 +10,24 @@ import javax.xml.validation.Schema;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-public class ValidatingDocumentWriteRepository implements
-    WriteRepository<String, Document> {
+public class DocumentValidatingWriteRepository<K> implements WriteRepository<K, Document> {
 
-  private final WriteRepository<String, Document> delegate;
+  private final WriteRepository<K, Document> delegate;
   private final Schema schema;
 
-  public ValidatingDocumentWriteRepository(
-      WriteRepository<String, Document> delegate, Schema schema) {
+  public DocumentValidatingWriteRepository(WriteRepository<K, Document> delegate, Schema schema) {
     this.delegate = delegate;
     this.schema = schema;
   }
 
   @Override
-  public void insert(String key, Document value, User user) {
+  public void insert(K key, Document value, User user) {
     validate(value);
     delegate.insert(key, value, user);
   }
 
   @Override
-  public void update(String key, Document value, User user) {
+  public void update(K key, Document value, User user) {
     validate(value);
     delegate.update(key, value, user);
   }
@@ -45,7 +43,7 @@ public class ValidatingDocumentWriteRepository implements
   }
 
   @Override
-  public void delete(String key, User user) {
+  public void delete(K key, User user) {
     delegate.delete(key, user);
   }
 

@@ -11,7 +11,7 @@ public final class DocumentCriteria {
   }
 
   public static SqlCriteria<String, Audited<Document>> byId(String id) {
-    return Criteria.withSql((k, v) -> id.equals(k), "id = ?", id);
+    return Criteria.sql((k, v) -> id.equals(k), "id = ?", id);
   }
 
 }
