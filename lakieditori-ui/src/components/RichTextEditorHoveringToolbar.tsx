@@ -49,6 +49,7 @@ const HoveringToolbar = () => {
             className={css`
           padding: 8px 7px 6px;
           position: absolute;
+          font-size: 14px;
           z-index: 1;
           top: -10000px;
           left: -10000px;
