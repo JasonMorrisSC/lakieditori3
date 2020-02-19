@@ -5,16 +5,11 @@ import {Editor, Range} from 'slate'
 import {useSlate} from 'slate-react'
 import axios from "axios";
 import Modal from 'react-modal';
-import {
-  Button,
-  Heading,
-  SearchInput,
-  suomifiDesignTokens as tokens,
-  TextInput
-} from "suomifi-ui-components";
+import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
 import {inputStyle} from "./inputStyle";
-import {horizontalInputRow} from "./CommonComponents";
+import {horizontalLabeledInputCss, TableSmall} from "./CommonComponents";
+import {queryFirstText} from "../utils/xml-utils";
 
 enum Tab {
   CONCEPT,
@@ -108,7 +103,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
 
         <div style={{flex: "0", marginTop: tokens.spacing.m, width: "100%",}}>
 
-          <div css={horizontalInputRow}>
+          <div css={horizontalLabeledInputCss}>
             <label htmlFor="linkUrlInput">
               Linkin osoite (URL)
             </label>
@@ -116,7 +111,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
                    value={linkUrl} onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
           </div>
 
-          <div css={horizontalInputRow}>
+          <div css={horizontalLabeledInputCss}>
             <label htmlFor="linkTextInput">
               Linkin teksti
             </label>
@@ -146,17 +141,17 @@ interface Props {
 const WebLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
   return (
       <div>
-        <TextInput labelText={"Linkin osoite (URL)"}
-                   value={linkUrl}
-                   style={{width: "100%"}}
-                   onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
+        <label htmlFor="linkUrlInput">Linkin osoite (URL)</label>
+        <input type="text" name="linkUrlInput" style={inputStyle}
+               value={linkUrl} onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
       </div>
   );
 };
 
 const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
   const [query, setQuery] = React.useState<string>('');
-  const [concepts, setConcepts] = React.useState<Element>(document.createElement("concepts"));
+  const [concepts, setConcepts] = React.useState<Document>(
+      new DOMParser().parseFromString("<concepts/>", "text/xml"));
 
   useEffect(() => {
     if (query) {
@@ -164,24 +159,40 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
         params: {query},
         responseType: 'document'
       }).then(res => {
-        setConcepts(res.data.documentElement);
+        setConcepts(res.data);
       });
     }
   }, [query]);
 
   return (
       <div>
-        <SearchInput labelText="Etsi käsitettä" style={{width: "100%"}}
-                     onChange={(e) => setQuery(e.currentTarget.value)}/>
-        <div style={{marginTop: tokens.spacing.s}}>
-          {Array.from(concepts.childNodes)
+        <label htmlFor="conceptSearchInput">Etsi käsitettä</label>
+        <input type="text" name="conceptSearchInput" style={inputStyle}
+               value={query} onChange={(e) => setQuery(e.currentTarget.value)}/>
+
+        <TableSmall style={{marginTop: tokens.spacing.m}}>
+          <thead>
+          <tr>
+            <th>Käsite</th>
+            <th>Sanasto</th>
+          </tr>
+          </thead>
+          <tbody>
+          {Array.from(concepts.documentElement.childNodes)
           .map(n => n as Element)
           .map((e, i) => {
-            return <div key={i} onClick={() => setLinkUrl(e.getAttribute('uri') || '')}>
-              {e.getElementsByTagName('label')[0]!.textContent}
-            </div>;
+            return <tr key={i} onClick={() => setLinkUrl(e.getAttribute('uri') || '')}>
+              <td style={{color: tokens.colors.highlightBase}}>
+                {queryFirstText(concepts, e, "label")}
+              </td>
+              <td>
+                {queryFirstText(concepts, e, "terminology/label")}
+              </td>
+            </tr>;
           })}
-        </div>
+          </tbody>
+        </TableSmall>
+
       </div>
   );
 };

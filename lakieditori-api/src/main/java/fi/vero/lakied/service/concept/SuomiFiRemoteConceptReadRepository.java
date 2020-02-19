@@ -77,10 +77,27 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
     builder.pushElement("concept")
         .attribute("uri", conceptObject.get("uri").getAsString());
 
+    JsonObject labelObject = conceptObject.getAsJsonObject("label");
+
     builder.pushElement("label")
         .attribute("xml:lang", "fi")
-        .text(conceptObject.getAsJsonObject("label").get("fi").getAsString())
+        .text(labelObject.get("fi").getAsString())
         .pop();
+
+    JsonObject terminologyObject = conceptObject.getAsJsonObject("terminology");
+
+    builder.pushElement("terminology")
+        .attribute("uri", terminologyObject.get("uri").getAsString());
+
+    JsonObject terminologyLabelObject = terminologyObject.getAsJsonObject("label");
+    builder
+        .pushElement("label")
+        .attribute("xml:lang", "fi")
+        .text(terminologyLabelObject.get("fi").getAsString())
+        .pop();
+
+    // close terminology tag
+    builder.pop();
 
     return builder.build();
   }

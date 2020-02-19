@@ -8,14 +8,13 @@ export const panelWithBorderCss = css`
   padding: ${tokens.spacing.l};
 `;
 
-export const horizontalInputRow = css`
+export const horizontalLabeledInputCss = css`
   display: flex;
   align-items: center;
   & > label {
     flex: 1;
     line-height: 1;
     margin-right: ${tokens.spacing.m};
-    text-align: right;
   }
   & > input {
     flex: 6;
@@ -49,4 +48,25 @@ export const ContentContainer = styled.div`
   padding: 0 ${tokens.spacing.m};
   width: 100%;
   max-width: 1200px;
+`;
+
+export const TableSmall = styled.table`
+  border-collapse: collapse;
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
+  table-layout: fixed;
+  width: 100%;
+  & > thead > tr > th,
+  & > thead > tr > td,
+  & > tbody > tr > th,
+  & > tbody > tr > td {
+    text-align: left; 
+    padding: ${tokens.spacing.xs};
+    border-bottom: 1px solid ${tokens.colors.depthLight26};
+  };
+  & > thead > tr > th.right,
+  & > thead > tr > td.right,
+  & > tbody > tr > th.right,
+  & > tbody > tr > td.right {
+    text-align: right; 
+  };
 `;
