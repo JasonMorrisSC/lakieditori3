@@ -34,6 +34,11 @@ const App: React.FC = () => {
             code {
               white-space: pre-wrap !important;
             }
+            hr {
+              border: 0;
+              border-bottom: 1px solid ${tokens.colors.depthLight13};
+              margin: ${tokens.spacing.m} 0;
+            }
           `}
         />
 

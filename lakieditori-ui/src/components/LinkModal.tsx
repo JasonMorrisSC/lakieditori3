@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import {jsx} from '@emotion/core'
 import React, {useEffect} from "react";
 import {Editor, Range} from 'slate'
 import {useSlate} from 'slate-react'
@@ -7,10 +9,12 @@ import {
   Button,
   Heading,
   SearchInput,
-  suomifiDesignTokens as sdt,
+  suomifiDesignTokens as tokens,
   TextInput
 } from "suomifi-ui-components";
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
+import {inputStyle} from "./inputStyle";
+import {horizontalInputRow} from "./CommonComponents";
 
 enum Tab {
   CONCEPT,
@@ -25,6 +29,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
   const [tab, setTab] = React.useState<Tab>(Tab.WEB);
 
   useEffect(() => {
+    // when modal is opened, read selected text and possible existing link URL
     if (modalIsOpen && selection) {
       setLinkText(Editor.string(editor, selection));
 
@@ -40,7 +45,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
     editor.selection = selection;
 
     if (linkUrl) {
-      // if text is changed, remove old
+      // if text is changed, remove old text before inserting a link
       if (selection && Editor.string(editor, selection) !== linkText) {
         Editor.insertText(editor, '');
       }
@@ -59,79 +64,72 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
     closeModal();
   }
 
-  let linkView;
-
-  switch (tab) {
-    case Tab.CONCEPT:
-      linkView = <ConceptLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}/>;
-      break;
-    case Tab.WEB:
-    default:
-      linkView = <WebLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}/>;
-      break;
-  }
-
   return (
-      <Modal isOpen={modalIsOpen} contentLabel="Lisää linkki"
-             style={{
-               content: {
-                 display: "grid",
-                 gridTemplateRows: `130px auto 150px`,
-                 height: "80%",
-                 marginLeft: "auto",
-                 marginRight: "auto",
-                 maxWidth: 1000,
-                 padding: `${sdt.spacing.l}`,
-               }
-             }}>
-        <div style={{alignSelf: "start"}}>
+      <Modal isOpen={modalIsOpen} contentLabel="Lisää linkki" style={{
+        content: {
+          display: "flex",
+          flexDirection: "column",
+          height: "80%",
+          marginLeft: "auto",
+          marginRight: "auto",
+          maxWidth: 1000,
+          padding: `${tokens.spacing.l}`,
+        }
+      }}>
+        <div style={{flex: "0", width: "100%"}}>
           <Heading.h1>
             Lisää linkki
           </Heading.h1>
 
-          <hr style={{
-            border: 0,
-            borderBottom: `1px solid ${sdt.colors.depthLight13}`,
-            margin: `${sdt.spacing.s} 0`
-          }}/>
-
-          <div style={{marginBottom: sdt.spacing.m}}>
+          <div style={{margin: `${tokens.spacing.s} 0`}}>
             <Button.secondary
                 onClick={() => setTab(Tab.WEB)}
-                style={{background: tab === Tab.WEB ? sdt.colors.depthLight26 : ''}}>
+                style={{background: tab === Tab.WEB ? tokens.colors.depthLight26 : ''}}>
               Web-linkki
             </Button.secondary>
             <Button.secondary
                 onClick={() => setTab(Tab.CONCEPT)}
                 style={{
-                  marginLeft: sdt.spacing.xs,
-                  background: tab === Tab.CONCEPT ? sdt.colors.depthLight26 : ''
+                  marginLeft: tokens.spacing.xs,
+                  background: tab === Tab.CONCEPT ? tokens.colors.depthLight26 : ''
                 }}>
               Käsite-linkki
             </Button.secondary>
           </div>
+
+          <hr/>
         </div>
 
-        <div style={{
-          alignSelf: "start",
-          overflowY: "scroll",
-          maxHeight: "100%",
-        }}>
-          {linkView}
+        <div style={{flex: "1", overflowY: "scroll", width: "100%",}}>
+          {tab === Tab.CONCEPT
+              ? <ConceptLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}/>
+              : <WebLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}/>}
         </div>
 
-        <div style={{alignSelf: "end", marginTop: sdt.spacing.m}}>
-          <TextInput labelText={"Linkin teksti"}
-                     value={linkText}
-                     style={{width: "100%", marginBottom: sdt.spacing.m}}
-                     onChange={(e) => setLinkText(e.currentTarget.value)}/>
+        <div style={{flex: "0", marginTop: tokens.spacing.m, width: "100%",}}>
+
+          <div css={horizontalInputRow}>
+            <label htmlFor="linkUrlInput">
+              Linkin osoite (URL)
+            </label>
+            <input name="linkUrlInput" type="text" style={{...inputStyle}}
+                   value={linkUrl} onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
+          </div>
+
+          <div css={horizontalInputRow}>
+            <label htmlFor="linkTextInput">
+              Linkin teksti
+            </label>
+            <input name="linkTextInput" type="text" style={{...inputStyle}}
+                   value={linkText} onChange={(e) => setLinkText(e.currentTarget.value)}/>
+          </div>
+
+          <hr/>
 
           <Button onClick={insertLinkAndClose}>
             Lisää
           </Button>
-          <Button.secondaryNoborder
-              onClick={close}
-              style={{marginLeft: sdt.spacing.xs}}>
+          <Button.secondaryNoborder onClick={close} style={{marginLeft: tokens.spacing.xs}}>
             Peruuta
           </Button.secondaryNoborder>
         </div>
@@ -175,9 +173,10 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
       <div>
         <SearchInput labelText="Etsi käsitettä" style={{width: "100%"}}
                      onChange={(e) => setQuery(e.currentTarget.value)}/>
-        <div style={{marginTop: sdt.spacing.s}}>
-          {Array.from(concepts.childNodes).map((n, i) => {
-            const e = n as Element;
+        <div style={{marginTop: tokens.spacing.s}}>
+          {Array.from(concepts.childNodes)
+          .map(n => n as Element)
+          .map((e, i) => {
             return <div key={i} onClick={() => setLinkUrl(e.getAttribute('uri') || '')}>
               {e.getElementsByTagName('label')[0]!.textContent}
             </div>;

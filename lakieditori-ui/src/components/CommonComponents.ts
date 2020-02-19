@@ -8,6 +8,20 @@ export const panelWithBorderCss = css`
   padding: ${tokens.spacing.l};
 `;
 
+export const horizontalInputRow = css`
+  display: flex;
+  align-items: center;
+  & > label {
+    flex: 1;
+    line-height: 1;
+    margin-right: ${tokens.spacing.m};
+    text-align: right;
+  }
+  & > input {
+    flex: 6;
+  }
+`;
+
 export const MainWithBorders = styled.main`
   ${panelWithBorderCss};
   min-height: 400px;
