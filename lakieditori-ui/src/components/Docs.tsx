@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from "react";
 import {Link, Route, Switch, useParams, useRouteMatch} from "react-router-dom";
 import axios from 'axios';
-import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {encodeIdForUrl} from "../utils/id-utils";
+import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import Layout from "./Layout";
 import DocView from "./DocView";
 import DocSource from "./DocSource";
 import DocInfo from "./DocInfo";
 import DocEdit from "./DocEdit";
+import {encodeIdForUrl} from "../utils/id-utils";
 
 const Docs: React.FC = () => {
   const match = useRouteMatch();
@@ -38,15 +38,13 @@ const ListAllDocs: React.FC = () => {
 
   return (
       <Layout title="Lakiluonnokset">
-        {Array.from(documents.childNodes).map((n, i) => {
-          const e = n as Element;
-          return <div key={i} style={{marginBottom: sdt.spacing.m}}>
+        {Array.from(documents.childNodes)
+        .map(n => n as Element)
+        .map((e, i) => {
+          return <div key={i} style={{marginBottom: tokens.spacing.m}}>
             <Link to={`${match.url}/${encodeIdForUrl(e.getAttribute('number')!)}`}
-                  style={{
-                    color: sdt.colors.blackBase,
-                    textDecoration: "none"
-                  }}>
-              <span style={{color: sdt.colors.highlightBase}}>
+                  style={{color: tokens.colors.blackBase, textDecoration: "none"}}>
+              <span style={{color: tokens.colors.highlightBase}}>
                 {e.getAttribute('number')}
               </span>
               <br/>
