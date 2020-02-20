@@ -6,7 +6,7 @@ import SanitizedHtml from "./SanitizedHtml";
 import Subparagraph from "./Subparagraph";
 
 const Paragraph: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
-  const content = queryFirstElement(document, currentElement, "content");
+  const content = queryFirstElement(currentElement, "content");
 
   return (
       <div className="subsection" style={{color: sdt.colors.blackBase}}>
@@ -15,7 +15,7 @@ const Paragraph: React.FC<XmlEditorProperties> = ({document, currentElement, cur
         </p>
 
         <ul style={{padding: 0}}>
-          {queryElements(document, currentElement, 'subparagraph').map((subparagraph, i) => {
+          {queryElements(currentElement, 'subparagraph').map((subparagraph, i) => {
             return <li key={i} style={{color: sdt.colors.highlightLight45}}>
               <Subparagraph document={document}
                             currentElement={subparagraph}

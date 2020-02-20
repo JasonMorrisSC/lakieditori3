@@ -183,10 +183,10 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
           .map((e, i) => {
             return <tr key={i} onClick={() => setLinkUrl(e.getAttribute('uri') || '')}>
               <td style={{color: tokens.colors.highlightBase}}>
-                {queryFirstText(concepts, e, "label")}
+                {queryFirstText(e, "label")}
               </td>
               <td>
-                {queryFirstText(concepts, e, "terminology/label")}
+                {queryFirstText(e, "terminology/label")}
               </td>
             </tr>;
           })}

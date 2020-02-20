@@ -14,13 +14,13 @@ import "./DocInfo.css";
 const DocInfo: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const history = useHistory();
 
-  const number = queryFirstText(document, currentElement, "@number");
-  const title = queryFirstText(document, currentElement, "title");
+  const number = queryFirstText(currentElement, "@number");
+  const title = queryFirstText(currentElement, "title");
 
-  const createdBy = queryFirstText(document, currentElement, "@createdBy");
-  const createdDate = queryFirstText(document, currentElement, "@createdDate");
-  const lastModifiedBy = queryFirstText(document, currentElement, "@lastModifiedBy");
-  const lastModifiedDate = queryFirstText(document, currentElement, "@lastModifiedDate");
+  const createdBy = queryFirstText(currentElement, "@createdBy");
+  const createdDate = queryFirstText(currentElement, "@createdDate");
+  const lastModifiedBy = queryFirstText(currentElement, "@lastModifiedBy");
+  const lastModifiedDate = queryFirstText(currentElement, "@lastModifiedDate");
 
   const topBar =
       <div style={{

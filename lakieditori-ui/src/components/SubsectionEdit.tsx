@@ -11,8 +11,8 @@ import RichTextEditor from "./RichTextEditor";
 import {inputStyle} from "./inputStyle";
 
 const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
-  const number = queryFirstText(document, currentElement, "@number");
-  const content = queryFirstElement(document, currentElement, "content");
+  const number = queryFirstText(currentElement, "@number");
+  const content = queryFirstElement(currentElement, "content");
 
   function updateContent(newValue: string) {
     updateDocument((prevDocument) => {

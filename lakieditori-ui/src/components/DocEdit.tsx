@@ -28,15 +28,15 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
   const history = useHistory();
 
   const navTree: NavItemProps[] =
-      queryElements(document, currentElement, 'chapter').map(chapter => {
-        const chapterNumber = queryFirstText(document, chapter, "@number");
-        const chapterTitle = queryFirstText(document, chapter, "title");
+      queryElements(currentElement, 'chapter').map(chapter => {
+        const chapterNumber = queryFirstText(chapter, "@number");
+        const chapterTitle = queryFirstText(chapter, "title");
         return {
           to: `#chapter-${chapterNumber}`,
           label: `${chapterNumber} luku - ${chapterTitle}`,
-          children: queryElements(document, chapter, 'section').map(section => {
-            const sectionNumber = queryFirstText(document, section, "@number");
-            const sectionTitle = queryFirstText(document, section, "title");
+          children: queryElements(chapter, 'section').map(section => {
+            const sectionNumber = queryFirstText(section, "@number");
+            const sectionTitle = queryFirstText(section, "title");
             return {
               to: `#chapter-${chapterNumber}-section-${sectionNumber}`,
               label: `${sectionNumber} § - ${sectionTitle}`
@@ -45,11 +45,11 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
         };
       });
 
-  const number = queryFirstText(document, currentElement, "@number");
-  const title = queryFirstElement(document, currentElement, "title");
+  const number = queryFirstText(currentElement, "@number");
+  const title = queryFirstElement(currentElement, "title");
   const titleText = title?.textContent || '';
-  const note = queryFirstElement(document, currentElement, "note");
-  const intro = queryFirstElement(document, currentElement, "intro");
+  const note = queryFirstElement(currentElement, "note");
+  const intro = queryFirstElement(currentElement, "intro");
 
   function updateTitle(newValue: string) {
     updateDocument((prevDocument) => {
@@ -82,7 +82,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
       chapterElement.setAttribute('number', (chapterCount + 1) + "");
       chapterElement.appendChild(newDocument.createElement("title"));
 
-      queryFirstNode(newDocument, null, currentPath)?.appendChild(chapterElement);
+      queryFirstNode(newDocument, currentPath)?.appendChild(chapterElement);
       return newDocument;
     });
   }
@@ -143,7 +143,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
                 fontWeight: sdt.values.typography.leadText.fontWeight,
               }}/>
 
-          {queryElements(document, currentElement, 'chapter').map((chapter, i) => {
+          {queryElements(currentElement, 'chapter').map((chapter, i) => {
             return <div key={i} id={`chapter-${chapter.getAttribute('number')}`}>
               <ChapterEdit document={document}
                            currentElement={chapter}

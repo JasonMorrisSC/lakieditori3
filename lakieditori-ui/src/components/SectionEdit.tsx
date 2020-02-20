@@ -15,8 +15,8 @@ import {inputStyle} from "./inputStyle";
 import RichTextEditor from "./RichTextEditor";
 
 const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
-  const number = queryFirstText(document, currentElement, "@number");
-  const title = queryFirstElement(document, currentElement, "title");
+  const number = queryFirstText(currentElement, "@number");
+  const title = queryFirstElement(currentElement, "title");
 
   function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value;
@@ -42,7 +42,7 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
       subsectionElement.setAttribute('number', (subsectionCount + 1) + "");
       subsectionElement.appendChild(newDocument.createElement("content"));
 
-      queryFirstNode(newDocument, null, currentPath)?.appendChild(subsectionElement);
+      queryFirstNode(newDocument, currentPath)?.appendChild(subsectionElement);
       return newDocument;
     });
   }
@@ -76,7 +76,7 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
         </Heading.h3>
 
         <ul style={{padding: 0, margin: 0}}>
-          {queryElements(document, currentElement, 'subsection').map((subsection, i) => {
+          {queryElements(currentElement, 'subsection').map((subsection, i) => {
             return <SubsectionEdit key={i}
                                    document={document}
                                    currentElement={subsection}

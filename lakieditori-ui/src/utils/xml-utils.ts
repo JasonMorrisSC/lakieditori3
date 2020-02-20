@@ -13,7 +13,7 @@ export function toString(xmlDocument: Document): string {
 export function updateElement(document: Document, elementPath: string,
                               updateFunction: (el: Element) => void): Document {
 
-  let element = queryFirstElement(document, null, elementPath);
+  let element = queryFirstElement(document, elementPath);
 
   if (element) {
     updateFunction(element);
@@ -26,15 +26,15 @@ export function updateElement(document: Document, elementPath: string,
 
 export function ensureElementAndUpdate(
     document: Document, parentPath: string, elementName: string, beforeSibling: string[] | null,
-    updateFunction: (el: Element) => void = (el) => null): Document {
-  let element = queryFirstElement(document, null, parentPath + "/" + elementName);
+    updateFunction: (el: Element) => void = () => null): Document {
+  let element = queryFirstElement(document, parentPath + "/" + elementName);
 
   if (element) {
     updateFunction(element);
     return document;
   }
 
-  let parentNode = queryFirstNode(document, null, parentPath);
+  let parentNode = queryFirstNode(document, parentPath);
 
   if (parentNode) {
     const newChild = document.createElement(elementName);
@@ -59,17 +59,17 @@ export function ensureElementAndUpdate(
   return document;
 }
 
-export function queryFirstNode(document: Document, context: Node | null, xPathExpression: string): Node | null {
-  return document.evaluate(
-      xPathExpression, context ? context : document, null, XPathResult.ANY_UNORDERED_NODE_TYPE, null).singleNodeValue;
+export function queryFirstNode(context: Node, xPathExpression: string): Node | null {
+  return new XPathEvaluator().evaluate(
+      xPathExpression, context, null, XPathResult.ANY_UNORDERED_NODE_TYPE, null).singleNodeValue;
 }
 
-export function queryFirstText(document: Document, context: Node | null, xPathExpression: string): string {
-  return queryFirstNode(document, context, xPathExpression)?.textContent || '';
+export function queryFirstText(context: Node, xPathExpression: string): string {
+  return queryFirstNode(context, xPathExpression)?.textContent || '';
 }
 
-export function queryFirstElement(document: Document, context: Node | null, xPathExpression: string): Element | null {
-  let node = queryFirstNode(document, context, xPathExpression);
+export function queryFirstElement(context: Node, xPathExpression: string): Element | null {
+  let node = queryFirstNode(context, xPathExpression);
 
   if (node === null) {
     return null;
@@ -82,10 +82,10 @@ export function queryFirstElement(document: Document, context: Node | null, xPat
   }
 }
 
-export function queryNodes(document: Document, context: Node | null, xPathExpression: string): Node[] {
+export function queryNodes(context: Node, xPathExpression: string): Node[] {
   let results: Node[] = [];
-  let nodeIterator = document.evaluate(
-      xPathExpression, context ? context : document, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
+  let nodeIterator = new XPathEvaluator().evaluate(
+      xPathExpression, context, null, XPathResult.UNORDERED_NODE_ITERATOR_TYPE, null);
 
   let thisNode = nodeIterator.iterateNext();
   while (thisNode) {
@@ -96,8 +96,8 @@ export function queryNodes(document: Document, context: Node | null, xPathExpres
   return results;
 }
 
-export function queryElements(document: Document, context: Node | null, xPathExpression: string): Element[] {
-  let nodes = queryNodes(document, context, xPathExpression);
+export function queryElements(context: Node, xPathExpression: string): Element[] {
+  let nodes = queryNodes(context, xPathExpression);
 
   nodes.forEach(node => {
     if (node.nodeType !== Node.ELEMENT_NODE) {
@@ -108,6 +108,7 @@ export function queryElements(document: Document, context: Node | null, xPathExp
   return nodes as Element[];
 }
 
-export function countNodes(document: Document, xPathExpression: string): number {
-  return document.evaluate('count(' + xPathExpression + ')', document, null, XPathResult.NUMBER_TYPE, null).numberValue
+export function countNodes(context: Node, xPathExpression: string): number {
+  return new XPathEvaluator().evaluate(
+      'count(' + xPathExpression + ')', context, null, XPathResult.NUMBER_TYPE, null).numberValue
 }

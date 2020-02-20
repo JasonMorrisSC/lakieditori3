@@ -18,8 +18,8 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
   const [errorMessage, setErrorMessage] = useState<string>('');
   const history = useHistory();
 
-  const number = queryFirstText(document, currentElement, "@number");
-  const title = queryFirstText(document, currentElement, "title");
+  const number = queryFirstText(currentElement, "@number");
+  const title = queryFirstText(currentElement, "title");
 
   function validateDocument(data: string): Promise<AxiosResponse> {
     return axios.post('/api/validate', data, {
