@@ -48,7 +48,7 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
       <div>
         <Button.secondaryNoborder
             icon={"close"}
-            style={{background: "none", marginRight: sdt.spacing.s}}
+            style={{background: "none"}}
             onClick={updateDocumentAndCloseEditorIfValid}>
           Sulje
         </Button.secondaryNoborder>

@@ -73,20 +73,20 @@ const DocSelected: React.FC = () => {
   }, [documentId]);
 
   useEffect(() => {
+    function saveDocument() {
+      if (!lastSavedDocument.isEqualNode(document)) {
+        axios.put('/api/documents/' + documentId, toString(document), {
+          headers: {'Content-Type': 'text/xml'}
+        }).then(() => {
+          setLastSavedDocument(document);
+        });
+      }
+    }
+
     const timer = setTimeout(() => saveDocument(), 1000);
+
     return () => clearTimeout(timer);
   }, [documentId, lastSavedDocument, document]);
-
-  function saveDocument() {
-    if (!lastSavedDocument.isEqualNode(document)) {
-      axios.put('/api/documents/' + documentId, toString(document), {
-        headers: {'Content-Type': 'text/xml'}
-      }).then(() => {
-        console.log("saved");
-        setLastSavedDocument(document);
-      });
-    }
-  }
 
   return <Switch>
     <Route path={`${match.path}/source`}>
@@ -95,14 +95,14 @@ const DocSelected: React.FC = () => {
                  currentPath={"/document"}
                  updateDocument={setDocument}/>
     </Route>
-    <Route path={`${match.path}/info`}>
-      <DocInfo currentElement={document.documentElement}/>
-    </Route>
     <Route path={`${match.path}/edit`}>
       <DocEdit document={document}
                currentElement={document.documentElement}
                currentPath={"/document"}
                updateDocument={setDocument}/>
+    </Route>
+    <Route path={`${match.path}/info`}>
+      <DocInfo currentElement={document.documentElement}/>
     </Route>
     <Route path={match.path}>
       <DocView currentElement={document.documentElement}/>
