@@ -54,12 +54,12 @@ const DocInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
             <tbody>
             <tr>
               <th>Lisätty</th>
-              <td>{new Date(createdDate).toLocaleString('fi-Fi')}</td>
+              <td>{new Date(createdDate).toLocaleString('fi-Fi', {timeZone: "UTC"})}</td>
               <td>{createdBy}</td>
             </tr>
             <tr>
               <th>Muokattu</th>
-              <td>{new Date(lastModifiedDate).toLocaleString('fi-FI')}</td>
+              <td>{new Date(lastModifiedDate).toLocaleString('fi-FI', {timeZone: "UTC"})}</td>
               <td>{lastModifiedBy}</td>
             </tr>
             </tbody>

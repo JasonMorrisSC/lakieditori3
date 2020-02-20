@@ -1,14 +1,17 @@
 import React, {useEffect, useState} from "react";
-import {Link, Route, Switch, useParams, useRouteMatch} from "react-router-dom";
+import {Link, Route, Switch, useHistory, useParams, useRouteMatch} from "react-router-dom";
 import axios from 'axios';
-import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import Modal from "react-modal";
+import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {parseXml, toString, updateElement} from "../utils/xml-utils";
+import {encodeIdForUrl} from "../utils/id-utils";
+import {Table} from "./CommonComponents";
+import {inputStyle} from "./inputStyle";
 import Layout from "./Layout";
 import DocView from "./DocView";
 import DocSource from "./DocSource";
 import DocInfo from "./DocInfo";
 import DocEdit from "./DocEdit";
-import {encodeIdForUrl} from "../utils/id-utils";
-import {parseXml, toString} from "../utils/xml-utils";
 
 const Docs: React.FC = () => {
   const match = useRouteMatch();
@@ -26,8 +29,14 @@ const Docs: React.FC = () => {
 };
 
 const ListAllDocs: React.FC = () => {
+  const history = useHistory();
+
   const [documents, setDocuments] = useState<Element>(document.createElement("documents"));
-  const match = useRouteMatch();
+
+  const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
+  const [newDocumentNumber, setNewDocumentNumber] = useState<string>(
+      `${new Date().getFullYear()}/${Math.floor(Math.random() * 1e8)}`);
+  const [newDocumentTitle, setNewDocumentTitle] = useState<string>('Uusi lakiluonnos');
 
   useEffect(() => {
     axios.get('/api/documents', {
@@ -37,22 +46,121 @@ const ListAllDocs: React.FC = () => {
     });
   }, []);
 
+  function addNewDocument() {
+    let newDocument = parseXml("<document><title/></document>");
+
+    updateElement(newDocument, "/document", (e) => e.setAttribute("number", newDocumentNumber));
+    updateElement(newDocument, "/document/title", (e) => e.textContent = newDocumentTitle);
+
+    axios.post('/api/documents', toString(newDocument), {
+      headers: {'Content-Type': 'text/xml'}
+    }).then(() => {
+      history.push(`/documents/${encodeIdForUrl(newDocumentNumber)}/edit`);
+    });
+  }
+
+  function removeDocument(number: string) {
+    axios.delete(`/api/documents/${encodeIdForUrl(number)}`).then(() => {
+      return axios.get('/api/documents', {responseType: 'document'});
+    }).then(res => {
+      setDocuments(res.data.documentElement);
+    });
+  }
+
   return (
       <Layout title="Lakiluonnokset">
-        {Array.from(documents.childNodes)
-        .map(n => n as Element)
-        .map((e, i) => {
-          return <div key={i} style={{marginBottom: tokens.spacing.m}}>
-            <Link to={`${match.url}/${encodeIdForUrl(e.getAttribute('number')!)}`}
-                  style={{color: tokens.colors.blackBase, textDecoration: "none"}}>
-              <span style={{color: tokens.colors.highlightBase}}>
-                {e.getAttribute('number')}
-              </span>
-              <br/>
-              {e.getElementsByTagName('title')[0]!.textContent}
-            </Link>
+        <Table style={{marginBottom: tokens.spacing.l}}>
+          <thead>
+          <tr>
+            <th style={{width: "15%"}}>
+              Säädösnumero
+            </th>
+            <th>
+              Nimi
+            </th>
+            <th style={{width: "20%"}}>
+              Viimeksi muokattu
+            </th>
+            <th style={{width: "12%"}}/>
+          </tr>
+          </thead>
+          <tbody>
+          {Array.from(documents.childNodes)
+          .map(n => n as Element)
+          .map((e, i) => {
+            const number = e.getAttribute('number') || '';
+            const lastModifiedDate = e.getAttribute("lastModifiedDate");
+            return <tr key={i}>
+              <td style={{color: tokens.colors.highlightBase, width: "15%"}}>
+                <Link to={`/documents/${encodeIdForUrl(number)}`}>
+                  {number}
+                </Link>
+              </td>
+              <td>
+                {e.getElementsByTagName('title')[0]!.textContent}
+              </td>
+              <td style={{width: "20%"}}>
+                {lastModifiedDate ? new Date(lastModifiedDate).toLocaleString("fi-FI", {timeZone: "UTC"}) : ''}
+              </td>
+              <td style={{width: "12%"}} className={"right"}>
+                <Button.secondaryNoborder
+                    icon={"remove"}
+                    onClick={() => removeDocument(number)}>
+                  Poista
+                </Button.secondaryNoborder>
+              </td>
+            </tr>
+          })}
+          </tbody>
+        </Table>
+
+        <Button icon={"plus"} onClick={() => setModalIsOpen(true)}>
+          Lisää uusi lakiluonnos
+        </Button>
+
+        <Modal isOpen={modalIsOpen} contentLabel="Lisää uusi lakiluonnos" style={{
+          content: {
+            display: "flex",
+            flexDirection: "column",
+            height: "60%",
+            marginLeft: "auto",
+            marginRight: "auto",
+            maxWidth: 800,
+            padding: `${tokens.spacing.l}`,
+          }
+        }}>
+          <Heading.h1>
+            Lisää uusi lakiluonnos
+          </Heading.h1>
+
+          <hr/>
+
+          <div style={{marginTop: tokens.spacing.m}}>
+            <label htmlFor="documentNumberInput">Luonnoksen säädösnumero</label>
+            <input type="text" name="documentNumberInput" style={inputStyle}
+                   value={newDocumentNumber}
+                   onChange={(e) => setNewDocumentNumber(e.currentTarget.value)}/>
           </div>
-        })}
+
+          <div style={{flex: 1, marginTop: tokens.spacing.m}}>
+            <label htmlFor="documentTitleInput">Luonnoksen nimi</label>
+            <input type="text" name="documentTitleInput" style={inputStyle}
+                   value={newDocumentTitle}
+                   onChange={(e) => setNewDocumentTitle(e.currentTarget.value)}/>
+          </div>
+
+          <div style={{flex: "0", marginTop: tokens.spacing.m}}>
+            <Button icon={"plus"} onClick={addNewDocument}>
+              Lisää
+            </Button>
+            <Button.secondaryNoborder
+                icon={"close"}
+                onClick={() => setModalIsOpen(false)}
+                style={{marginLeft: tokens.spacing.xs}}>
+              Peruuta
+            </Button.secondaryNoborder>
+          </div>
+        </Modal>
       </Layout>
   );
 };

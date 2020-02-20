@@ -70,3 +70,24 @@ export const TableSmall = styled.table`
     text-align: right; 
   };
 `;
+
+export const Table = styled.table`
+  border-collapse: collapse;
+  font-size: ${tokens.values.typography.bodyText.fontSize.value}${tokens.values.typography.bodyText.fontSize.unit};
+  table-layout: fixed;
+  width: 100%;
+  & > thead > tr > th,
+  & > thead > tr > td,
+  & > tbody > tr > th,
+  & > tbody > tr > td {
+    text-align: left; 
+    padding: ${tokens.spacing.s};
+    border-bottom: 1px solid ${tokens.colors.depthLight26};
+  };
+  & > thead > tr > th.right,
+  & > thead > tr > td.right,
+  & > tbody > tr > th.right,
+  & > tbody > tr > td.right {
+    text-align: right; 
+  };
+`;

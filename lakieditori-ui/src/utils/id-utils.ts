@@ -1,3 +1,3 @@
 export function encodeIdForUrl(s: string): string {
-  return s.replace(/[/.]/g, '_');
+  return encodeURI(s.replace(/[/.]/g, '_'));
 }
