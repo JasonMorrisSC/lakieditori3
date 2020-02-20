@@ -15,7 +15,6 @@ import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.criteria.JsonCriteria;
 import fi.vero.lakied.util.exception.InternalServerErrorException;
-import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.stream.Stream;
@@ -64,42 +63,11 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
       return Streams.stream(resultObject.getAsJsonArray("concepts").iterator())
           .map(e -> {
             JsonObject object = e.getAsJsonObject();
-            return Tuple.of(object.get("uri").getAsString(), convertToDocument(object));
+            return Tuple.of(object.get("uri").getAsString(), new ConceptJsonToXml().apply(object));
           });
     } catch (IOException e) {
       throw new InternalServerErrorException(e);
     }
-  }
-
-  private Document convertToDocument(JsonObject conceptObject) {
-    XmlDocumentBuilder builder = new XmlDocumentBuilder();
-
-    builder.pushElement("concept")
-        .attribute("uri", conceptObject.get("uri").getAsString());
-
-    JsonObject labelObject = conceptObject.getAsJsonObject("label");
-
-    builder.pushElement("label")
-        .attribute("xml:lang", "fi")
-        .text(labelObject.get("fi").getAsString())
-        .pop();
-
-    JsonObject terminologyObject = conceptObject.getAsJsonObject("terminology");
-
-    builder.pushElement("terminology")
-        .attribute("uri", terminologyObject.get("uri").getAsString());
-
-    JsonObject terminologyLabelObject = terminologyObject.getAsJsonObject("label");
-    builder
-        .pushElement("label")
-        .attribute("xml:lang", "fi")
-        .text(terminologyLabelObject.get("fi").getAsString())
-        .pop();
-
-    // close terminology tag
-    builder.pop();
-
-    return builder.build();
   }
 
 }

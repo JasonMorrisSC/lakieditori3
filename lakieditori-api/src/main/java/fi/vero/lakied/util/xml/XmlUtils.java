@@ -9,6 +9,7 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 import javax.xml.XMLConstants;
+import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,7 +22,12 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 public final class XmlUtils {
@@ -113,6 +119,24 @@ public final class XmlUtils {
 
       transformer.transform(new DOMSource(doc), new StreamResult(out));
     } catch (TransformerException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static Node queryFirstNode(Node context, String xPathExpression) {
+    return (Node) query(context, xPathExpression, XPathConstants.NODE);
+  }
+
+  public static String queryFirstText(Node context, String xPathExpression) {
+    return (String) query(context, xPathExpression, XPathConstants.STRING);
+  }
+
+  public static Object query(Node context, String xPathExpression, QName returnType) {
+    XPath xPath = XPathFactory.newInstance().newXPath();
+
+    try {
+      return xPath.compile(xPathExpression).evaluate(context, returnType);
+    } catch (XPathExpressionException e) {
       throw new RuntimeException(e);
     }
   }
