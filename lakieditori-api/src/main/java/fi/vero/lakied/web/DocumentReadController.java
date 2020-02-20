@@ -49,8 +49,14 @@ public class DocumentReadController {
   public Document get(@AuthenticationPrincipal User user) {
     XmlDocumentBuilder builder = new XmlDocumentBuilder().pushElement("documents");
 
-    documentReadRepository.forEachEntry(Criteria.matchAll(), user,
-        (id, document) -> builder.pushExternal(document.value.getDocumentElement()).pop());
+    documentReadRepository.forEachEntry(Criteria.matchAll(), user, (id, auditedDocument) -> {
+      builder.pushExternal(auditedDocument.value.getDocumentElement());
+      builder.attribute("createdBy", auditedDocument.createdBy);
+      builder.attribute("createdDate", auditedDocument.createdDate.toString());
+      builder.attribute("lastModifiedBy", auditedDocument.lastModifiedBy);
+      builder.attribute("lastModifiedDate", auditedDocument.lastModifiedDate.toString());
+      builder.pop();
+    });
 
     return builder.build();
   }
