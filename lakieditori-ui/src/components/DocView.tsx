@@ -3,15 +3,15 @@ import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
 import {encodeIdForUrl} from "../utils/id-utils";
-import {XmlEditorProperties} from "./XmlEditorProperties";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import NavItemProps from "./NavItemProps";
 import Chapter from "./Chapter";
 import Section from "./Section";
 import Toc from "./Toc";
 import SanitizedHtml from "./SanitizedHtml";
+import {XmlViewProperties} from "./XmlViewProperties";
 
-const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const DocView: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
 
   const navTree: NavItemProps[] =
@@ -93,19 +93,13 @@ const DocView: React.FC<XmlEditorProperties> = ({document, currentElement, curre
 
           {queryElements(currentElement, 'section').map((section, i) => {
             return <div key={i} id={`section-${section.getAttribute('number')}`}>
-              <Section document={document}
-                       currentElement={section}
-                       currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
-                       updateDocument={updateDocument}/>
+              <Section currentElement={section}/>
             </div>
           })}
 
           {queryElements(currentElement, 'chapter').map((chapter, i) => {
             return <div key={i} id={`chapter-${chapter.getAttribute('number')}`}>
-              <Chapter document={document}
-                       currentElement={chapter}
-                       currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
-                       updateDocument={updateDocument}/>
+              <Chapter currentElement={chapter}/>
             </div>
           })}
 

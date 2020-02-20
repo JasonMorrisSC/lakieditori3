@@ -1,11 +1,11 @@
 import React from "react";
 import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {queryElements, queryFirstElement} from "../utils/xml-utils";
-import {XmlEditorProperties} from "./XmlEditorProperties";
 import SanitizedHtml from "./SanitizedHtml";
 import Subparagraph from "./Subparagraph";
+import {XmlViewProperties} from "./XmlViewProperties";
 
-const Paragraph: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const Paragraph: React.FC<XmlViewProperties> = ({currentElement}) => {
   const content = queryFirstElement(currentElement, "content");
 
   return (
@@ -17,10 +17,7 @@ const Paragraph: React.FC<XmlEditorProperties> = ({document, currentElement, cur
         <ul style={{padding: 0}}>
           {queryElements(currentElement, 'subparagraph').map((subparagraph, i) => {
             return <li key={i} style={{color: sdt.colors.highlightLight45}}>
-              <Subparagraph document={document}
-                            currentElement={subparagraph}
-                            currentPath={currentPath + "/subparagraph[" + (i + 1) + "]"}
-                            updateDocument={updateDocument}/>
+              <Subparagraph currentElement={subparagraph}/>
             </li>
           })}
         </ul>

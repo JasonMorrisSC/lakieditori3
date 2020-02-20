@@ -96,10 +96,7 @@ const DocSelected: React.FC = () => {
                  updateDocument={setDocument}/>
     </Route>
     <Route path={`${match.path}/info`}>
-      <DocInfo document={document}
-               currentElement={document.documentElement}
-               currentPath={"/document"}
-               updateDocument={setDocument}/>
+      <DocInfo currentElement={document.documentElement}/>
     </Route>
     <Route path={`${match.path}/edit`}>
       <DocEdit document={document}
@@ -108,10 +105,7 @@ const DocSelected: React.FC = () => {
                updateDocument={setDocument}/>
     </Route>
     <Route path={match.path}>
-      <DocView document={document}
-               currentElement={document.documentElement}
-               currentPath={"/document"}
-               updateDocument={setDocument}/>
+      <DocView currentElement={document.documentElement}/>
     </Route>
   </Switch>;
 };

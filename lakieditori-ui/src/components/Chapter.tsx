@@ -1,11 +1,11 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
-import {XmlEditorProperties} from "./XmlEditorProperties";
 import Section from "./Section";
 import SanitizedHtml from "./SanitizedHtml";
+import {XmlViewProperties} from "./XmlViewProperties";
 
-const Chapter: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const Chapter: React.FC<XmlViewProperties> = ({currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
 
@@ -21,10 +21,7 @@ const Chapter: React.FC<XmlEditorProperties> = ({document, currentElement, curre
 
         {queryElements(currentElement, 'section').map((section, i) => {
           return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>
-            <Section document={document}
-                     currentElement={section}
-                     currentPath={currentPath + "/section[" + (i + 1) + "]"}
-                     updateDocument={updateDocument}/>
+            <Section currentElement={section}/>
           </div>
         })}
       </div>

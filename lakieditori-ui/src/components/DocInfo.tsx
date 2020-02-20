@@ -8,10 +8,10 @@ import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../utils/xml-utils";
 import {encodeIdForUrl} from "../utils/id-utils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
-import {XmlEditorProperties} from "./XmlEditorProperties";
 import "./DocInfo.css";
+import {XmlViewProperties} from "./XmlViewProperties";
 
-const DocInfo: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const DocInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
 
   const number = queryFirstText(currentElement, "@number");

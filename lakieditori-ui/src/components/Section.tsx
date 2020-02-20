@@ -2,10 +2,10 @@ import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
 import Subsection from "./Subsection";
-import {XmlEditorProperties} from "./XmlEditorProperties";
 import SanitizedHtml from "./SanitizedHtml";
+import {XmlViewProperties} from "./XmlViewProperties";
 
-const Section: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const Section: React.FC<XmlViewProperties> = ({currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
 
@@ -22,10 +22,7 @@ const Section: React.FC<XmlEditorProperties> = ({document, currentElement, curre
         <ul style={{padding: 0}}>
           {queryElements(currentElement, 'subsection').map((subsection, i) => {
             return <li key={i} style={{color: sdt.colors.highlightLight45}}>
-              <Subsection document={document}
-                          currentElement={subsection}
-                          currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
-                          updateDocument={updateDocument}/>
+              <Subsection currentElement={subsection}/>
             </li>
           })}
         </ul>
