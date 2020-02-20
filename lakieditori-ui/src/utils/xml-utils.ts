@@ -2,6 +2,14 @@ export function cloneDocument(document: Document): Document {
   return document.cloneNode(true) as Document;
 }
 
+export function parseXml(xmlString: string): Document {
+  return new DOMParser().parseFromString(xmlString, "text/xml");
+}
+
+export function toString(xmlDocument: Document): string {
+  return new XMLSerializer().serializeToString(xmlDocument);
+}
+
 export function updateElement(document: Document, elementPath: string,
                               updateFunction: (el: Element) => void): Document {
 
