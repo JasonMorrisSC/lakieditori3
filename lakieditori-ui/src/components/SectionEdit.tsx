@@ -75,15 +75,13 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
               }}/>
         </Heading.h3>
 
-        <ul style={{padding: 0, margin: 0}}>
-          {queryElements(currentElement, 'subsection').map((subsection, i) => {
-            return <SubsectionEdit key={i}
-                                   document={document}
-                                   currentElement={subsection}
-                                   currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
-                                   updateDocument={updateDocument}/>
-          })}
-        </ul>
+        {queryElements(currentElement, 'subsection').map((subsection, i) => {
+          return <SubsectionEdit key={i}
+                                 document={document}
+                                 currentElement={subsection}
+                                 currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
+                                 updateDocument={updateDocument}/>
+        })}
 
         <Button.secondaryNoborder
             icon="plus"

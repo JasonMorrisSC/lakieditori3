@@ -19,13 +19,9 @@ const Section: React.FC<XmlViewProperties> = ({currentElement}) => {
           <SanitizedHtml element={title}/>
         </Heading.h3>
 
-        <ul style={{padding: 0}}>
-          {queryElements(currentElement, 'subsection').map((subsection, i) => {
-            return <li key={i} style={{color: sdt.colors.highlightLight45}}>
-              <Subsection currentElement={subsection}/>
-            </li>
-          })}
-        </ul>
+        {queryElements(currentElement, 'subsection').map((subsection, i) => {
+          return <Subsection key={i} currentElement={subsection}/>
+        })}
       </div>
   );
 };
