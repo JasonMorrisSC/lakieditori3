@@ -30,7 +30,7 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
   function updateDocumentAndCloseEditorIfValid() {
     validateDocument(editorData).then(() => {
       updateDocument(new DOMParser().parseFromString(editorData, 'text/xml'));
-      history.push(`/documents/${encodeIdForUrl(number)}`);
+      history.push(`/documents/${encodeIdForUrl(number)}/edit`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
     });
@@ -43,15 +43,14 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
       alignItems: "flex-end"
     }}>
       <Text style={{maxWidth: "600px"}}>
-        {title} / XML
+        {title} / Muokkaa / XML
       </Text>
       <div>
-        <Button.secondaryNoborder
+        <Button.secondary
             icon={"close"}
-            style={{background: "none"}}
             onClick={updateDocumentAndCloseEditorIfValid}>
           Sulje
-        </Button.secondaryNoborder>
+        </Button.secondary>
       </div>
     </div>
     {errorMessage ?

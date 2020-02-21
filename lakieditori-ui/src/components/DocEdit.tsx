@@ -98,11 +98,16 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
         </Text>
         <div>
           <Button.secondaryNoborder
+              icon={"registers"}
+              style={{background: "none", marginRight: sdt.spacing.xs}}
+              onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/source`)}>
+            XML
+          </Button.secondaryNoborder>
+          <Button.secondary
               icon={"close"}
-              style={{background: "none"}}
               onClick={() => history.push(`/documents/${encodeIdForUrl(number)}`)}>
             Sulje
-          </Button.secondaryNoborder>
+          </Button.secondary>
         </div>
       </div>;
 

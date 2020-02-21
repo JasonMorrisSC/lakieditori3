@@ -45,15 +45,6 @@ const DocView: React.FC<XmlViewProperties> = ({currentElement}) => {
   }}>
     <Text style={{maxWidth: "600px"}}>{titleText}</Text>
     <div>
-      <Button.secondaryNoborder
-          icon={"registers"}
-          style={{
-            background: "none",
-            marginRight: sdt.spacing.xs
-          }}
-          onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/source`)}>
-        XML
-      </Button.secondaryNoborder>
       <Button.secondary
           icon={"info"}
           style={{marginRight: sdt.spacing.xs}}
