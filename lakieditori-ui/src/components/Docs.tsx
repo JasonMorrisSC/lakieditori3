@@ -47,7 +47,8 @@ const ListAllDocs: React.FC = () => {
   }, []);
 
   function addNewDocument() {
-    let newDocument = parseXml("<document><title/></document>");
+    let newDocument = parseXml(
+        '<document><title/><chapter number="1"><title/></chapter></document>');
 
     updateElement(newDocument, "/document", (e) => e.setAttribute("number", newDocumentNumber));
     updateElement(newDocument, "/document/title", (e) => e.textContent = newDocumentTitle);
