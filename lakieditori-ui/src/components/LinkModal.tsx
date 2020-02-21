@@ -79,14 +79,14 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
           <div style={{margin: `${tokens.spacing.s} 0`}}>
             <Button.secondary
                 onClick={() => setTab(Tab.WEB)}
-                style={{background: tab === Tab.WEB ? tokens.colors.depthLight26 : ''}}>
+                style={{background: tab !== Tab.WEB ? tokens.colors.depthLight26 : ''}}>
               Web-linkki
             </Button.secondary>
             <Button.secondary
                 onClick={() => setTab(Tab.CONCEPT)}
                 style={{
                   marginLeft: tokens.spacing.xs,
-                  background: tab === Tab.CONCEPT ? tokens.colors.depthLight26 : ''
+                  background: tab !== Tab.CONCEPT ? tokens.colors.depthLight26 : ''
                 }}>
               Käsite-linkki
             </Button.secondary>
