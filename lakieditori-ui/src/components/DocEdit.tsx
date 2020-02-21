@@ -14,7 +14,6 @@ import {
   queryFirstText,
   updateElement
 } from "../utils/xml-utils";
-import {encodeIdForUrl} from "../utils/id-utils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import ChapterEdit from "./ChapterEdit";
@@ -45,6 +44,7 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
         };
       });
 
+  const id = queryFirstText(currentElement, "@id");
   const number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
   const titleText = title?.textContent || '';
@@ -100,12 +100,12 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
           <Button.secondaryNoborder
               icon={"registers"}
               style={{background: "none", marginRight: sdt.spacing.xs}}
-              onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/source`)}>
+              onClick={() => history.push(`/documents/${id}/source`)}>
             XML
           </Button.secondaryNoborder>
           <Button.secondary
               icon={"close"}
-              onClick={() => history.push(`/documents/${encodeIdForUrl(number)}`)}>
+              onClick={() => history.push(`/documents/${id}`)}>
             Sulje
           </Button.secondary>
         </div>

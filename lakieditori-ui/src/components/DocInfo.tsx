@@ -6,7 +6,6 @@ import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../utils/xml-utils";
-import {encodeIdForUrl} from "../utils/id-utils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import "./DocInfo.css";
 import {XmlViewProperties} from "./XmlViewProperties";
@@ -14,7 +13,7 @@ import {XmlViewProperties} from "./XmlViewProperties";
 const DocInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
 
-  const number = queryFirstText(currentElement, "@number");
+  const id = queryFirstText(currentElement, "@id");
   const title = queryFirstText(currentElement, "title");
 
   const createdBy = queryFirstText(currentElement, "@createdBy");
@@ -35,7 +34,7 @@ const DocInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
           <Button.secondaryNoborder
               icon={"close"}
               style={{background: "none"}}
-              onClick={() => history.push(`/documents/${encodeIdForUrl(number)}`)}>
+              onClick={() => history.push(`/documents/${id}`)}>
             Sulje
           </Button.secondaryNoborder>
         </div>

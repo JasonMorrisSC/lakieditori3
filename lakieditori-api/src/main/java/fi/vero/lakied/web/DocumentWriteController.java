@@ -4,6 +4,7 @@ import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.PutXmlMapping;
+import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,9 @@ import org.w3c.dom.Document;
 @RequestMapping("/api/documents")
 public class DocumentWriteController {
 
-  private final WriteRepository<String, Document> documentWriteRepository;
+  private final WriteRepository<UUID, Document> documentWriteRepository;
 
-  public DocumentWriteController(
-      WriteRepository<String, Document> documentWriteRepository) {
+  public DocumentWriteController(WriteRepository<UUID, Document> documentWriteRepository) {
     this.documentWriteRepository = documentWriteRepository;
   }
 
@@ -33,9 +33,7 @@ public class DocumentWriteController {
       @RequestBody Document document,
       @AuthenticationPrincipal User user,
       HttpServletResponse response) {
-    String id = document.getDocumentElement()
-        .getAttribute("number")
-        .replaceAll("[./]", "_");
+    UUID id = UUID.randomUUID();
 
     documentWriteRepository.insert(id, document, user);
 
@@ -47,7 +45,7 @@ public class DocumentWriteController {
   @PutXmlMapping(path = "/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void put(
-      @PathVariable("id") String id,
+      @PathVariable("id") UUID id,
       @RequestBody Document document,
       @AuthenticationPrincipal User user) {
     documentWriteRepository.update(id, document, user);
@@ -56,7 +54,7 @@ public class DocumentWriteController {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(
-      @PathVariable("id") String id,
+      @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
     documentWriteRepository.delete(id, user);
   }

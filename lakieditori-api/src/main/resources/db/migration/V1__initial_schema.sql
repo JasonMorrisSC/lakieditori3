@@ -7,7 +7,7 @@ create table users
 
 create table document
 (
-    id                 varchar(255) PRIMARY KEY CHECK (id ~ '^[A-Za-z0-9_\\-]+$'),
+    id                 uuid PRIMARY KEY,
 
     created_by         varchar(255) NOT NULL REFERENCES users (username),
     created_date       timestamp    NOT NULL,

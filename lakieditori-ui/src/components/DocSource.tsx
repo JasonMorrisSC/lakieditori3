@@ -8,7 +8,6 @@ import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../utils/xml-utils";
-import {encodeIdForUrl} from "../utils/id-utils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import "./DocSource.css";
@@ -18,7 +17,7 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
   const [errorMessage, setErrorMessage] = useState<string>('');
   const history = useHistory();
 
-  const number = queryFirstText(currentElement, "@number");
+  const id = queryFirstText(currentElement, "@id");
   const title = queryFirstText(currentElement, "title");
 
   function validateDocument(data: string): Promise<AxiosResponse> {
@@ -30,7 +29,7 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
   function updateDocumentAndCloseEditorIfValid() {
     validateDocument(editorData).then(() => {
       updateDocument(new DOMParser().parseFromString(editorData, 'text/xml'));
-      history.push(`/documents/${encodeIdForUrl(number)}/edit`);
+      history.push(`/documents/${id}/edit`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
     });

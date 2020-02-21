@@ -8,6 +8,7 @@ import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
 import fi.vero.lakied.util.xml.DocumentValidatingWriteRepository;
 import fi.vero.lakied.util.xml.XmlUtils;
+import java.util.UUID;
 import javax.sql.DataSource;
 import javax.xml.validation.Schema;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,7 @@ import org.w3c.dom.Document;
 public class DocumentRepositoryConfiguration {
 
   @Bean
-  public ReadRepository<String, Audited<Document>> documentReadRepository(DataSource ds) {
+  public ReadRepository<UUID, Audited<Document>> documentReadRepository(DataSource ds) {
     return new JdbcDocumentReadRepository(ds);
   }
 
@@ -29,7 +30,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public WriteRepository<String, Document> documentWriteRepository(
+  public WriteRepository<UUID, Document> documentWriteRepository(
       PlatformTransactionManager txm,
       DataSource ds) {
     return

@@ -56,6 +56,7 @@
           <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
         </xs:choice>
       </xs:sequence>
+      <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>
       <xs:attribute name="createdBy" type="xs:string"/>
       <xs:attribute name="createdDate" type="xs:dateTime"/>

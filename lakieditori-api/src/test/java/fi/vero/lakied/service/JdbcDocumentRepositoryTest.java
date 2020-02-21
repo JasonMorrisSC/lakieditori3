@@ -12,6 +12,7 @@ import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.xml.XmlUtils;
+import java.util.UUID;
 import javax.sql.DataSource;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,8 +29,8 @@ class JdbcDocumentRepositoryTest {
   @Autowired
   private DataSource dataSource;
 
-  private ReadRepository<String, Audited<Document>> documentReadRepository;
-  private WriteRepository<String, Document> documentWriteRepository;
+  private ReadRepository<UUID, Audited<Document>> documentReadRepository;
+  private WriteRepository<UUID, Document> documentWriteRepository;
 
   private User user = User.of("ExampleUser");
 
@@ -44,7 +45,7 @@ class JdbcDocumentRepositoryTest {
 
   @Test
   void shouldInsertNewDocument() {
-    String id = "A";
+    UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
     documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
@@ -54,7 +55,7 @@ class JdbcDocumentRepositoryTest {
 
   @Test
   void shouldNotInsertDocumentTwice() {
-    String id = "A";
+    UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
     documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
@@ -66,7 +67,7 @@ class JdbcDocumentRepositoryTest {
 
   @Test
   void shouldUpdateAndGetDocument() {
-    String id = "A";
+    UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
     documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
@@ -91,7 +92,7 @@ class JdbcDocumentRepositoryTest {
 
   @Test
   void shouldDeleteDocument() {
-    String id = "A";
+    UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
     documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);

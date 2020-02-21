@@ -9,6 +9,7 @@ import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.criteria.SqlCriteria;
 import fi.vero.lakied.util.jdbc.JdbcUtils;
 import fi.vero.lakied.util.xml.XmlUtils;
+import java.util.UUID;
 import java.util.stream.Stream;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -16,15 +17,15 @@ import org.springframework.jdbc.core.RowMapper;
 import org.w3c.dom.Document;
 
 public class JdbcDocumentReadRepository implements
-    ReadRepository<String, Audited<Document>> {
+    ReadRepository<UUID, Audited<Document>> {
 
   private final JdbcTemplate jdbc;
-  private final RowMapper<Tuple2<String, Audited<Document>>> rowMapper;
+  private final RowMapper<Tuple2<UUID, Audited<Document>>> rowMapper;
 
   public JdbcDocumentReadRepository(DataSource dataSource) {
     this.jdbc = new JdbcTemplate(dataSource);
     this.rowMapper = (rs, rowNum) -> Tuple.of(
-        rs.getString("id"),
+        UUID.fromString(rs.getString("id")),
         new Audited<Document>(
             rs.getString("created_by"),
             rs.getTimestamp("created_date").toLocalDateTime(),
@@ -34,9 +35,9 @@ public class JdbcDocumentReadRepository implements
   }
 
   @Override
-  public Stream<Tuple2<String, Audited<Document>>> entries(
-      Criteria<String, Audited<Document>> criteria, User user) {
-    SqlCriteria<String, Audited<Document>> sqlCriteria = (SqlCriteria<String, Audited<Document>>) criteria;
+  public Stream<Tuple2<UUID, Audited<Document>>> entries(
+      Criteria<UUID, Audited<Document>> criteria, User user) {
+    SqlCriteria<UUID, Audited<Document>> sqlCriteria = (SqlCriteria<UUID, Audited<Document>>) criteria;
     return JdbcUtils.queryForStream(jdbc.getDataSource(),
         "select * from document where " + sqlCriteria.sql(), sqlCriteria.args(), rowMapper);
   }

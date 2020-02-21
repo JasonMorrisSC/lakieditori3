@@ -2,7 +2,6 @@ import React from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
-import {encodeIdForUrl} from "../utils/id-utils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import NavItemProps from "./NavItemProps";
 import Chapter from "./Chapter";
@@ -32,6 +31,7 @@ const DocView: React.FC<XmlViewProperties> = ({currentElement}) => {
         };
       });
 
+  const id = queryFirstText(currentElement, "@id");
   const number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
   const titleText = title?.textContent || '';
@@ -48,12 +48,12 @@ const DocView: React.FC<XmlViewProperties> = ({currentElement}) => {
       <Button.secondary
           icon={"info"}
           style={{marginRight: sdt.spacing.xs}}
-          onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/info`)}>
+          onClick={() => history.push(`/documents/${id}/info`)}>
         Lisätietoja
       </Button.secondary>
       <Button.secondary
           icon={"edit"}
-          onClick={() => history.push(`/documents/${encodeIdForUrl(number)}/edit`)}>
+          onClick={() => history.push(`/documents/${id}/edit`)}>
         Muokkaa
       </Button.secondary>
     </div>

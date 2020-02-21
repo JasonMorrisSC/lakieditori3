@@ -4,7 +4,6 @@ import axios from 'axios';
 import Modal from "react-modal";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {parseXml, toString, updateElement} from "../utils/xml-utils";
-import {encodeIdForUrl} from "../utils/id-utils";
 import {Table} from "./CommonComponents";
 import {inputStyle} from "./inputStyle";
 import Layout from "./Layout";
@@ -34,8 +33,7 @@ const ListAllDocs: React.FC = () => {
   const [documents, setDocuments] = useState<Element>(document.createElement("documents"));
 
   const [modalIsOpen, setModalIsOpen] = React.useState<boolean>(false);
-  const [newDocumentNumber, setNewDocumentNumber] = useState<string>(
-      `${new Date().getFullYear()}/${Math.floor(Math.random() * 1e8)}`);
+  const [newDocumentNumber, setNewDocumentNumber] = useState<string>(`${new Date().getFullYear()}/???`);
   const [newDocumentTitle, setNewDocumentTitle] = useState<string>('Uusi lakiluonnos');
 
   useEffect(() => {
@@ -55,13 +53,15 @@ const ListAllDocs: React.FC = () => {
 
     axios.post('/api/documents', toString(newDocument), {
       headers: {'Content-Type': 'text/xml'}
-    }).then(() => {
-      history.push(`/documents/${encodeIdForUrl(newDocumentNumber)}/edit`);
+    }).then((response) => {
+      const location = response.headers.location;
+      const createdId = location.substring(location.lastIndexOf('/') + 1);
+      history.push(`/documents/${createdId}/edit`);
     });
   }
 
-  function removeDocument(number: string) {
-    axios.delete(`/api/documents/${encodeIdForUrl(number)}`).then(() => {
+  function removeDocument(id: string) {
+    axios.delete(`/api/documents/${id}`).then(() => {
       return axios.get('/api/documents', {responseType: 'document'});
     }).then(res => {
       setDocuments(res.data.documentElement);
@@ -89,13 +89,12 @@ const ListAllDocs: React.FC = () => {
           {Array.from(documents.childNodes)
           .map(n => n as Element)
           .map((e, i) => {
+            const id = e.getAttribute('id') || '';
             const number = e.getAttribute('number') || '';
             const lastModifiedDate = e.getAttribute("lastModifiedDate");
             return <tr key={i}>
               <td style={{color: tokens.colors.highlightBase, width: "15%"}}>
-                <Link to={`/documents/${encodeIdForUrl(number)}`}>
-                  {number}
-                </Link>
+                <Link to={`/documents/${id}`}>{number}</Link>
               </td>
               <td>
                 {e.getElementsByTagName('title')[0]!.textContent}
@@ -106,7 +105,7 @@ const ListAllDocs: React.FC = () => {
               <td style={{width: "12%"}} className={"right"}>
                 <Button.secondaryNoborder
                     icon={"remove"}
-                    onClick={() => removeDocument(number)}>
+                    onClick={() => removeDocument(id)}>
                   Poista
                 </Button.secondaryNoborder>
               </td>

@@ -4,12 +4,13 @@ import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.w3c.dom.Document;
 
 public class JdbcDocumentWriteRepository implements
-    WriteRepository<String, Document> {
+    WriteRepository<UUID, Document> {
 
   private final JdbcTemplate jdbc;
 
@@ -18,7 +19,7 @@ public class JdbcDocumentWriteRepository implements
   }
 
   @Override
-  public void insert(String id, Document document, User user) {
+  public void insert(UUID id, Document document, User user) {
     LocalDateTime now = LocalDateTime.now();
     jdbc.update(
         "insert into document ("
@@ -37,7 +38,7 @@ public class JdbcDocumentWriteRepository implements
   }
 
   @Override
-  public void update(String id, Document document, User user) {
+  public void update(UUID id, Document document, User user) {
     jdbc.update(
         "update document "
             + "set document = ?,"
@@ -51,7 +52,7 @@ public class JdbcDocumentWriteRepository implements
   }
 
   @Override
-  public void delete(String id, User user) {
+  public void delete(UUID id, User user) {
     jdbc.update("delete from document where id = ?", id);
   }
 
