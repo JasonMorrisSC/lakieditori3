@@ -13,7 +13,7 @@ export function deserialize(el: Node): SlateNode[] | null {
   .map(deserialize)
   .flat();
 
-  if (nodeName === 'a') {
+  if (nodeName === 'a' && children.length > 0) {
     return [jsx('element', {type: 'link', url: (el as Element).getAttribute('href')}, children)];
   }
   if (nodeName === 'strong') {
@@ -42,7 +42,7 @@ export function serialize(node: SlateNode): string {
 
   const children = node.children.map(n => serialize(n)).join('');
 
-  if (node.type === 'link') {
+  if (node.type === 'link' && children.length > 0) {
     return `<a href="${encodeURI(node.url)}">${children}</a>`;
   }
 
