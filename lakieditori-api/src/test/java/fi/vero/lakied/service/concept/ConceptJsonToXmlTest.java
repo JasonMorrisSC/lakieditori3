@@ -51,6 +51,10 @@ class ConceptJsonToXmlTest {
         queryFirstText(conceptXml, "/concept/label[@lang='fi']"));
 
     assertEquals(
+        conceptJsonObject.getAsJsonObject("definition").get("fi").getAsString(),
+        queryFirstText(conceptXml, "/concept/definition[@lang='fi']"));
+
+    assertEquals(
         conceptJsonObject
             .getAsJsonObject("terminology")
             .getAsJsonObject("label")

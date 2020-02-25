@@ -59,9 +59,10 @@ export const TableSmall = styled.table`
   & > thead > tr > td,
   & > tbody > tr > th,
   & > tbody > tr > td {
-    text-align: left; 
-    padding: ${tokens.spacing.xs};
     border-bottom: 1px solid ${tokens.colors.depthLight26};
+    padding: ${tokens.spacing.xs};
+    text-align: left; 
+    vertical-align: top;
   };
   & > thead > tr > th.right,
   & > thead > tr > td.right,
@@ -80,9 +81,10 @@ export const Table = styled.table`
   & > thead > tr > td,
   & > tbody > tr > th,
   & > tbody > tr > td {
-    text-align: left; 
-    padding: ${tokens.spacing.s};
     border-bottom: 1px solid ${tokens.colors.depthLight26};
+    padding: ${tokens.spacing.s};
+    text-align: left; 
+    vertical-align: top;
   };
   & > thead > tr > th.right,
   & > thead > tr > td.right,

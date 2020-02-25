@@ -21,7 +21,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
 
   const [linkText, setLinkText] = React.useState<string>('');
   const [linkUrl, setLinkUrl] = React.useState<string>('');
-  const [tab, setTab] = React.useState<Tab>(Tab.WEB);
+  const [tab, setTab] = React.useState<Tab>(Tab.CONCEPT);
 
   useEffect(() => {
     // when modal is opened, read selected text and possible existing link URL
@@ -78,17 +78,20 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
 
           <div style={{margin: `${tokens.spacing.s} 0`}}>
             <Button.secondary
-                onClick={() => setTab(Tab.WEB)}
-                style={{background: tab !== Tab.WEB ? tokens.colors.depthLight26 : ''}}>
-              Web-linkki
-            </Button.secondary>
-            <Button.secondary
                 onClick={() => setTab(Tab.CONCEPT)}
                 style={{
-                  marginLeft: tokens.spacing.xs,
+                  marginRight: tokens.spacing.xs,
                   background: tab !== Tab.CONCEPT ? tokens.colors.depthLight26 : ''
                 }}>
               Käsite-linkki
+            </Button.secondary>
+            <Button.secondary
+                onClick={() => setTab(Tab.WEB)}
+                style={{
+                  marginRight: tokens.spacing.xs,
+                  background: tab !== Tab.WEB ? tokens.colors.depthLight26 : ''
+                }}>
+              Web-linkki
             </Button.secondary>
           </div>
 
@@ -174,18 +177,26 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
           <thead>
           <tr>
             <th>Käsite</th>
-            <th>Sanasto</th>
+            <th style={{width: "35%"}}>Sanasto</th>
           </tr>
           </thead>
           <tbody>
           {Array.from(concepts.documentElement.childNodes)
           .map(n => n as Element)
           .map((e, i) => {
-            return <tr key={i} onClick={() => setLinkUrl(e.getAttribute('uri') || '')}>
-              <td style={{color: tokens.colors.highlightBase}}>
-                {queryFirstText(e, "label")}
-              </td>
+            const uri = e.getAttribute('uri') || '';
+            return <tr key={i} onClick={() => setLinkUrl(uri)} style={{
+              background: uri === linkUrl
+                  ? tokens.colors.highlightLight50
+                  : tokens.colors.whiteBase
+            }}>
               <td>
+                <span style={{color: tokens.colors.highlightBase,}}>
+                  {queryFirstText(e, "label")}
+                </span>
+                {uri === linkUrl ? <span><br/>{queryFirstText(e, "definition")}</span> : ''}
+              </td>
+              <td style={{width: "35%"}}>
                 {queryFirstText(e, "terminology/label")}
               </td>
             </tr>;
