@@ -55,7 +55,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
   function close() {
     setLinkText('');
     setLinkUrl('');
-    setTab(Tab.WEB);
+    setTab(Tab.CONCEPT);
     closeModal();
   }
 
@@ -100,8 +100,8 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
 
         <div style={{flex: "1", overflowY: "scroll", width: "100%",}}>
           {tab === Tab.CONCEPT
-              ? <ConceptLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}/>
-              : <WebLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}/>}
+              ? <ConceptLink linkUrl={linkUrl} linkText={linkText} setLinkUrl={setLinkUrl}/>
+              : <WebLink linkUrl={linkUrl} linkText={linkText} setLinkUrl={setLinkUrl}/>}
         </div>
 
         <div style={{flex: "0", marginTop: tokens.spacing.m, width: "100%",}}>
@@ -151,10 +151,19 @@ const WebLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
   );
 };
 
-const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
+const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, linkText, setLinkUrl}) => {
   const [query, setQuery] = React.useState<string>('');
   const [concepts, setConcepts] = React.useState<Document>(
       new DOMParser().parseFromString("<concepts/>", "text/xml"));
+
+  useEffect(() => {
+    axios.get('/api/lemma', {
+      params: {word: linkText},
+      responseType: 'text'
+    }).then(res => {
+      setQuery(res.data);
+    });
+  }, [linkText]);
 
   useEffect(() => {
     if (query) {
@@ -176,7 +185,7 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
         <TableSmall style={{marginTop: tokens.spacing.m}}>
           <thead>
           <tr>
-            <th>Käsite</th>
+            <th>Käsite ({concepts.documentElement.childNodes.length})</th>
             <th style={{width: "35%"}}>Sanasto</th>
           </tr>
           </thead>
@@ -210,6 +219,7 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
 
 interface LinkViewProps {
   linkUrl: string,
+  linkText: string,
   setLinkUrl: (url: string) => void
 }
 
