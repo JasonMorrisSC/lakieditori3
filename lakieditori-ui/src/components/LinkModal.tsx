@@ -9,7 +9,7 @@ import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-compone
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
 import {inputStyle} from "./inputStyle";
 import {horizontalLabeledInputCss, TableSmall} from "./CommonComponents";
-import {queryFirstText} from "../utils/xml-utils";
+import {parseXml, queryFirstText} from "../utils/xml-utils";
 
 enum Tab {
   CONCEPT,
@@ -100,8 +100,10 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
 
         <div style={{flex: "1", overflowY: "scroll", width: "100%",}}>
           {tab === Tab.CONCEPT
-              ? <ConceptLink linkUrl={linkUrl} linkText={linkText} setLinkUrl={setLinkUrl}/>
-              : <WebLink linkUrl={linkUrl} linkText={linkText} setLinkUrl={setLinkUrl}/>}
+              ? <ConceptLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}
+                             linkText={linkText} setLinkText={setLinkText}/>
+              : <WebLink linkUrl={linkUrl} setLinkUrl={setLinkUrl}
+                         linkText={linkText} setLinkText={setLinkText}/>}
         </div>
 
         <div style={{flex: "0", marginTop: tokens.spacing.m, width: "100%",}}>
@@ -151,10 +153,9 @@ const WebLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
   );
 };
 
-const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, linkText, setLinkUrl}) => {
+const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, setLinkText}) => {
   const [query, setQuery] = React.useState<string>('');
-  const [concepts, setConcepts] = React.useState<Document>(
-      new DOMParser().parseFromString("<concepts/>", "text/xml"));
+  const [concepts, setConcepts] = React.useState<Document>(parseXml("<concepts/>"));
 
   useEffect(() => {
     axios.get('/api/lemma', {
@@ -194,14 +195,19 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, linkText, setLinkUrl}) =
           .map(n => n as Element)
           .map((e, i) => {
             const uri = e.getAttribute('uri') || '';
-            return <tr key={i} onClick={() => setLinkUrl(uri)} style={{
+            const label = queryFirstText(e, "label");
+
+            return <tr key={i} onClick={() => {
+              setLinkUrl(uri);
+              setLinkText(!linkText ? label : linkText);
+            }} style={{
               background: uri === linkUrl
                   ? tokens.colors.highlightLight50
                   : tokens.colors.whiteBase
             }}>
               <td>
                 <span style={{color: tokens.colors.highlightBase,}}>
-                  {queryFirstText(e, "label")}
+                  {label}
                 </span>
                 {uri === linkUrl ? <span><br/>{queryFirstText(e, "definition")}</span> : ''}
               </td>
@@ -219,8 +225,9 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, linkText, setLinkUrl}) =
 
 interface LinkViewProps {
   linkUrl: string,
+  setLinkUrl: (url: string) => void,
   linkText: string,
-  setLinkUrl: (url: string) => void
+  setLinkText: (text: string) => void,
 }
 
 export default LinkModal;
