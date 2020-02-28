@@ -9,11 +9,14 @@ import {
   withReact
 } from 'slate-react'
 import {withHistory} from "slate-history";
+import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {deserialize, serialize, toggleFormat} from "./RichTextEditorFunctions";
+import Toolbar from "./RichTextEditorToolbar";
 import HoveringToolbar from "./RichTextEditorHoveringToolbar";
 
 const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
   const [initialized, setInitialized] = useState<boolean>(false);
+  const [focused, setFocused] = useState<boolean>(false);
   const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
@@ -35,36 +38,47 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
     };
   }, [editor]);
 
-  return <Slate
-      editor={editor}
-      value={editorValue}
-      onChange={nodes => {
-        setEditorValue(nodes);
-      }}>
-    <HoveringToolbar/>
-    <Editable
-        renderElement={props => <EditorElement {...props} />}
-        renderLeaf={props => <EditorLeaf {...props} />}
-        placeholder={placeholder || ''}
-        style={style}
-        onKeyDown={event => {
-          if (event.keyCode === 13 /* enter */) {
-            event.preventDefault();
-          }
-        }}
-        onBlur={() => {
-          onChange(serialize({children: editorValue}));
-        }}
-        onDOMBeforeInput={event => {
-          switch ((event as InputEvent).inputType) {
-            case 'formatBold':
-              return toggleFormat(editor, 'bold');
-            case 'formatItalic':
-              return toggleFormat(editor, 'italic');
-          }
-        }}
-    />
-  </Slate>;
+  return (
+      <div style={{...style, padding: 0}}>
+        <Slate
+            editor={editor}
+            value={editorValue}
+            onChange={nodes => {
+              setEditorValue(nodes);
+            }}>
+          <HoveringToolbar/>
+          <Editable
+              renderElement={props => <EditorElement {...props} />}
+              renderLeaf={props => <EditorLeaf {...props} />}
+              placeholder={placeholder || ''}
+              style={{padding: tokens.spacing.s}}
+              onKeyDown={event => {
+                if (event.keyCode === 13 /* enter */) {
+                  event.preventDefault();
+                }
+              }}
+              onFocus={() => {
+                setFocused(true)
+              }}
+              onBlur={() => {
+                onChange(serialize({children: editorValue}));
+                setFocused(false);
+              }}
+              onDOMBeforeInput={event => {
+                switch ((event as InputEvent).inputType) {
+                  case 'formatBold':
+                    return toggleFormat(editor, 'bold');
+                  case 'formatItalic':
+                    return toggleFormat(editor, 'italic');
+                }
+              }}
+          />
+          <div style={{display: focused ? 'block' : 'none'}}>
+            <Toolbar/>
+          </div>
+        </Slate>
+      </div>
+  );
 };
 
 interface Props {
