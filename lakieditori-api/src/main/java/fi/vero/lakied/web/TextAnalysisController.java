@@ -29,7 +29,7 @@ public class TextAnalysisController {
   @GetMapping("/lemma")
   public String lemma(
       @RequestParam("word") String word,
-      @RequestParam(name = "tag", defaultValue = "N") Set<String> tags,
+      @RequestParam(name = "tag", defaultValue = "#{T(java.util.Collections).emptySet()}") Set<String> tags,
       @RequestParam(name = "lang", defaultValue = "fi") String lang) throws ExecutionException {
     return queryCache.get(Tuple.of(word, tags, lang),
         () -> textAnalysisService.lemma(word, tags, lang));

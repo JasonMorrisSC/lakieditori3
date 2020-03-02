@@ -69,7 +69,7 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
 
     editorWords.forEach(word => {
       axios.get('/api/lemma', {
-        params: {word: word.toLowerCase()},
+        params: {word: word.toLowerCase(), tag: 'N'},
         responseType: 'text'
       }).then(res => {
         return axios.get('/api/concepts', {
