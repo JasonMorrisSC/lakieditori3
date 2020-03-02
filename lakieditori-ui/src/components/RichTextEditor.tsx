@@ -1,5 +1,5 @@
-import React, {CSSProperties, useEffect, useMemo, useState} from "react";
-import {createEditor, Node as SlateNode} from 'slate'
+import React, {CSSProperties, useCallback, useEffect, useMemo, useState} from "react";
+import {createEditor, Node as SlateNode, NodeEntry, Range, Text} from 'slate'
 import {
   Editable,
   ReactEditor,
@@ -13,10 +13,12 @@ import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {deserialize, serialize, toggleFormat} from "./RichTextEditorFunctions";
 import Toolbar from "./RichTextEditorToolbar";
 import HoveringToolbar from "./RichTextEditorHoveringToolbar";
+import axios from "axios";
 
 const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
+  const [concepts, setConcepts] = useState<string[]>([]);
   const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
@@ -38,6 +40,50 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
     };
   }, [editor]);
 
+  const decorate = useCallback(([node, path]: NodeEntry) => {
+    const ranges: Range[] = [];
+
+    if (focused && Text.isText(node)) {
+      const {text} = node;
+
+      const words = text.split(/\s/);
+      let offset = 0;
+
+      words.forEach((word, i) => {
+        if (concepts.includes(word)) {
+          ranges.push({
+            anchor: {path, offset: offset + word.length},
+            focus: {path, offset},
+            highlight: true
+          })
+        }
+        offset = offset + word.length + 1;
+      })
+    }
+
+    return ranges;
+  }, [focused, concepts]);
+
+  function recognizeConcepts() {
+    const editorWords: string[] = editorValue.flatMap(n => SlateNode.string(n).split(/\s+/));
+
+    editorWords.forEach(word => {
+      axios.get('/api/lemma', {
+        params: {word: word.toLowerCase()},
+        responseType: 'text'
+      }).then(res => {
+        return axios.get('/api/concepts', {
+          params: {query: res.data},
+          responseType: 'document'
+        });
+      }).then(res => {
+        if (res.data.documentElement.childElementCount > 0) {
+          setConcepts(prevConcepts => prevConcepts.concat(word));
+        }
+      });
+    });
+  }
+
   return (
       <div style={{...style, padding: 0}}>
         <Slate
@@ -52,13 +98,16 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
               renderLeaf={props => <EditorLeaf {...props} />}
               placeholder={placeholder || ''}
               style={{padding: tokens.spacing.s}}
+              decorate={decorate}
               onKeyDown={event => {
                 if (event.keyCode === 13 /* enter */) {
                   event.preventDefault();
                 }
+                setTimeout(() => recognizeConcepts(), 400);
               }}
               onFocus={() => {
-                setFocused(true)
+                setFocused(true);
+                setTimeout(() => recognizeConcepts(), 400);
               }}
               onBlur={() => {
                 onChange(serialize({children: editorValue}));
@@ -112,6 +161,9 @@ const EditorLeaf = ({attributes, children, leaf}: RenderLeafProps) => {
   }
   if (leaf.italic) {
     children = <em>{children}</em>
+  }
+  if (leaf.highlight) {
+    children = <span style={{backgroundColor: tokens.colors.highlightLight50}}>{children}</span>
   }
   return <span {...attributes}>{children}</span>
 };

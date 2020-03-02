@@ -7,10 +7,17 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import fi.vero.lakied.util.xml.XmlUtils;
+import java.io.IOException;
 import java.util.function.Function;
+import javax.xml.parsers.ParserConfigurationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 public class ConceptJsonToXml implements Function<JsonObject, Document> {
+
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
   @Override
   public Document apply(JsonObject conceptObject) {
@@ -49,8 +56,14 @@ public class ConceptJsonToXml implements Function<JsonObject, Document> {
   }
 
   private String textContent(String xml) {
-    Document doc = XmlUtils.parseUnchecked("<root>" + (xml != null ? xml : "") + "</root>");
-    return doc.getDocumentElement().getTextContent();
+    try {
+      return XmlUtils.parse("<root>" + (xml != null ? xml : "") + "</root>")
+          .getDocumentElement()
+          .getTextContent();
+    } catch (SAXException | ParserConfigurationException | IOException e) {
+      log.debug("Failed to parse: {}", xml);
+      return xml;
+    }
   }
 
 }

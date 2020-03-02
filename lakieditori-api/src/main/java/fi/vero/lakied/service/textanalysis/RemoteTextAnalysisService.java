@@ -9,6 +9,7 @@ import fi.vero.lakied.util.exception.InternalServerErrorException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Base64;
+import java.util.Set;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.utils.URIBuilder;
@@ -33,7 +34,7 @@ public class RemoteTextAnalysisService implements TextAnalysisService {
   private final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 
   @Override
-  public String lemma(String word, String lang) {
+  public String lemma(String word, Set<String> tags, String lang) {
     if (remoteAnalysisServiceUrl.isEmpty()) {
       return "";
     }
@@ -45,6 +46,7 @@ public class RemoteTextAnalysisService implements TextAnalysisService {
 
       builder.setParameter("word", word);
       builder.setParameter("lang", lang);
+      tags.forEach(tag -> builder.addParameter("tag", tag));
 
       request = new HttpGet(builder.build());
     } catch (URISyntaxException e) {

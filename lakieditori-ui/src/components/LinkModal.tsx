@@ -159,7 +159,7 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
 
   useEffect(() => {
     axios.get('/api/lemma', {
-      params: {word: linkText},
+      params: {word: linkText.toLowerCase()},
       responseType: 'text'
     }).then(res => {
       setQuery(res.data);
