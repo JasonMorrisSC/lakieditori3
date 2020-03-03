@@ -68,7 +68,7 @@
   <xs:complexType name="chapterType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for chapter (in finnish "luku").
+        This type defines fields for chapter (in Finnish "luku").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -81,7 +81,7 @@
   <xs:complexType name="sectionType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for section (in finnish "pykälä").
+        This type defines fields for section (in Finnish "pykälä").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -94,7 +94,7 @@
   <xs:complexType name="subsectionType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for subsection (in finnish "momentti").
+        This type defines fields for subsection (in Finnish "momentti").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -107,7 +107,7 @@
   <xs:complexType name="paragraphType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for paragraph (in finnish "kohta").
+        This type defines fields for paragraph (in Finnish "kohta").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -120,7 +120,7 @@
   <xs:complexType name="subparagraphType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for subparagraph (in finnish "alakohta").
+        This type defines fields for subparagraph (in Finnish "alakohta").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
