@@ -67,7 +67,8 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
           height: "80%",
           marginLeft: "auto",
           marginRight: "auto",
-          maxWidth: 1000,
+          right: "-700px",
+          maxWidth: 400,
           padding: `${tokens.spacing.l}`,
         }
       }}>
@@ -187,7 +188,6 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
           <thead>
           <tr>
             <th>Käsite ({concepts.documentElement.childNodes.length})</th>
-            <th style={{width: "35%"}}>Sanasto</th>
           </tr>
           </thead>
           <tbody>
@@ -206,13 +206,18 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
                   : tokens.colors.whiteBase
             }}>
               <td>
-                <span style={{color: tokens.colors.highlightBase,}}>
-                  {label}
+                <span style={{color: tokens.colors.depthDark27}}>
+                  {queryFirstText(e, "terminology/label")}
+                </span>
+                <br/>
+                <span style={{
+                  color: tokens.colors.highlightBase,
+                  fontSize: tokens.values.typography.heading4.fontSize.value,
+                  fontWeight: tokens.values.typography.heading4.fontWeight
+                }}>
+                  {queryFirstText(e, "label")}
                 </span>
                 {uri === linkUrl ? <span><br/>{queryFirstText(e, "definition")}</span> : ''}
-              </td>
-              <td style={{width: "35%"}}>
-                {queryFirstText(e, "terminology/label")}
               </td>
             </tr>;
           })}
