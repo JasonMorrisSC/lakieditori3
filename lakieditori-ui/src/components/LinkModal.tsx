@@ -5,7 +5,7 @@ import {Editor, Range} from 'slate'
 import {useSlate} from 'slate-react'
 import axios from "axios";
 import Modal from 'react-modal';
-import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {Button, Heading, Icon, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
 import {inputStyle} from "./inputStyle";
 import {horizontalLabeledInputCss, TableSmall} from "./CommonComponents";
@@ -76,27 +76,18 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
           <Heading.h1>
             Lisää linkki
           </Heading.h1>
-
-          <div style={{margin: `${tokens.spacing.s} 0`}}>
-            <Button.secondary
-                onClick={() => setTab(Tab.CONCEPT)}
-                style={{
-                  marginRight: tokens.spacing.xs,
-                  background: tab !== Tab.CONCEPT ? tokens.colors.depthLight26 : ''
-                }}>
+          <div style={{marginTop: tokens.spacing.xs, color: tokens.colors.depthBase}}>
+            <a onClick={() => setTab(Tab.CONCEPT)} style={{
+              color: tab === Tab.CONCEPT ? tokens.colors.blackBase : ''
+            }}>
               Käsite-linkki
-            </Button.secondary>
-            <Button.secondary
-                onClick={() => setTab(Tab.WEB)}
-                style={{
-                  marginRight: tokens.spacing.xs,
-                  background: tab !== Tab.WEB ? tokens.colors.depthLight26 : ''
-                }}>
-              Web-linkki
-            </Button.secondary>
+            </a> | <a onClick={() => setTab(Tab.WEB)} style={{
+            color: tab === Tab.WEB ? tokens.colors.blackBase : ''
+          }}>
+            Web-linkki
+          </a>
           </div>
-
-          <hr/>
+          <hr style={{marginTop: tokens.spacing.xs}}/>
         </div>
 
         <div style={{flex: "1", overflowY: "scroll", width: "100%",}}>
@@ -107,7 +98,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
                          linkText={linkText} setLinkText={setLinkText}/>}
         </div>
 
-        <div style={{flex: "0", marginTop: tokens.spacing.m, width: "100%",}}>
+        <div style={{flex: "0", marginTop: tokens.spacing.s, width: "100%",}}>
 
           <div css={horizontalLabeledInputCss}>
             <label htmlFor="linkUrlInput">
@@ -125,7 +116,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
                    value={linkText} onChange={(e) => setLinkText(e.currentTarget.value)}/>
           </div>
 
-          <hr/>
+          <hr style={{margin: `${tokens.spacing.s} 0`}}/>
 
           <Button onClick={insertLinkAndClose}>
             Lisää
@@ -180,14 +171,21 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
 
   return (
       <div>
-        <label htmlFor="conceptSearchInput">Etsi käsitettä</label>
-        <input type="text" name="conceptSearchInput" style={inputStyle}
-               value={query} onChange={(e) => setQuery(e.currentTarget.value)}/>
-
-        <TableSmall style={{marginTop: tokens.spacing.m}}>
+        <div style={{position: "relative"}}>
+          <input type="text" style={inputStyle} placeholder={"Etsi käsitettä"}
+                 value={query} onChange={(e) => setQuery(e.currentTarget.value)}/>
+          <Icon icon={"search"}
+                style={{
+                  top: "50%",
+                  position: "absolute",
+                  right: tokens.spacing.m,
+                  marginTop: "-0.5em"
+                }}/>
+        </div>
+        <TableSmall style={{marginTop: tokens.spacing.s}}>
           <thead>
           <tr>
-            <th>Käsite ({concepts.documentElement.childNodes.length})</th>
+            <th>Käsitteet ({concepts.documentElement.childNodes.length})</th>
           </tr>
           </thead>
           <tbody>
@@ -223,7 +221,6 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
           })}
           </tbody>
         </TableSmall>
-
       </div>
   );
 };
