@@ -67,7 +67,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
           height: "80%",
           marginLeft: "auto",
           marginRight: "auto",
-          right: "-700px",
+          right: "-820px",
           maxWidth: 400,
           padding: `${tokens.spacing.l}`,
         }
