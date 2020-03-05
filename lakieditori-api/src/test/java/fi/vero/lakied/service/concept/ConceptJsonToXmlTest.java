@@ -51,7 +51,7 @@ class ConceptJsonToXmlTest {
         queryFirstText(conceptXml, "/concept/label[@lang='fi']"));
 
     assertEquals(
-        conceptJsonObject.getAsJsonObject("definition").get("fi").getAsString(),
+        "vähintään kolmikerroksinen kerrostalo",
         queryFirstText(conceptXml, "/concept/definition[@lang='fi']"));
 
     assertEquals(

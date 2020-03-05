@@ -13,7 +13,7 @@ jobs:
         inputs:
           gradleWrapperFile: 'lakieditori-api/gradlew'
           workingDirectory: 'lakieditori-api'
-          tasks: 'publishToMavenLocal'
+          tasks: 'build publishToMavenLocal'
           publishJUnitResults: true
           testResultsFiles: '**/TEST-*.xml'
           javaHomeOption: 'JDKVersion'
