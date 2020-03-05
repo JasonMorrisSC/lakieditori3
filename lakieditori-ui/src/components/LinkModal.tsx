@@ -215,7 +215,16 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
                 }}>
                   {queryFirstText(e, "label")}
                 </span>
-                {uri === linkUrl ? <span><br/>{queryFirstText(e, "definition")}</span> : ''}
+                {uri === linkUrl ?
+                    <div>
+                      <div>{queryFirstText(e, "definition")}</div>
+                      <div>
+                        <a href={uri} target={"_blank"}>
+                          Katso lisätiedot sanastopalvelusta...
+                        </a>
+                      </div>
+                    </div>
+                    : ''}
               </td>
             </tr>;
           })}
