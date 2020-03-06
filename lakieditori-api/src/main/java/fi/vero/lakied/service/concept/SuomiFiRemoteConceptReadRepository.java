@@ -62,6 +62,12 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
     try (CloseableHttpResponse response = httpClient.execute(request)) {
       log.debug(request.toString());
 
+      if (response.getStatusLine().getStatusCode() != 200 ||
+          response.getEntity().getContent() == null) {
+        log.warn(response.getStatusLine().toString());
+        return Stream.empty();
+      }
+
       JsonObject resultObject = JsonParser
           .parseReader(new InputStreamReader(response.getEntity().getContent(), UTF_8))
           .getAsJsonObject();
