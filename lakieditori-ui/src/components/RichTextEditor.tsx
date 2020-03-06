@@ -19,6 +19,7 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
   const [initialized, setInitialized] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
   const [concepts, setConcepts] = useState<string[]>([]);
+  const [wordCache, setWordCache] = useState<Map<string, boolean>>(new Map());
   const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
 
@@ -69,19 +70,28 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
     .flatMap(n => SlateNode.string(n).split(/[\s.,!?(){}#]/));
 
     editorWords.forEach(word => {
-      axios.get('/api/lemma', {
-        params: {word: word.toLowerCase(), tag: 'N'},
-        responseType: 'text'
-      }).then(res => {
-        return axios.get('/api/concepts', {
-          params: {query: res.data},
-          responseType: 'document'
-        });
-      }).then(res => {
-        if (res.data.documentElement.childElementCount > 0) {
+      if (wordCache.has(word)) {
+        if (wordCache.get(word)) {
           setConcepts(prevConcepts => prevConcepts.concat(word));
         }
-      });
+      } else {
+        axios.get('/api/lemma', {
+          params: {word: word.toLowerCase(), tag: 'N'},
+          responseType: 'text'
+        }).then(res => {
+          return axios.get('/api/concepts', {
+            params: {query: res.data},
+            responseType: 'document'
+          });
+        }).then(res => {
+          if (res.data.documentElement.childElementCount > 0) {
+            setConcepts(prevConcepts => prevConcepts.concat(word));
+            setWordCache(prevCache => new Map([...prevCache, [word, true]]));
+          } else {
+            setWordCache(prevCache => new Map([...prevCache, [word, false]]));
+          }
+        });
+      }
     });
   }
 
