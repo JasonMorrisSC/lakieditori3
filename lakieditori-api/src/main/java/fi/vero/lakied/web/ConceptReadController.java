@@ -27,7 +27,7 @@ public class ConceptReadController {
   private final ReadRepository<String, Document> conceptReadRepository;
   private final Cache<String, Document> queryCache = CacheBuilder.newBuilder().softValues().build();
   private final Set<String> stopWords = ImmutableSet
-      .copyOf(Arrays.asList("tai", "kui", "luku", "noja", "voi", "jolla"));
+      .copyOf(Arrays.asList("tai", "kui", "luku", "noja", "voi", "jolla", "luki"));
 
   public ConceptReadController(ReadRepository<String, Document> conceptReadRepository) {
     this.conceptReadRepository = conceptReadRepository;
