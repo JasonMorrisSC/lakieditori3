@@ -46,7 +46,7 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
     if (focused && Text.isText(node)) {
       const {text} = node;
 
-      const words = text.split(/[\s.,!?(){}#]+/);
+      const words = text.split(/[\s.,!?(){}#]/);
       let offset = 0;
 
       words.forEach((word, i) => {
@@ -66,7 +66,7 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
 
   function recognizeConcepts() {
     const editorWords: string[] = editorValue
-    .flatMap(n => SlateNode.string(n).split(/[\s.,!?(){}#]+/));
+    .flatMap(n => SlateNode.string(n).split(/[\s.,!?(){}#]/));
 
     editorWords.forEach(word => {
       axios.get('/api/lemma', {
