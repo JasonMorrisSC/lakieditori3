@@ -21,7 +21,7 @@ class DocumentSchemaTest {
     try {
       schema.newValidator().validate(new StreamSource(new StringReader(xml)));
     } catch (SAXException | IOException e) {
-      throw new AssertionError(e);
+      throw new AssertionError(xml, e);
     }
   }
 

@@ -1,10 +1,13 @@
 <?xml version="1.0"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
+  <xs:import namespace="http://www.w3.org/XML/1998/namespace"
+    schemaLocation="http://www.w3.org/2001/xml.xsd"/>
+
   <xs:group name="formattingElements">
     <xs:choice>
-      <xs:element name="em" type="formattedTextWithLinksType"/>
-      <xs:element name="strong" type="formattedTextWithLinksType"/>
+      <xs:element name="em" type="richTextType"/>
+      <xs:element name="strong" type="richTextType"/>
     </xs:choice>
   </xs:group>
 
@@ -19,23 +22,11 @@
     </xs:choice>
   </xs:complexType>
 
-  <xs:complexType name="formattedTextWithLinksType" mixed="true">
-    <xs:annotation>
-      <xs:documentation>
-        This type extends formatted text content with links ('a'). This is used as a basic type for
-        user entered text content.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:group ref="formattingElements"/>
-      <xs:element name="a" type="linkType"/>
-    </xs:choice>
-  </xs:complexType>
-
   <xs:complexType name="linkType">
     <xs:annotation>
       <xs:documentation>
-        This type defines attributes and a base type for link.
+        This type defines base type for links (i.e. formatted text element that requires an href
+        attribute).
       </xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -45,16 +36,53 @@
     </xs:complexContent>
   </xs:complexType>
 
+  <xs:complexType name="richTextType" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        This type extends formatted text content with links ('a').
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="formattingElements"/>
+      <xs:element name="a" type="linkType"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="i18nRichTextType">
+    <xs:annotation>
+      <xs:documentation>
+        This type adds xml:lang attribute to rich text type. If lang is not given, an empty default
+        value is used.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="richTextType">
+        <xs:attribute ref="xml:lang" default=""/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
   <xs:element name="document">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="title" type="formattedTextWithLinksType"/>
-        <xs:element name="note" type="formattedTextWithLinksType" minOccurs="0"/>
-        <xs:element name="intro" type="formattedTextWithLinksType" minOccurs="0"/>
+        <xs:element name="title" type="i18nRichTextType" maxOccurs="unbounded"/>
+        <xs:element name="note" type="i18nRichTextType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="intro" type="i18nRichTextType" minOccurs="0" maxOccurs="unbounded"/>
         <xs:choice>
-          <xs:element name="chapter" minOccurs="0" maxOccurs="unbounded" type="chapterType"/>
-          <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
+          <xs:element name="chapter" type="chapterType" minOccurs="0" maxOccurs="unbounded">
+            <xs:unique name="uniqueChapterTitleLang">
+              <xs:selector xpath="title"/>
+              <xs:field xpath="@xml:lang"/>
+            </xs:unique>
+          </xs:element>
+          <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded">
+            <xs:unique name="uniqueDocumentSectionTitleLang">
+              <xs:selector xpath="title"/>
+              <xs:field xpath="@xml:lang"/>
+            </xs:unique>
+          </xs:element>
         </xs:choice>
+        <xs:element name="concepts" type="conceptsType" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>
@@ -63,6 +91,18 @@
       <xs:attribute name="lastModifiedBy" type="xs:string"/>
       <xs:attribute name="lastModifiedDate" type="xs:dateTime"/>
     </xs:complexType>
+    <xs:unique name="uniqueDocumentTitleLang">
+      <xs:selector xpath="title"/>
+      <xs:field xpath="@xml:lang"/>
+    </xs:unique>
+    <xs:unique name="uniqueDocumentNoteLang">
+      <xs:selector xpath="note"/>
+      <xs:field xpath="@xml:lang"/>
+    </xs:unique>
+    <xs:unique name="uniqueDocumentIntroLang">
+      <xs:selector xpath="intro"/>
+      <xs:field xpath="@xml:lang"/>
+    </xs:unique>
   </xs:element>
 
   <xs:complexType name="chapterType">
@@ -72,8 +112,13 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="formattedTextWithLinksType"/>
-      <xs:element name="section" minOccurs="0" maxOccurs="unbounded" type="sectionType"/>
+      <xs:element name="title" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueSectionTitleLang">
+          <xs:selector xpath="title"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
   </xs:complexType>
@@ -85,8 +130,13 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="formattedTextWithLinksType"/>
-      <xs:element name="subsection" minOccurs="0" maxOccurs="unbounded" type="subsectionType"/>
+      <xs:element name="title" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="subsection" type="subsectionType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueSubsectionContentLang">
+          <xs:selector xpath="content"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
   </xs:complexType>
@@ -98,8 +148,13 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="formattedTextWithLinksType"/>
-      <xs:element name="paragraph" minOccurs="0" maxOccurs="unbounded" type="paragraphType"/>
+      <xs:element name="content" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="paragraph" type="paragraphType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueParagraphContentLang">
+          <xs:selector xpath="content"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
   </xs:complexType>
@@ -111,8 +166,13 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="formattedTextWithLinksType"/>
-      <xs:element name="subparagraph" minOccurs="0" maxOccurs="unbounded" type="subparagraphType"/>
+      <xs:element name="content" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="subparagraph" type="subparagraphType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueSubparagraphContentLang">
+          <xs:selector xpath="content"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
   </xs:complexType>
@@ -124,9 +184,60 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="formattedTextWithLinksType"/>
+      <xs:element name="content" type="i18nRichTextType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="conceptsType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines the list of concepts used in the documents.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="concept" type="conceptType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueConceptLabelLang">
+          <xs:selector xpath="label"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+        <xs:unique name="uniqueConceptDefinitionLang">
+          <xs:selector xpath="definition"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+  </xs:complexType>
+
+  <xs:complexType name="conceptType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines fields in the concept.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="label" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="definition" type="i18nRichTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="terminology" type="terminologyType">
+        <xs:unique name="uniqueTerminologyLabelLang">
+          <xs:selector xpath="label"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="uri" type="xs:anyURI" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="terminologyType">
+    <xs:annotation>
+      <xs:documentation>
+        This type defines terminology that has concepts.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:sequence>
+      <xs:element name="label" type="i18nRichTextType" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="uri" type="xs:anyURI" use="required"/>
   </xs:complexType>
 
 </xs:schema>
