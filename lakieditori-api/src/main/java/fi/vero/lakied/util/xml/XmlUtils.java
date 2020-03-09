@@ -1,5 +1,7 @@
 package fi.vero.lakied.util.xml;
 
+import static fi.vero.lakied.util.common.ResourceUtils.resourceToString;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,6 +16,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -42,7 +45,12 @@ public final class XmlUtils {
   public static Schema parseSchema(Reader xsd) {
     try {
       SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      return factory.newSchema(new StreamSource(xsd));
+      return factory.newSchema(
+          new Source[]{
+              new StreamSource(new StringReader(resourceToString("schemas/xml.xsd"))),
+              new StreamSource(xsd)
+          }
+      );
     } catch (SAXException e) {
       throw new RuntimeException(e);
     }
