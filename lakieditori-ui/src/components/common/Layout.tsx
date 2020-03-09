@@ -1,6 +1,6 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {MainWithBorders} from "./CommonComponents";
+import {MainWithBorders} from "./StyledComponents";
 
 const Layout: React.FC<Props> = (props) => {
   return (

@@ -1,5 +1,5 @@
 import React from "react";
-import Layout from "./Layout";
+import Layout from "../common/Layout";
 
 const Home: React.FC = () => {
   return <Layout title="Etusivu">

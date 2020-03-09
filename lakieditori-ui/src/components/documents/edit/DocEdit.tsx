@@ -13,14 +13,14 @@ import {
   queryFirstNode,
   queryFirstText,
   updateElement
-} from "../utils/xmlUtils";
-import LayoutWithRightBar from "./LayoutWithRightBar";
+} from "../../../utils/xmlUtils";
+import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import ChapterEdit from "./ChapterEdit";
-import Toc from "./Toc";
-import NavItemProps from "./NavItemProps";
-import {inputStyle} from "./inputStyle";
-import RichTextEditor from "./RichTextEditor";
+import Toc from "../../common/Toc";
+import NavItemProps from "../../common/NavItemProps";
+import {inputStyle} from "../../common/inputStyle";
+import RichTextEditor from "./richtext/RichTextEditor";
 import {useHistory} from "react-router-dom";
 
 const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {

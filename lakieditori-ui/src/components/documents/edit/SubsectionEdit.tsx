@@ -5,10 +5,10 @@ import {
   ensureElementAndUpdate,
   queryFirstElement,
   queryFirstText
-} from "../utils/xmlUtils";
+} from "../../../utils/xmlUtils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
-import RichTextEditor from "./RichTextEditor";
-import {inputStyle} from "./inputStyle";
+import RichTextEditor from "./richtext/RichTextEditor";
+import {inputStyle} from "../../common/inputStyle";
 
 const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const number = queryFirstText(currentElement, "@number");

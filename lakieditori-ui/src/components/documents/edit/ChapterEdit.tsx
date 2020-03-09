@@ -8,11 +8,11 @@ import {
   queryFirstNode,
   queryFirstText,
   updateElement
-} from "../utils/xmlUtils";
+} from "../../../utils/xmlUtils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import SectionEdit from "./SectionEdit";
-import {inputStyle} from "./inputStyle";
-import RichTextEditor from "./RichTextEditor";
+import {inputStyle} from "../../common/inputStyle";
+import RichTextEditor from "./richtext/RichTextEditor";
 
 const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   let number = queryFirstText(currentElement, "@number");

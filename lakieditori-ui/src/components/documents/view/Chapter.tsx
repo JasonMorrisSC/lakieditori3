@@ -1,8 +1,8 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {queryElements, queryFirstElement, queryFirstText} from "../utils/xmlUtils";
+import {queryElements, queryFirstElement, queryFirstText} from "../../../utils/xmlUtils";
 import Section from "./Section";
-import SanitizedHtml from "./SanitizedHtml";
+import SanitizedHtml from "../../common/SanitizedHtml";
 import {XmlViewProperties} from "./XmlViewProperties";
 
 const Chapter: React.FC<XmlViewProperties> = ({currentElement}) => {

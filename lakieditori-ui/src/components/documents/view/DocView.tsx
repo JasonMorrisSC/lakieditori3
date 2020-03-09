@@ -1,13 +1,13 @@
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import {queryElements, queryFirstElement, queryFirstText} from "../utils/xmlUtils";
-import LayoutWithRightBar from "./LayoutWithRightBar";
-import NavItemProps from "./NavItemProps";
+import {queryElements, queryFirstElement, queryFirstText} from "../../../utils/xmlUtils";
+import LayoutWithRightBar from "../../common/LayoutWithRightBar";
+import NavItemProps from "../../common/NavItemProps";
 import Chapter from "./Chapter";
 import Section from "./Section";
-import Toc from "./Toc";
-import SanitizedHtml from "./SanitizedHtml";
+import Toc from "../../common/Toc";
+import SanitizedHtml from "../../common/SanitizedHtml";
 import {XmlViewProperties} from "./XmlViewProperties";
 
 const DocView: React.FC<XmlViewProperties> = ({currentElement}) => {

@@ -7,9 +7,9 @@ import axios from "axios";
 import Modal from 'react-modal';
 import {Button, Heading, Icon, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
-import {inputStyle} from "./inputStyle";
-import {horizontalLabeledInputCss, TableSmall} from "./CommonComponents";
-import {parseXml, queryFirstText} from "../utils/xmlUtils";
+import {inputStyle} from "../../../common/inputStyle";
+import {horizontalLabeledInputCss, TableSmall} from "../../../common/StyledComponents";
+import {parseXml, queryFirstText} from "../../../../utils/xmlUtils";
 
 enum Tab {
   CONCEPT,

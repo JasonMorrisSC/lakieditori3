@@ -3,14 +3,14 @@ import {Link, Route, Switch, useHistory, useParams, useRouteMatch} from "react-r
 import axios from 'axios';
 import Modal from "react-modal";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {parseXml, toString, updateElement} from "../utils/xmlUtils";
-import {Table} from "./CommonComponents";
-import {inputStyle} from "./inputStyle";
-import Layout from "./Layout";
-import DocView from "./DocView";
-import DocSource from "./DocSource";
-import DocInfo from "./DocInfo";
-import DocEdit from "./DocEdit";
+import {parseXml, toString, updateElement} from "../../utils/xmlUtils";
+import {Table} from "../common/StyledComponents";
+import {inputStyle} from "../common/inputStyle";
+import Layout from "../common/Layout";
+import DocView from "./view/DocView";
+import DocInfo from "./info/DocInfo";
+import DocEdit from "./edit/DocEdit";
+import DocEditSource from "./edit/DocEditSource";
 
 const Docs: React.FC = () => {
   const match = useRouteMatch();
@@ -197,10 +197,10 @@ const DocSelected: React.FC = () => {
 
   return <Switch>
     <Route path={`${match.path}/source`}>
-      <DocSource document={document}
-                 currentElement={document.documentElement}
-                 currentPath={"/document"}
-                 updateDocument={setDocument}/>
+      <DocEditSource document={document}
+                     currentElement={document.documentElement}
+                     currentPath={"/document"}
+                     updateDocument={setDocument}/>
     </Route>
     <Route path={`${match.path}/edit`}>
       <DocEdit document={document}

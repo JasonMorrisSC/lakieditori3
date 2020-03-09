@@ -1,6 +1,6 @@
 import React from "react";
-import {queryFirstElement} from "../utils/xmlUtils";
-import SanitizedHtml from "./SanitizedHtml";
+import {queryFirstElement} from "../../../utils/xmlUtils";
+import SanitizedHtml from "../../common/SanitizedHtml";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {XmlViewProperties} from "./XmlViewProperties";
 

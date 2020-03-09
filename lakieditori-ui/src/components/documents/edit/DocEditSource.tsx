@@ -7,12 +7,12 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
-import {queryFirstText} from "../utils/xmlUtils";
-import LayoutWithRightBar from "./LayoutWithRightBar";
+import {queryFirstText} from "../../../utils/xmlUtils";
+import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
-import "./DocSource.css";
+import "./DocEditSource.css";
 
-const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const DocEditSource: React.FC<XmlEditorProperties> = ({document, currentElement, updateDocument}) => {
   const [editorData, updateEditorData] = useState<string>(new XMLSerializer().serializeToString(document));
   const [errorMessage, setErrorMessage] = useState<string>('');
   const history = useHistory();
@@ -83,4 +83,4 @@ const DocSource: React.FC<XmlEditorProperties> = ({document, currentElement, cur
   );
 };
 
-export default DocSource;
+export default DocEditSource;

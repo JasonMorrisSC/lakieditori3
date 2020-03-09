@@ -37,7 +37,7 @@ const Toc: React.FC<Props> = (props) => {
   );
 };
 
-const SideNavItem: React.FC<NavItemProps> = ({to, label}: NavItemProps) => {
+const SideNavItem: React.FC<NavItemProps> = ({to, label}) => {
   return (
       <Link to={to} style={{
         alignItems: 'center',
@@ -53,7 +53,7 @@ const SideNavItem: React.FC<NavItemProps> = ({to, label}: NavItemProps) => {
   );
 };
 
-const SideNavSecondLevelItem: React.FC<NavItemProps> = ({to, label}: NavItemProps) => {
+const SideNavSecondLevelItem: React.FC<NavItemProps> = ({to, label}) => {
   return (
       <Link to={to} style={{
         alignItems: 'center',

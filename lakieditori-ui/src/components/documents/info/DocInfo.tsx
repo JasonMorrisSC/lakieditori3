@@ -5,10 +5,10 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
-import {queryFirstText} from "../utils/xmlUtils";
-import LayoutWithRightBar from "./LayoutWithRightBar";
+import {queryFirstText} from "../../../utils/xmlUtils";
+import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import "./DocInfo.css";
-import {XmlViewProperties} from "./XmlViewProperties";
+import {XmlViewProperties} from "../view/XmlViewProperties";
 
 const DocInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();

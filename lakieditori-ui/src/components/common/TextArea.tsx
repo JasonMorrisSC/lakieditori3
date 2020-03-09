@@ -1,3 +1,4 @@
+// @ts-ignore
 import React, {CSSProperties, SyntheticEvent, useEffect, useRef} from "react";
 import {inputStyle} from "./inputStyle";
 

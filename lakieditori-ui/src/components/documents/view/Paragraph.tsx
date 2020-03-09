@@ -1,7 +1,7 @@
 import React from "react";
 import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {queryElements, queryFirstElement} from "../utils/xmlUtils";
-import SanitizedHtml from "./SanitizedHtml";
+import {queryElements, queryFirstElement} from "../../../utils/xmlUtils";
+import SanitizedHtml from "../../common/SanitizedHtml";
 import Subparagraph from "./Subparagraph";
 import {XmlViewProperties} from "./XmlViewProperties";
 

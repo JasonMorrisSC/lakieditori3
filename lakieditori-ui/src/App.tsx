@@ -2,12 +2,12 @@ import React from "react";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {ContentContainer, HeaderBackground, TopNavigationBackground} from "./components/CommonComponents";
-import About from "./components/About";
-import Home from "./components/Home";
-import Docs from "./components/Docs";
-import Header from "./components/Header";
-import Navigation from "./components/Navigation";
+import {ContentContainer, HeaderBackground, TopNavigationBackground} from "./components/common/StyledComponents";
+import About from "./components/about/About";
+import Home from "./components/home/Home";
+import Docs from "./components/documents/Docs";
+import Header from "./components/common/Header";
+import Navigation from "./components/common/Navigation";
 
 const App: React.FC = () => {
   const bodyText = tokens.values.typography.bodyText;
