@@ -58,7 +58,7 @@ public class RemoteTextAnalysisService implements TextAnalysisService {
         basicAuth(remoteAnalysisServiceUsername, remoteAnalysisServicePassword));
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {
-      return EntityUtils.toString(response.getEntity(), UTF_8);
+      return EntityUtils.toString(response.getEntity(), UTF_8).replace("#", " ");
     } catch (IOException e) {
       throw new InternalServerErrorException(e);
     }
