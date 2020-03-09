@@ -150,11 +150,13 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
   const [concepts, setConcepts] = React.useState<Document>(parseXml("<concepts/>"));
 
   useEffect(() => {
+    let text = linkText.toLowerCase().trim();
+
     axios.get('/api/lemma', {
-      params: {word: linkText.toLowerCase()},
+      params: {word: text},
       responseType: 'text'
     }).then(res => {
-      setQuery(res.data);
+      setQuery(res.data ? res.data : text);
     });
   }, [linkText]);
 
