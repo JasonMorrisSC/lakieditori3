@@ -1,6 +1,5 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
 import './fonts.css';
 import './icons.css';
 import App from './App';
