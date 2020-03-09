@@ -1,6 +1,6 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
+import {queryElements, queryFirstElement, queryFirstText} from "../utils/xmlUtils";
 import Section from "./Section";
 import SanitizedHtml from "./SanitizedHtml";
 import {XmlViewProperties} from "./XmlViewProperties";

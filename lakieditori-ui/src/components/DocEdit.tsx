@@ -13,7 +13,7 @@ import {
   queryFirstNode,
   queryFirstText,
   updateElement
-} from "../utils/xml-utils";
+} from "../utils/xmlUtils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import ChapterEdit from "./ChapterEdit";

@@ -5,7 +5,7 @@ import {
   ensureElementAndUpdate,
   queryFirstElement,
   queryFirstText
-} from "../utils/xml-utils";
+} from "../utils/xmlUtils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import RichTextEditor from "./RichTextEditor";
 import {inputStyle} from "./inputStyle";

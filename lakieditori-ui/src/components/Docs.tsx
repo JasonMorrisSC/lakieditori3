@@ -3,7 +3,7 @@ import {Link, Route, Switch, useHistory, useParams, useRouteMatch} from "react-r
 import axios from 'axios';
 import Modal from "react-modal";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {parseXml, toString, updateElement} from "../utils/xml-utils";
+import {parseXml, toString, updateElement} from "../utils/xmlUtils";
 import {Table} from "./CommonComponents";
 import {inputStyle} from "./inputStyle";
 import Layout from "./Layout";

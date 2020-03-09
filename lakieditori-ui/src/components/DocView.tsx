@@ -1,7 +1,7 @@
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import {queryElements, queryFirstElement, queryFirstText} from "../utils/xml-utils";
+import {queryElements, queryFirstElement, queryFirstText} from "../utils/xmlUtils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import NavItemProps from "./NavItemProps";
 import Chapter from "./Chapter";

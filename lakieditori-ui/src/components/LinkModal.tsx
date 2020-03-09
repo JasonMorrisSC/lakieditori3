@@ -9,7 +9,7 @@ import {Button, Heading, Icon, suomifiDesignTokens as tokens} from "suomifi-ui-c
 import {insertLink, unwrapLink} from "./RichTextEditorFunctions";
 import {inputStyle} from "./inputStyle";
 import {horizontalLabeledInputCss, TableSmall} from "./CommonComponents";
-import {parseXml, queryFirstText} from "../utils/xml-utils";
+import {parseXml, queryFirstText} from "../utils/xmlUtils";
 
 enum Tab {
   CONCEPT,

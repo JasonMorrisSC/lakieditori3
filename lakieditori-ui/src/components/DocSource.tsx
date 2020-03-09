@@ -7,7 +7,7 @@ import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
-import {queryFirstText} from "../utils/xml-utils";
+import {queryFirstText} from "../utils/xmlUtils";
 import LayoutWithRightBar from "./LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import "./DocSource.css";

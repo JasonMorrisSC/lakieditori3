@@ -8,7 +8,7 @@ import {
   queryFirstNode,
   queryFirstText,
   updateElement
-} from "../utils/xml-utils";
+} from "../utils/xmlUtils";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import SectionEdit from "./SectionEdit";
 import {inputStyle} from "./inputStyle";

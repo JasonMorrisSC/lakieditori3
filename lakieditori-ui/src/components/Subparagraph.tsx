@@ -1,5 +1,5 @@
 import React from "react";
-import {queryFirstElement} from "../utils/xml-utils";
+import {queryFirstElement} from "../utils/xmlUtils";
 import SanitizedHtml from "./SanitizedHtml";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {XmlViewProperties} from "./XmlViewProperties";
