@@ -1,38 +1,9 @@
 package fi.vero.lakied.util.criteria;
 
 import com.google.common.collect.ObjectArrays;
-import com.google.gson.JsonObject;
 import java.util.function.BiPredicate;
 
 public interface Criteria<K, V> extends BiPredicate<K, V> {
-
-  static <K, V> JsonCriteria<K, V> json(JsonObject query) {
-    return new JsonCriteria<K, V>() {
-      @Override
-      public JsonObject query() {
-        return query;
-      }
-
-      @Override
-      public boolean test(K k, V v) {
-        throw new UnsupportedOperationException();
-      }
-    };
-  }
-
-  static <K, V> JsonCriteria<K, V> json(Criteria<K, V> criteria, JsonObject query) {
-    return new JsonCriteria<K, V>() {
-      @Override
-      public JsonObject query() {
-        return query;
-      }
-
-      @Override
-      public boolean test(K k, V v) {
-        return criteria.test(k, v);
-      }
-    };
-  }
 
   /**
    * Create "inline" SQL criteria.

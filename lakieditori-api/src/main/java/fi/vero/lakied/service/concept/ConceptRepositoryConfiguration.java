@@ -1,5 +1,6 @@
 package fi.vero.lakied.service.concept;
 
+import fi.vero.lakied.util.common.CachingReadRepository;
 import fi.vero.lakied.util.common.ReadRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -10,7 +11,10 @@ public class ConceptRepositoryConfiguration {
 
   @Bean
   public ReadRepository<String, Document> conceptReadRepository() {
-    return new SuomiFiRemoteConceptReadRepository();
+    return
+        new CachingReadRepository<>(
+            new StropWordFilteringConceptReadRepository(
+                new SuomiFiRemoteConceptReadRepository()));
   }
 
 }

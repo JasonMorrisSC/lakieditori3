@@ -57,7 +57,7 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
     request.addHeader(ACCEPT, APPLICATION_JSON_VALUE);
     request.addHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE);
     request.setEntity(new StringEntity(
-        ((JsonCriteria<String, Document>) criteria).query().toString(), UTF_8));
+        ((JsonCriteria<String, Document>) criteria).criteria().toString(), UTF_8));
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {
       log.debug(request.toString());
