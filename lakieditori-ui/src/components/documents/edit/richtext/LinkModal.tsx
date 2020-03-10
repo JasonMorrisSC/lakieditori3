@@ -27,11 +27,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
     // when modal is opened, read selected text and possible existing link URL
     if (modalIsOpen && selection) {
       setLinkText(Editor.string(editor, selection));
-
-      const [link] = Array.from(Editor.nodes(editor, {
-        match: n => n.type === 'link',
-        at: selection
-      }));
+      const [link] = Editor.nodes(editor, {match: n => n.type === 'link', at: selection});
       setLinkUrl((link && link.length) > 0 ? link[0].url : '');
     }
   }, [modalIsOpen, selection, editor]);
