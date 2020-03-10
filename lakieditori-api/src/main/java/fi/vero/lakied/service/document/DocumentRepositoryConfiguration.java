@@ -26,7 +26,9 @@ public class DocumentRepositoryConfiguration {
 
   @Bean
   public Schema documentSchema() {
-    return XmlUtils.parseSchema(resourceToString("schemas/document.xsd"));
+    return XmlUtils.parseSchema(
+        resourceToString("schemas/xml.xsd"),
+        resourceToString("schemas/document.xsd"));
   }
 
   @Bean

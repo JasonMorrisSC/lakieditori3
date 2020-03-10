@@ -1,15 +1,13 @@
 package fi.vero.lakied.util.xml;
 
-import static fi.vero.lakied.util.common.ResourceUtils.resourceToString;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.Reader;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.util.stream.Stream;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
@@ -38,19 +36,18 @@ public final class XmlUtils {
   private XmlUtils() {
   }
 
-  public static Schema parseSchema(String xsd) {
-    return parseSchema(new StringReader(xsd));
+  public static Schema parseSchema(String... schemas) {
+    return parseSchema(
+        Stream.of(schemas)
+            .map(StringReader::new)
+            .map(StreamSource::new)
+            .toArray(Source[]::new));
   }
 
-  public static Schema parseSchema(Reader xsd) {
+  public static Schema parseSchema(Source... sources) {
     try {
       SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-      return factory.newSchema(
-          new Source[]{
-              new StreamSource(new StringReader(resourceToString("schemas/xml.xsd"))),
-              new StreamSource(xsd)
-          }
-      );
+      return factory.newSchema(sources);
     } catch (SAXException e) {
       throw new RuntimeException(e);
     }

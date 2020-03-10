@@ -15,7 +15,9 @@ import org.xml.sax.SAXException;
 
 class DocumentSchemaTest {
 
-  private Schema schema = XmlUtils.parseSchema(resourceToString("schemas/document.xsd"));
+  private Schema schema = XmlUtils.parseSchema(
+      resourceToString("schemas/xml.xsd"),
+      resourceToString("schemas/document.xsd"));
 
   private void validate(String xml) {
     try {
