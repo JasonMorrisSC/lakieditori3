@@ -7,10 +7,10 @@ import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
-import "./DocInfo.css";
+import "./DocumentInfo.css";
 import {XmlViewProperties} from "../view/XmlViewProperties";
 
-const DocInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
+const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
 
   const id = queryFirstText(currentElement, "@id");
@@ -68,4 +68,4 @@ const DocInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   );
 };
 
-export default DocInfo;
+export default DocumentInfo;

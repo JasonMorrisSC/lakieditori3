@@ -5,9 +5,10 @@ import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {ContentContainer, HeaderBackground, TopNavigationBackground} from "./components/common/StyledComponents";
 import About from "./components/about/About";
 import Home from "./components/home/Home";
-import Docs from "./components/documents/Docs";
 import Header from "./components/common/Header";
 import Navigation from "./components/common/Navigation";
+import DocumentList from "./components/documents/DocumentList";
+import DocumentContainer from "./components/documents/DocumentContainer";
 
 const App: React.FC = () => {
   const bodyText = tokens.values.typography.bodyText;
@@ -57,8 +58,11 @@ const App: React.FC = () => {
 
           <ContentContainer>
             <Switch>
+              <Route path="/documents/:documentId">
+                <DocumentContainer/>
+              </Route>
               <Route path="/documents">
-                <Docs/>
+                <DocumentList/>
               </Route>
               <Route path="/about">
                 <About/>

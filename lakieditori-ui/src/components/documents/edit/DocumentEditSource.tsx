@@ -10,9 +10,9 @@ import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
-import "./DocEditSource.css";
+import "./DocumentEditSource.css";
 
-const DocEditSource: React.FC<XmlEditorProperties> = ({document, currentElement, updateDocument}) => {
+const DocumentEditSource: React.FC<XmlEditorProperties> = ({document, currentElement, updateDocument}) => {
   const [editorData, updateEditorData] = useState<string>(new XMLSerializer().serializeToString(document));
   const [errorMessage, setErrorMessage] = useState<string>('');
   const history = useHistory();
@@ -83,4 +83,4 @@ const DocEditSource: React.FC<XmlEditorProperties> = ({document, currentElement,
   );
 };
 
-export default DocEditSource;
+export default DocumentEditSource;

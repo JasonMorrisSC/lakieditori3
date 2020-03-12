@@ -1,33 +1,14 @@
 import React, {useEffect, useState} from "react";
-import {Link, Route, Switch, useHistory, useParams, useRouteMatch} from "react-router-dom";
-import axios from 'axios';
+import {Link, useHistory} from "react-router-dom";
+import axios from "axios";
 import Modal from "react-modal";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {parseXml, toString, updateElement} from "../../utils/xmlUtils";
 import {Table} from "../common/StyledComponents";
 import {inputStyle} from "../common/inputStyle";
 import Layout from "../common/Layout";
-import DocView from "./view/DocView";
-import DocInfo from "./info/DocInfo";
-import DocEdit from "./edit/DocEdit";
-import DocEditSource from "./edit/DocEditSource";
 
-const Docs: React.FC = () => {
-  const match = useRouteMatch();
-
-  return (
-      <Switch>
-        <Route path={`${match.path}/:documentId`}>
-          <DocSelected/>
-        </Route>
-        <Route path={match.path}>
-          <ListAllDocs/>
-        </Route>
-      </Switch>
-  );
-};
-
-const ListAllDocs: React.FC = () => {
+const DocumentList: React.FC = () => {
   const history = useHistory();
 
   const [documents, setDocuments] = useState<Element>(document.createElement("documents"));
@@ -164,57 +145,4 @@ const ListAllDocs: React.FC = () => {
   );
 };
 
-const DocSelected: React.FC = () => {
-  const match = useRouteMatch();
-  const {documentId} = useParams();
-  const [document, setDocument] = useState<Document>(parseXml("<document/>"));
-  const [lastSavedDocument, setLastSavedDocument] = useState<Document>(parseXml("<document/>"));
-
-  useEffect(() => {
-    axios.get('/api/documents/' + documentId, {
-      responseType: 'document'
-    }).then(res => {
-      setDocument(res.data);
-      setLastSavedDocument(res.data);
-    });
-  }, [documentId]);
-
-  useEffect(() => {
-    function saveDocument() {
-      if (!lastSavedDocument.isEqualNode(document)) {
-        axios.put('/api/documents/' + documentId, toString(document), {
-          headers: {'Content-Type': 'text/xml'}
-        }).then(() => {
-          setLastSavedDocument(document);
-        });
-      }
-    }
-
-    const timer = setTimeout(() => saveDocument(), 1000);
-
-    return () => clearTimeout(timer);
-  }, [documentId, lastSavedDocument, document]);
-
-  return <Switch>
-    <Route path={`${match.path}/source`}>
-      <DocEditSource document={document}
-                     currentElement={document.documentElement}
-                     currentPath={"/document"}
-                     updateDocument={setDocument}/>
-    </Route>
-    <Route path={`${match.path}/edit`}>
-      <DocEdit document={document}
-               currentElement={document.documentElement}
-               currentPath={"/document"}
-               updateDocument={setDocument}/>
-    </Route>
-    <Route path={`${match.path}/info`}>
-      <DocInfo currentElement={document.documentElement}/>
-    </Route>
-    <Route path={match.path}>
-      <DocView currentElement={document.documentElement}/>
-    </Route>
-  </Switch>;
-};
-
-export default Docs;
+export default DocumentList;

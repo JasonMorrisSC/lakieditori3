@@ -10,7 +10,7 @@ import Toc from "../../common/Toc";
 import SanitizedHtml from "../../common/SanitizedHtml";
 import {XmlViewProperties} from "./XmlViewProperties";
 
-const DocView: React.FC<XmlViewProperties> = ({currentElement}) => {
+const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
 
   const navTree: NavItemProps[] =
@@ -100,4 +100,4 @@ const DocView: React.FC<XmlViewProperties> = ({currentElement}) => {
   );
 };
 
-export default DocView;
+export default Document;

@@ -23,7 +23,7 @@ import {inputStyle} from "../../common/inputStyle";
 import RichTextEditor from "./richtext/RichTextEditor";
 import {useHistory} from "react-router-dom";
 
-const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const history = useHistory();
 
   const navTree: NavItemProps[] =
@@ -165,4 +165,4 @@ const DocEdit: React.FC<XmlEditorProperties> = ({document, currentElement, curre
   );
 };
 
-export default DocEdit;
+export default DocumentEdit;
