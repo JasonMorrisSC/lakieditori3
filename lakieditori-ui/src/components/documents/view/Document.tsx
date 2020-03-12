@@ -3,33 +3,15 @@ import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
-import NavItemProps from "../../common/NavItemProps";
+import {XmlViewProperties} from "./XmlViewProperties";
+import SanitizedHtml from "../../common/SanitizedHtml";
 import Chapter from "./Chapter";
 import Section from "./Section";
-import Toc from "../../common/Toc";
-import SanitizedHtml from "../../common/SanitizedHtml";
-import {XmlViewProperties} from "./XmlViewProperties";
+import TableOfContents from "../../common/TableOfContents";
+import {buildNavigationTree} from "../../common/TableOfContentsUtils";
 
 const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
-
-  const navTree: NavItemProps[] =
-      queryElements(currentElement, 'chapter').map(chapter => {
-        const chapterNumber = queryFirstText(chapter, "@number");
-        const chapterTitle = queryFirstText(chapter, "title");
-        return {
-          to: `#chapter-${chapterNumber}`,
-          label: `${chapterNumber} luku - ${chapterTitle}`,
-          children: queryElements(chapter, 'section').map(section => {
-            const sectionNumber = queryFirstText(section, "@number");
-            const sectionTitle = queryFirstText(section, "title");
-            return {
-              to: `#chapter-${chapterNumber}-section-${sectionNumber}`,
-              label: `${sectionNumber} § - ${sectionTitle}`
-            };
-          })
-        };
-      });
 
   const id = queryFirstText(currentElement, "@id");
   const number = queryFirstText(currentElement, "@number");
@@ -60,7 +42,7 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   </div>;
 
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`,}}>
-    <Toc tocTitle={titleText} tocItems={navTree}/>
+    <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
   </div>;
 
   return (

@@ -1,14 +1,13 @@
 import React from "react";
 import {HashLink as Link} from 'react-router-hash-link';
-import {suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import NavItemProps from "./NavItemProps";
+import {suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
+import NavigationTreeNode from "./NavigationTreeNode";
 
-const Toc: React.FC<Props> = (props) => {
+const TableOfContents: React.FC<Props> = ({title, items}) => {
   return (
       <nav>
-        <div
-            style={{padding: `${sdt.spacing.m} ${sdt.spacing.xs} ${sdt.spacing.s} ${sdt.spacing.xs}`}}>
-          <Text.bold>{props.tocTitle}</Text.bold>
+        <div style={{padding: `${tokens.spacing.m} ${tokens.spacing.xs} ${tokens.spacing.s}`}}>
+          <Text.bold>{title}</Text.bold>
         </div>
 
         <ul style={{
@@ -16,7 +15,7 @@ const Toc: React.FC<Props> = (props) => {
           padding: 0,
           listStyle: 'none',
         }}>
-          {props.tocItems.map((v, i) => {
+          {items.map((v, i) => {
             return <li key={i}>
               <SideNavItem to={v.to} label={v.label}/>
               <ul style={{
@@ -37,14 +36,14 @@ const Toc: React.FC<Props> = (props) => {
   );
 };
 
-const SideNavItem: React.FC<NavItemProps> = ({to, label}) => {
+const SideNavItem: React.FC<NavigationTreeNode> = ({to, label}) => {
   return (
       <Link to={to} style={{
         alignItems: 'center',
-        color: sdt.colors.highlightBase,
+        color: tokens.colors.highlightBase,
         display: 'flex',
-        fontSize: sdt.values.typography.bodyTextSmall.fontSize.value,
-        padding: sdt.spacing.xs,
+        fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+        padding: tokens.spacing.xs,
         textDecoration: 'none',
         textTransform: 'uppercase'
       }}>
@@ -53,14 +52,14 @@ const SideNavItem: React.FC<NavItemProps> = ({to, label}) => {
   );
 };
 
-const SideNavSecondLevelItem: React.FC<NavItemProps> = ({to, label}) => {
+const SideNavSecondLevelItem: React.FC<NavigationTreeNode> = ({to, label}) => {
   return (
       <Link to={to} style={{
         alignItems: 'center',
-        color: sdt.colors.highlightBase,
+        color: tokens.colors.highlightBase,
         display: 'flex',
-        fontSize: sdt.values.typography.bodyTextSmall.fontSize.value,
-        padding: `${sdt.spacing.xs} ${sdt.spacing.xs} ${sdt.spacing.xs} ${sdt.spacing.l}`,
+        fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+        padding: `${tokens.spacing.xs} ${tokens.spacing.xs} ${tokens.spacing.xs} ${tokens.spacing.l}`,
         textDecoration: 'none'
       }}>
         {label}
@@ -69,8 +68,8 @@ const SideNavSecondLevelItem: React.FC<NavItemProps> = ({to, label}) => {
 };
 
 interface Props {
-  tocTitle: string,
-  tocItems: NavItemProps[]
+  title: string,
+  items: NavigationTreeNode[]
 }
 
-export default Toc;
+export default TableOfContents;

@@ -12,20 +12,20 @@ const Navigation: React.FC = () => {
           padding: 0,
         }}>
           <li>
-            <NavItem to="/" label="Etusivu"/>
+            <NavigationLink to="/" label="Etusivu"/>
           </li>
           <li>
-            <NavItem to="/documents" label="Lakiluonnokset"/>
+            <NavigationLink to="/documents" label="Lakiluonnokset"/>
           </li>
           <li>
-            <NavItem to="/about" label="Ohjeet ja tuki"/>
+            <NavigationLink to="/about" label="Ohjeet ja tuki"/>
           </li>
         </ul>
       </nav>
   );
 };
 
-const NavItem: React.FC<NavItemProps> = ({to, label}: NavItemProps) => {
+const NavigationLink: React.FC<Props> = ({to, label}) => {
   let match = useRouteMatch({
     path: to,
     exact: to === '/'
@@ -46,7 +46,7 @@ const NavItem: React.FC<NavItemProps> = ({to, label}: NavItemProps) => {
   );
 };
 
-interface NavItemProps {
+interface Props {
   to: string;
   label: string;
 }

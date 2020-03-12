@@ -17,32 +17,14 @@ import {
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import {XmlEditorProperties} from "./XmlEditorProperties";
 import ChapterEdit from "./ChapterEdit";
-import Toc from "../../common/Toc";
-import NavItemProps from "../../common/NavItemProps";
+import TableOfContents from "../../common/TableOfContents";
 import {inputStyle} from "../../common/inputStyle";
 import RichTextEditor from "./richtext/RichTextEditor";
 import {useHistory} from "react-router-dom";
+import {buildNavigationTree} from "../../common/TableOfContentsUtils";
 
 const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const history = useHistory();
-
-  const navTree: NavItemProps[] =
-      queryElements(currentElement, 'chapter').map(chapter => {
-        const chapterNumber = queryFirstText(chapter, "@number");
-        const chapterTitle = queryFirstText(chapter, "title");
-        return {
-          to: `#chapter-${chapterNumber}`,
-          label: `${chapterNumber} luku - ${chapterTitle}`,
-          children: queryElements(chapter, 'section').map(section => {
-            const sectionNumber = queryFirstText(section, "@number");
-            const sectionTitle = queryFirstText(section, "title");
-            return {
-              to: `#chapter-${chapterNumber}-section-${sectionNumber}`,
-              label: `${sectionNumber} § - ${sectionTitle}`
-            };
-          })
-        };
-      });
 
   const id = queryFirstText(currentElement, "@id");
   const number = queryFirstText(currentElement, "@number");
@@ -112,7 +94,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
       </div>;
 
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`}}>
-    <Toc tocTitle={titleText} tocItems={navTree}/>
+    <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
   </div>;
 
   return (
