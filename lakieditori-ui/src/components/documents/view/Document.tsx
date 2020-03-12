@@ -9,8 +9,11 @@ import Chapter from "./Chapter";
 import Section from "./Section";
 import TableOfContents from "../../common/TableOfContents";
 import {buildNavigationTree} from "../../common/TableOfContentsUtils";
+import {assertEquals} from "../../../utils/assertUtils";
 
 const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
+  assertEquals("document", currentElement.tagName);
+
   const history = useHistory();
 
   const id = queryFirstText(currentElement, "@id");

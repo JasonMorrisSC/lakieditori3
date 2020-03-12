@@ -4,8 +4,11 @@ import {queryElements, queryFirstElement} from "../../../utils/xmlUtils";
 import Paragraph from "./Paragraph";
 import SanitizedHtml from "../../common/SanitizedHtml";
 import {XmlViewProperties} from "./XmlViewProperties";
+import {assertEquals} from "../../../utils/assertUtils";
 
 const Subsection: React.FC<XmlViewProperties> = ({currentElement}) => {
+  assertEquals("subsection", currentElement.tagName);
+
   const content = queryFirstElement(currentElement, "content");
 
   return (

@@ -4,8 +4,11 @@ import {queryElements, queryFirstElement, queryFirstText} from "../../../utils/x
 import Section from "./Section";
 import SanitizedHtml from "../../common/SanitizedHtml";
 import {XmlViewProperties} from "./XmlViewProperties";
+import {assertEquals} from "../../../utils/assertUtils";
 
 const Chapter: React.FC<XmlViewProperties> = ({currentElement}) => {
+  assertEquals("chapter", currentElement.tagName);
+
   let number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
 

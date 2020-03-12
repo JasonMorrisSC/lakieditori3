@@ -3,8 +3,11 @@ import {queryFirstElement} from "../../../utils/xmlUtils";
 import SanitizedHtml from "../../common/SanitizedHtml";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {XmlViewProperties} from "./XmlViewProperties";
+import {assertEquals} from "../../../utils/assertUtils";
 
 const Subparagraph: React.FC<XmlViewProperties> = ({currentElement}) => {
+  assertEquals("subparagraph", currentElement.tagName);
+
   const content = queryFirstElement(currentElement, "content");
 
   return (
