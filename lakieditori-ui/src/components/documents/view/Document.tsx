@@ -1,7 +1,7 @@
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import {queryElements, queryFirstElement, queryFirstText} from "../../../utils/xmlUtils";
+import {parseXml, queryElements, queryFirstElement, queryFirstText} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import {XmlViewProperties} from "./XmlViewProperties";
 import SanitizedHtml from "../../common/SanitizedHtml";
@@ -10,6 +10,7 @@ import Section from "./Section";
 import TableOfContents from "../../common/TableOfContents";
 import {buildNavigationTree} from "../../common/TableOfContentsUtils";
 import {assertEquals} from "../../../utils/assertUtils";
+import ConceptList from "../../common/ConceptList";
 
 const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   assertEquals("document", currentElement.tagName);
@@ -22,6 +23,7 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   const titleText = title?.textContent || '';
   const note = queryFirstElement(currentElement, "note");
   const intro = queryFirstElement(currentElement, "intro");
+  const concepts = queryFirstElement(currentElement, 'concepts') || parseXml('<concepts/>').documentElement;
 
   const topBar = <div style={{
     display: "flex",
@@ -46,6 +48,8 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
 
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`,}}>
     <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
+    <hr/>
+    <ConceptList concepts={concepts}/>
   </div>;
 
   return (
