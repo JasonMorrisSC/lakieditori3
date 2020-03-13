@@ -85,7 +85,9 @@ public final class XmlUtils {
 
   public static Document parse(InputStream xml)
       throws SAXException, ParserConfigurationException, IOException {
-    return DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(xml);
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    factory.setNamespaceAware(true);
+    return factory.newDocumentBuilder().parse(xml);
   }
 
   public static String prettyPrint(Document doc) {

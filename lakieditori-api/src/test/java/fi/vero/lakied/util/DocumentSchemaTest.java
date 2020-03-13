@@ -1,12 +1,13 @@
 package fi.vero.lakied.util;
 
-import static fi.vero.lakied.util.common.ResourceUtils.allResourcesToString;
+import static fi.vero.lakied.util.common.ResourceUtils.forAllResourcesAsString;
 import static fi.vero.lakied.util.common.ResourceUtils.resourceToString;
 
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.io.IOException;
 import java.io.StringReader;
 import java.nio.file.FileSystems;
+import java.nio.file.Path;
 import java.nio.file.PathMatcher;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
@@ -19,11 +20,11 @@ class DocumentSchemaTest {
       resourceToString("schemas/xml.xsd"),
       resourceToString("schemas/document.xsd"));
 
-  private void validate(String xml) {
+  private void validate(Path path, String xml) {
     try {
       schema.newValidator().validate(new StreamSource(new StringReader(xml)));
     } catch (SAXException | IOException e) {
-      throw new AssertionError(xml, e);
+      throw new AssertionError("Failed to validate: " + path.toString(), e);
     }
   }
 
@@ -31,7 +32,6 @@ class DocumentSchemaTest {
   void shouldValidateExampleDocuments() {
     PathMatcher xmlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.xml");
 
-    allResourcesToString("example-documents", xmlFileMatcher::matches)
-        .forEach(this::validate);
+    forAllResourcesAsString("example-documents", xmlFileMatcher::matches, this::validate);
   }
 }

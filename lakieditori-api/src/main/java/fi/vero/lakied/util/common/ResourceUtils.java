@@ -7,7 +7,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -26,19 +26,21 @@ public final class ResourceUtils {
     }
   }
 
-  public static List<String> allResourcesToString(String directoryName, Predicate<Path> filter) {
+  public static void forAllResourcesAsString(String directoryName, Predicate<Path> filter,
+      BiConsumer<Path, String> consumer) {
     try (Stream<Path> paths = Files.walk(Paths.get(Resources.getResource(directoryName).toURI()))) {
-      return paths
+      paths
           .filter(Files::isRegularFile)
           .filter(filter)
-          .map(path -> {
+          .forEach(path -> {
             try {
-              return Files.lines(path).collect(Collectors.joining("\n"));
+              consumer.accept(
+                  path,
+                  Files.lines(path).collect(Collectors.joining("\n")));
             } catch (IOException e) {
               throw new RuntimeException(e);
             }
-          })
-          .collect(Collectors.toList());
+          });
     } catch (IOException | URISyntaxException e) {
       throw new RuntimeException(e);
     }

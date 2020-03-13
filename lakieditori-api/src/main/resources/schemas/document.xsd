@@ -45,28 +45,15 @@
       <xs:group ref="formattingElements"/>
       <xs:element name="a" type="linkType"/>
     </xs:choice>
-  </xs:complexType>
-
-  <xs:complexType name="i18nRichTextType">
-    <xs:annotation>
-      <xs:documentation>
-        This type adds xml:lang attribute to rich text type. If lang is not given, an empty default
-        value is used.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="richTextType">
-        <xs:attribute ref="xml:lang" default=""/>
-      </xs:extension>
-    </xs:complexContent>
+    <xs:attribute ref="xml:lang" default=""/>
   </xs:complexType>
 
   <xs:element name="document">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="title" type="i18nRichTextType" maxOccurs="unbounded"/>
-        <xs:element name="note" type="i18nRichTextType" minOccurs="0" maxOccurs="unbounded"/>
-        <xs:element name="intro" type="i18nRichTextType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="title" type="richTextType" maxOccurs="unbounded"/>
+        <xs:element name="note" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="intro" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
         <xs:choice>
           <xs:element name="chapter" type="chapterType" minOccurs="0" maxOccurs="unbounded">
             <xs:unique name="uniqueChapterTitleLang">
@@ -111,7 +98,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="title" type="richTextType" maxOccurs="unbounded"/>
       <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueSectionTitleLang">
           <xs:selector xpath="title"/>
@@ -129,7 +116,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="title" type="richTextType" maxOccurs="unbounded"/>
       <xs:element name="subsection" type="subsectionType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueSubsectionContentLang">
           <xs:selector xpath="content"/>
@@ -147,7 +134,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
       <xs:element name="paragraph" type="paragraphType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueParagraphContentLang">
           <xs:selector xpath="content"/>
@@ -165,7 +152,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
       <xs:element name="subparagraph" type="subparagraphType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueSubparagraphContentLang">
           <xs:selector xpath="content"/>
@@ -183,7 +170,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
   </xs:complexType>
@@ -215,8 +202,8 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="label" type="i18nRichTextType" maxOccurs="unbounded"/>
-      <xs:element name="definition" type="i18nRichTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="label" type="richTextType" maxOccurs="unbounded"/>
+      <xs:element name="definition" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="terminology" type="terminologyType">
         <xs:unique name="uniqueTerminologyLabelLang">
           <xs:selector xpath="label"/>
@@ -234,7 +221,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="label" type="i18nRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="label" type="richTextType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="uri" type="xs:anyURI" use="required"/>
   </xs:complexType>
