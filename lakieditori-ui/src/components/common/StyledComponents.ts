@@ -62,7 +62,7 @@ export const TableSmall = styled.table`
     border-bottom: 1px solid ${tokens.colors.depthLight26};
     padding: ${tokens.spacing.xs};
     text-align: left; 
-    vertical-align: top;
+    vertical-align: center;
   };
   & > thead > tr > th.right,
   & > thead > tr > td.right,
@@ -84,7 +84,7 @@ export const Table = styled.table`
     border-bottom: 1px solid ${tokens.colors.depthLight26};
     padding: ${tokens.spacing.s};
     text-align: left; 
-    vertical-align: top;
+    vertical-align: center;
   };
   & > thead > tr > th.right,
   & > thead > tr > td.right,
