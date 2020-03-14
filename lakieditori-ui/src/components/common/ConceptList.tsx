@@ -48,7 +48,8 @@ const Concept: React.FC<XmlViewProperties> = ({currentElement}) => {
         }}>
           <span>{terminologyLabel}&nbsp;</span>
           <span className={"material-icons"} style={{
-            fontSize: tokens.values.typography.bodyText.fontSize.value,
+            fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+            marginBottom: -1,
           }}>
             launch
           </span>
