@@ -8,7 +8,7 @@ const ConceptList: React.FC<Props> = ({concepts}) => {
 
   return (
       <div>
-        <div style={{padding: `${tokens.spacing.xs} ${tokens.spacing.xs}`}}>
+        <div style={{padding: `${tokens.spacing.xs} 0`}}>
           <Text.bold>{conceptCount > 0 ? 'Käsitteet' : ''}</Text.bold>
         </div>
 
@@ -26,16 +26,37 @@ interface Props {
 }
 
 const Concept: React.FC<XmlViewProperties> = ({currentElement}) => {
+  const uri = currentElement.getAttribute("uri") || '';
   const label = queryFirstText(currentElement, "label");
   const definition = queryFirstText(currentElement, "definition");
+  const terminologyLabel = queryFirstText(currentElement, "terminology/label");
 
   return (
       <div style={{
         fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-        padding: tokens.spacing.xs,
+        padding: `${tokens.spacing.s} 0`,
       }}>
-        {label}
-        <div style={{color: tokens.colors.depthDark27}}>{definition}</div>
+        <div style={{display: "flex", justifyContent: "space-between"}}>
+          <span>
+            {label}
+          </span>
+          <a href={uri} target={"_blank"} style={{color: tokens.colors.highlightLight4}}>
+            {terminologyLabel}
+            &nbsp;
+            <span className={"material-icons"} style={{
+              fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+              lineHeight: tokens.values.typography.bodyTextSmall.lineHeight.value,
+              verticalAlign: "bottom",
+            }}>
+              launch
+            </span>
+          </a>
+        </div>
+        <div style={{
+          color: tokens.colors.depthDark27,
+        }}>
+          {definition}
+        </div>
       </div>
   );
 };

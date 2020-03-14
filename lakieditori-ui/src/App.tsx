@@ -37,7 +37,7 @@ const App: React.FC = () => {
             }
             hr {
               border: 0;
-              border-bottom: 1px solid ${tokens.colors.depthLight13};
+              border-bottom: 1px solid ${tokens.colors.depthLight26};
               margin: ${tokens.spacing.m} 0;
             }
           `}

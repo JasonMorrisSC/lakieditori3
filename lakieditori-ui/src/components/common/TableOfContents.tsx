@@ -6,7 +6,7 @@ import NavigationTreeNode from "./NavigationTreeNode";
 const TableOfContents: React.FC<Props> = ({title, items}) => {
   return (
       <nav>
-        <div style={{padding: `${tokens.spacing.m} ${tokens.spacing.xs} ${tokens.spacing.s}`}}>
+        <div style={{padding: `${tokens.spacing.m} 0 ${tokens.spacing.s}`}}>
           <Text.bold>{title}</Text.bold>
         </div>
 
@@ -43,7 +43,7 @@ const SideNavItem: React.FC<NavigationTreeNode> = ({to, label}) => {
         color: tokens.colors.highlightBase,
         display: 'flex',
         fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-        padding: tokens.spacing.xs,
+        padding: `${tokens.spacing.xs} 0`,
         textDecoration: 'none',
         textTransform: 'uppercase'
       }}>
