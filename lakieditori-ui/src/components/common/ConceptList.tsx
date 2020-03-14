@@ -36,27 +36,23 @@ const Concept: React.FC<XmlViewProperties> = ({currentElement}) => {
         fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
         padding: `${tokens.spacing.s} 0`,
       }}>
-        <div style={{display: "flex", justifyContent: "space-between"}}>
-          <span>
-            {label}
-          </span>
-          <a href={uri} target={"_blank"} style={{color: tokens.colors.highlightLight4}}>
-            {terminologyLabel}
-            &nbsp;
-            <span className={"material-icons"} style={{
-              fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-              lineHeight: tokens.values.typography.bodyTextSmall.lineHeight.value,
-              verticalAlign: "bottom",
-            }}>
-              launch
-            </span>
-          </a>
-        </div>
-        <div style={{
-          color: tokens.colors.depthDark27,
-        }}>
+        {label}
+        <div style={{color: tokens.colors.depthDark27}}>
           {definition}
         </div>
+        <a href={uri} target={"_blank"} style={{
+          alignItems: "center",
+          color: tokens.colors.accentSecondary,
+          display: "inline-flex",
+          verticalAlign: "middle",
+        }}>
+          <span>{terminologyLabel}&nbsp;</span>
+          <span className={"material-icons"} style={{
+            fontSize: tokens.values.typography.bodyText.fontSize.value,
+          }}>
+            launch
+          </span>
+        </a>
       </div>
   );
 };
