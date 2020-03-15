@@ -5,7 +5,7 @@ import {parseXml, toString} from "../../utils/xmlUtils";
 import DocumentEditSource from "./edit/DocumentEditSource";
 import DocumentEdit from "./edit/DocumentEdit";
 import DocumentInfo from "./info/DocumentInfo";
-import Document from "./view/Document";
+import DocumentView from "./view/Document";
 
 const DocumentContainer: React.FC = () => {
   const match = useRouteMatch();
@@ -57,7 +57,7 @@ const DocumentContainer: React.FC = () => {
       <DocumentInfo currentElement={document.documentElement}/>
     </Route>
     <Route path={match.path}>
-      <Document currentElement={document.documentElement}/>
+      <DocumentView currentElement={document.documentElement}/>
     </Route>
   </Switch>;
 };
