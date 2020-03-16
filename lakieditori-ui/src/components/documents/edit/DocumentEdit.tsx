@@ -8,6 +8,7 @@ import {
   cloneDocument,
   countNodes,
   ensureElementAndUpdate,
+  parseXml,
   queryElements,
   queryFirstElement,
   queryFirstNode,
@@ -22,6 +23,7 @@ import {inputStyle} from "../../common/inputStyle";
 import RichTextEditor from "./richtext/RichTextEditor";
 import {useHistory} from "react-router-dom";
 import {buildNavigationTree} from "../../common/TableOfContentsUtils";
+import ConceptList from "../../common/ConceptList";
 
 const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const history = useHistory();
@@ -32,6 +34,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
   const titleText = title?.textContent || '';
   const note = queryFirstElement(currentElement, "note");
   const intro = queryFirstElement(currentElement, "intro");
+  const concepts = queryFirstElement(currentElement, 'concepts') || parseXml('<concepts/>').documentElement;
 
   function updateTitle(newValue: string) {
     updateDocument((prevDocument) => {
@@ -95,6 +98,8 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
 
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`}}>
     <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
+    <hr/>
+    <ConceptList concepts={concepts}/>
   </div>;
 
   return (

@@ -66,7 +66,7 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
 
           <RichTextEditor
               value={title}
-              placeholder={`Luvun ${number} pakollinen otsikko`}
+              placeholder={`Luvun ${number} otsikko`}
               onChange={updateTitle}
               style={{
                 ...inputStyle,

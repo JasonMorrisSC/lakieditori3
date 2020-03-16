@@ -5,7 +5,7 @@ import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.criteria.Criteria;
-import fi.vero.lakied.util.criteria.JsonCriteria;
+import fi.vero.lakied.util.criteria.StringFieldValueCriteria;
 import java.util.stream.Stream;
 import org.w3c.dom.Document;
 
@@ -30,20 +30,23 @@ public class StropWordFilteringConceptReadRepository implements ReadRepository<S
 
   @Override
   public Stream<Tuple2<String, Document>> entries(Criteria<String, Document> criteria, User user) {
-    if (!(criteria instanceof JsonCriteria)) {
-      throw new IllegalArgumentException(
-          "This repository supports only " + JsonCriteria.class.getCanonicalName() + " criteria.");
+    if (criteria instanceof StringFieldValueCriteria) {
+      StringFieldValueCriteria<String, Document> stringFieldValueCriteria =
+          (StringFieldValueCriteria<String, Document>) criteria;
+
+      String field = stringFieldValueCriteria.getFieldName();
+      String value = stringFieldValueCriteria.getFieldValue();
+
+      if (field.equals("query")) {
+        if (!stopWords.contains(value)) {
+          return delegate.entries(criteria, user);
+        } else {
+          return Stream.empty();
+        }
+      }
     }
 
-    JsonCriteria<String, Document> jsonCriteria = (JsonCriteria<String, Document>) criteria;
-
-    if (jsonCriteria.criteria().has("query") &&
-        jsonCriteria.criteria().get("query").isJsonPrimitive() &&
-        !stopWords.contains(jsonCriteria.criteria().get("query").getAsString())) {
-      return delegate.entries(criteria, user);
-    }
-
-    return Stream.empty();
+    return delegate.entries(criteria, user);
   }
 
 }

@@ -13,6 +13,10 @@ public final class JsonElementFactory {
   private JsonElementFactory() {
   }
 
+  public static JsonObject object() {
+    return new JsonObject();
+  }
+
   public static JsonObject object(String property, JsonElement value) {
     JsonObject object = new JsonObject();
     object.add(property, value);

@@ -66,7 +66,7 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
 
           <RichTextEditor
               value={title}
-              placeholder={`Pykälän ${number} pakollinen otsikko`}
+              placeholder={`Pykälän ${number} otsikko`}
               onChange={updateTitle}
               style={{
                 ...inputStyle,

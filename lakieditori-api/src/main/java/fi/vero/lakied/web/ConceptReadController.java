@@ -1,8 +1,9 @@
 package fi.vero.lakied.web;
 
+import fi.vero.lakied.service.concept.ConceptCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.User;
-import fi.vero.lakied.util.criteria.JsonCriteria;
+import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.xml.GetXmlMapping;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,12 +22,18 @@ public class ConceptReadController {
     this.conceptReadRepository = conceptReadRepository;
   }
 
-  @GetXmlMapping
-  public Document get(@RequestParam("query") String query, @AuthenticationPrincipal User user) {
+  @GetXmlMapping(params = "uri")
+  public Document byUri(@RequestParam("uri") String uri, @AuthenticationPrincipal User user) {
+    return conceptReadRepository.value(ConceptCriteria.byUri(uri), user)
+        .orElseThrow(NotFoundException::new);
+  }
+
+  @GetXmlMapping(params = "query")
+  public Document query(@RequestParam("query") String query, @AuthenticationPrincipal User user) {
     XmlDocumentBuilder builder = new XmlDocumentBuilder().pushElement("concepts");
 
     if (!query.isEmpty()) {
-      conceptReadRepository.forEachEntry(JsonCriteria.of("query", query), user,
+      conceptReadRepository.forEachEntry(ConceptCriteria.byQuery(query), user,
           (id, concept) -> builder.pushExternal(concept.getDocumentElement()).pop());
     }
 

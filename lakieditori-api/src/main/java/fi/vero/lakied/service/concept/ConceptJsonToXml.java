@@ -1,69 +1,66 @@
 package fi.vero.lakied.service.concept;
 
+import com.google.common.cache.LoadingCache;
 import com.google.gson.JsonObject;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
-import fi.vero.lakied.util.xml.XmlUtils;
-import java.io.IOException;
 import java.util.function.Function;
-import javax.xml.parsers.ParserConfigurationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
 
 public class ConceptJsonToXml implements Function<JsonObject, Document> {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
+  private final LoadingCache<String, JsonObject> terminologiesByUri;
+
+  public ConceptJsonToXml(LoadingCache<String, JsonObject> terminologiesByUri) {
+    this.terminologiesByUri = terminologiesByUri;
+  }
+
   @Override
   public Document apply(JsonObject conceptObject) {
-    DocumentContext context = JsonPath.parse(conceptObject.toString(),
-        Configuration.defaultConfiguration()
-            .addOptions(Option.SUPPRESS_EXCEPTIONS));
+    DocumentContext conceptJsonContext = JsonPath.parse(conceptObject.toString(),
+        Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
 
     XmlDocumentBuilder builder = new XmlDocumentBuilder();
 
     builder.pushElement("concept")
-        .attribute("uri", context.read("$.uri"));
+        .attribute("uri", conceptJsonContext.read("$.uri"));
 
     builder.pushElement("label")
         .attribute("xml:lang", "fi")
-        .text(context.read("$.label.fi"))
+        .text(conceptJsonContext.read("$.prefLabel.fi"))
         .pop();
 
     builder.pushElement("definition")
         .attribute("xml:lang", "fi")
-        .text(textContent(context.read("$.definition.fi")))
+        .text(conceptJsonContext.read("$.description.fi"))
         .pop();
 
+    String terminologyUri = conceptJsonContext.read("$.container");
+
     builder.pushElement("terminology")
-        .attribute("uri", context.read("$.terminology.uri"));
+        .attribute("uri", terminologyUri);
+
+    DocumentContext terminologyJsonContext = JsonPath.parse(
+        terminologiesByUri.getUnchecked(terminologyUri).toString(),
+        Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
 
     builder
         .pushElement("label")
         .attribute("xml:lang", "fi")
-        .text(context.read("$.terminology.label.fi"))
+        .text(terminologyJsonContext.read("$.prefLabel.fi"))
         .pop();
 
     // close terminology tag
     builder.pop();
 
     return builder.build();
-  }
-
-  private String textContent(String xml) {
-    try {
-      return XmlUtils.parse("<root>" + (xml != null ? xml : "") + "</root>")
-          .getDocumentElement()
-          .getTextContent();
-    } catch (SAXException | ParserConfigurationException | IOException e) {
-      log.debug("Failed to parse: {}", xml);
-      return xml;
-    }
   }
 
 }
