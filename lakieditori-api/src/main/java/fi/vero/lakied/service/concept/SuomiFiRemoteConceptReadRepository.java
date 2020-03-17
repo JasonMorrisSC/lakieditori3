@@ -14,6 +14,7 @@ import com.google.gson.JsonParser;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
+import fi.vero.lakied.util.common.URLs;
 import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.criteria.StringFieldValueCriteria;
@@ -35,7 +36,7 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private static final String DEFAULT_API_URL = "https://sanastot.suomi.fi/terminology-api/api";
+  private static final String DEFAULT_API_URL = "https://sanastot.suomi.fi/terminology-api/api/v1/integration/";
 
   private final String apiUrl;
   private final CloseableHttpClient httpClient;
@@ -65,16 +66,16 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
         (StringFieldValueCriteria<String, Document>) criteria;
 
     String field = stringFieldValueCriteria.getFieldName();
-    String value = stringFieldValueCriteria.getFieldValue();
+    String value = URLs.encode(stringFieldValueCriteria.getFieldValue());
 
     HttpGet request;
 
     switch (field) {
       case "uri":
-        request = new HttpGet(apiUrl + "/v1/integration/resources?uri=" + value);
+        request = new HttpGet(apiUrl + "resources?uri=" + value + "&pageSize=50");
         break;
       case "query":
-        request = new HttpGet(apiUrl + "/v1/integration/resources?searchTerm=" + value);
+        request = new HttpGet(apiUrl + "resources?searchTerm=" + value + "&pageSize=50");
         break;
       default:
         throw new RuntimeException("Can't find concepts by unknown field: " + field);
@@ -108,7 +109,7 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
   }
 
   private JsonObject httpGetTerminology(String uri) {
-    HttpGet request = new HttpGet(apiUrl + "/v1/integration/containers?uri=" + uri);
+    HttpGet request = new HttpGet(apiUrl + "containers?uri=" + uri);
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {
       log.debug(request.toString());
