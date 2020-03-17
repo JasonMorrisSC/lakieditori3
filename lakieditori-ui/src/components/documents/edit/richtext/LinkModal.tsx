@@ -157,7 +157,7 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
   }, [linkText]);
 
   useEffect(() => {
-    if (query) {
+    if (query && query.length > 2) {
       axios.get('/api/concepts', {
         params: {query},
         responseType: 'document'
