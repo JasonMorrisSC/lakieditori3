@@ -1,7 +1,12 @@
 import React from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
-import {parseXml, queryElements, queryFirstElement, queryFirstText} from "../../../utils/xmlUtils";
+import {
+  queryElements,
+  queryFirstElement,
+  queryFirstText,
+  queryNodes
+} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import {XmlViewProperties} from "./XmlViewProperties";
 import SanitizedHtml from "../../common/SanitizedHtml";
@@ -23,7 +28,7 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   const titleText = title?.textContent || '';
   const note = queryFirstElement(currentElement, "note");
   const intro = queryFirstElement(currentElement, "intro");
-  const concepts = queryFirstElement(currentElement, 'concepts') || parseXml('<concepts/>').documentElement;
+  const linkUrls = queryNodes(currentElement, '//a/@href').map(n => n.textContent || "");
 
   const topBar = <div style={{
     display: "flex",
@@ -49,7 +54,7 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`,}}>
     <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
     <hr/>
-    <ConceptList concepts={concepts}/>
+    <ConceptList urls={linkUrls}/>
   </div>;
 
   return (

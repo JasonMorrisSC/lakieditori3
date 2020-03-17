@@ -1,18 +1,37 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
+import axios from "axios";
 import {suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
-import {countNodes, queryElements, queryFirstText} from "../../utils/xmlUtils";
+import {queryFirstText} from "../../utils/xmlUtils";
 import {XmlViewProperties} from "../documents/view/XmlViewProperties";
 
-const ConceptList: React.FC<Props> = ({concepts}) => {
-  const conceptCount = countNodes(concepts, 'concept');
+const ConceptList: React.FC<Props> = ({urls}) => {
+  const [concepts, setConcepts] = useState<Element[]>([]);
+
+  useEffect(() => {
+    const conceptExists = (concepts: Element[], uri: string) => {
+      return concepts.filter(concept => concept.getAttribute('uri') === uri).length > 0;
+    };
+
+    urls.forEach(url => {
+      axios.get('/api/concepts?uri=' + url, {
+        responseType: 'document'
+      }).then(res => {
+        const concept = res.data.documentElement;
+        const conceptUri = concept.getAttribute('uri');
+        setConcepts(prevConcepts => conceptExists(prevConcepts, conceptUri)
+            ? prevConcepts
+            : prevConcepts.concat(concept));
+      });
+    });
+  }, [urls]);
 
   return (
       <div>
         <div style={{padding: `${tokens.spacing.xs} 0`}}>
-          <Text.bold>{conceptCount > 0 ? 'Käsitteet' : ''}</Text.bold>
+          <Text.bold>{concepts.length > 0 ? 'Käsitteet' : ''}</Text.bold>
         </div>
 
-        {queryElements(concepts, 'concept').map((concept, i) => {
+        {concepts.map((concept, i) => {
           return <div key={i}>
             <Concept currentElement={concept}/>
           </div>
@@ -22,7 +41,7 @@ const ConceptList: React.FC<Props> = ({concepts}) => {
 };
 
 interface Props {
-  concepts: Element
+  urls: string[]
 }
 
 const Concept: React.FC<XmlViewProperties> = ({currentElement}) => {

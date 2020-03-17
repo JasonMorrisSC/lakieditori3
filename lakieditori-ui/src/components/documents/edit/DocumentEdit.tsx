@@ -8,11 +8,11 @@ import {
   cloneDocument,
   countNodes,
   ensureElementAndUpdate,
-  parseXml,
   queryElements,
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
+  queryNodes,
   updateElement
 } from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
@@ -34,7 +34,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
   const titleText = title?.textContent || '';
   const note = queryFirstElement(currentElement, "note");
   const intro = queryFirstElement(currentElement, "intro");
-  const concepts = queryFirstElement(currentElement, 'concepts') || parseXml('<concepts/>').documentElement;
+  const linkUrls = queryNodes(currentElement, '//a/@href').map(n => n.textContent || "");
 
   function updateTitle(newValue: string) {
     updateDocument((prevDocument) => {
@@ -99,7 +99,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`}}>
     <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
     <hr/>
-    <ConceptList concepts={concepts}/>
+    <ConceptList urls={linkUrls}/>
   </div>;
 
   return (
