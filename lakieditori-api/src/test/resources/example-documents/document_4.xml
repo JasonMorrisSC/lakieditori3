@@ -4,18 +4,4 @@
     <a href="http://uri.suomi.fi/terminology/verotus/c160">Perintö-</a>
     ja <a href="http://uri.suomi.fi/terminology/verotus/c186">lahjavero</a>laki
   </title>
-  <concepts>
-    <concept uri="http://uri.suomi.fi/terminology/verotus/c160">
-      <label xml:lang="fi">perintövero</label>
-      <terminology uri="http://uri.suomi.fi/terminology/verotus/">
-        <label xml:lang="fi">Verotussanasto</label>
-      </terminology>
-    </concept>
-    <concept uri="http://uri.suomi.fi/terminology/verotus/c160">
-      <label xml:lang="fi">lahjavero</label>
-      <terminology uri="http://uri.suomi.fi/terminology/verotus/">
-        <label xml:lang="fi">Verotussanasto</label>
-      </terminology>
-    </concept>
-  </concepts>
 </document>

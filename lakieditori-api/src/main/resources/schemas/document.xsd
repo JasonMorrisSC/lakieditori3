@@ -68,7 +68,6 @@
             </xs:unique>
           </xs:element>
         </xs:choice>
-        <xs:element name="concepts" type="conceptsType" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>
@@ -173,57 +172,6 @@
       <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
-  </xs:complexType>
-
-  <xs:complexType name="conceptsType">
-    <xs:annotation>
-      <xs:documentation>
-        This type defines the list of concepts used in the documents.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element name="concept" type="conceptType" minOccurs="0" maxOccurs="unbounded">
-        <xs:unique name="uniqueConceptLabelLang">
-          <xs:selector xpath="label"/>
-          <xs:field xpath="@xml:lang"/>
-        </xs:unique>
-        <xs:unique name="uniqueConceptDefinitionLang">
-          <xs:selector xpath="definition"/>
-          <xs:field xpath="@xml:lang"/>
-        </xs:unique>
-      </xs:element>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="conceptType">
-    <xs:annotation>
-      <xs:documentation>
-        This type defines fields in the concept.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element name="label" type="richTextType" maxOccurs="unbounded"/>
-      <xs:element name="definition" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
-      <xs:element name="terminology" type="terminologyType">
-        <xs:unique name="uniqueTerminologyLabelLang">
-          <xs:selector xpath="label"/>
-          <xs:field xpath="@xml:lang"/>
-        </xs:unique>
-      </xs:element>
-    </xs:sequence>
-    <xs:attribute name="uri" type="xs:anyURI" use="required"/>
-  </xs:complexType>
-
-  <xs:complexType name="terminologyType">
-    <xs:annotation>
-      <xs:documentation>
-        This type defines terminology that has concepts.
-      </xs:documentation>
-    </xs:annotation>
-    <xs:sequence>
-      <xs:element name="label" type="richTextType" maxOccurs="unbounded"/>
-    </xs:sequence>
-    <xs:attribute name="uri" type="xs:anyURI" use="required"/>
   </xs:complexType>
 
 </xs:schema>
