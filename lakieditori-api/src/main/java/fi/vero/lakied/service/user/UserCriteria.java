@@ -20,8 +20,8 @@ public final class UserCriteria {
     return Criteria.sql((k, v) -> username.equals(v.getUsername()), "username = ?", username);
   }
 
-  public static SqlCriteria<UUID, User> isEnabled() {
-    return Criteria.sql((k, v) -> v.isEnabled(), "enabled = ?", true);
+  public static SqlCriteria<UUID, User> isEnabled(boolean enabled) {
+    return Criteria.sql((k, v) -> v.isEnabled(), "enabled = ?", enabled);
   }
 
 }

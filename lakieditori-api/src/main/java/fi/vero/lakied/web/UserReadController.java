@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
@@ -41,12 +42,15 @@ public class UserReadController {
   }
 
   @GetXmlMapping
-  public Document getAll(@AuthenticationPrincipal User principal) {
+  public Document getAll(
+      @RequestParam(name = "enabled", defaultValue = "true") boolean enabled,
+      @AuthenticationPrincipal User principal) {
     XmlDocumentBuilder builder = new XmlDocumentBuilder().pushElement("users");
 
-    userReadRepository.forEachEntry(UserCriteria.isEnabled(), principal, (id, user) -> {
-      builder.pushExternal(user.toDocument()).pop();
-    });
+    userReadRepository.forEachEntry(principal.isSuperuser()
+            ? UserCriteria.isEnabled(enabled)
+            : UserCriteria.byId(principal.getId()),
+        principal, (id, user) -> builder.pushExternal(user.toDocument()).pop());
 
     return builder.build();
   }
