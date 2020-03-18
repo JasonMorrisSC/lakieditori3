@@ -1,8 +1,10 @@
 create table users
 (
-    username varchar(255) PRIMARY KEY,
-    password varchar(255) NOT NULL,
-    enabled  boolean      NOT NULL
+    id        uuid PRIMARY KEY,
+    username  varchar(255) NOT NULL UNIQUE,
+    password  varchar(255) NOT NULL,
+    superuser boolean      NOT NULL,
+    enabled   boolean      NOT NULL
 );
 
 create table document

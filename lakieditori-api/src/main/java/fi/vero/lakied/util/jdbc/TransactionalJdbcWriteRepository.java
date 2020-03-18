@@ -1,6 +1,6 @@
 package fi.vero.lakied.util.jdbc;
 
-import fi.vero.lakied.util.common.User;
+import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.common.WriteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,8 +3,9 @@ package fi.vero.lakied.service.user;
 import static fi.vero.lakied.util.criteria.Criteria.matchAll;
 
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
+import fi.vero.lakied.util.security.User;
+import java.util.UUID;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
@@ -30,16 +31,16 @@ public class DefaultUserInitializer implements ApplicationListener<ContextRefres
   private final SecurityProperties securityProperties;
   private final PasswordEncoder passwordEncoder;
 
-  private final ReadRepository<String, User> userReadRepository;
-  private final WriteRepository<String, User> userWriteRepository;
+  private final ReadRepository<UUID, User> userReadRepository;
+  private final WriteRepository<UUID, User> userWriteRepository;
 
-  private final User initializer = User.of("defaultUserInitializer");
+  private final User initializer = User.superuser("defaultUserInitializer");
 
   public DefaultUserInitializer(
       SecurityProperties securityProperties,
       PasswordEncoder passwordEncoder,
-      ReadRepository<String, User> userReadRepository,
-      WriteRepository<String, User> userWriteRepository) {
+      ReadRepository<UUID, User> userReadRepository,
+      WriteRepository<UUID, User> userWriteRepository) {
     this.securityProperties = securityProperties;
     this.passwordEncoder = passwordEncoder;
     this.userReadRepository = userReadRepository;
@@ -52,8 +53,8 @@ public class DefaultUserInitializer implements ApplicationListener<ContextRefres
       SecurityProperties.User defaultUser = securityProperties.getUser();
 
       userWriteRepository.insert(
-          defaultUser.getName(),
-          User.of(defaultUser.getName(), passwordEncoder.encode(defaultUser.getPassword())),
+          UUID.randomUUID(),
+          User.superuser(defaultUser.getName(), passwordEncoder.encode(defaultUser.getPassword())),
           initializer);
 
       log.info("Saved default user: {} / {}", defaultUser.getName(), defaultUser.getPassword());

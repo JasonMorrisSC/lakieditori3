@@ -1,6 +1,6 @@
 package fi.vero.lakied.util.xml;
 
-import fi.vero.lakied.util.common.User;
+import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.exception.InternalServerErrorException;

@@ -6,13 +6,14 @@ import fi.vero.lakied.service.document.DocumentCriteria;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.exception.NotFoundException;
+import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,6 +27,7 @@ public class DocumentReadController {
 
   private final ReadRepository<UUID, Audited<Document>> documentReadRepository;
 
+  @Autowired
   public DocumentReadController(ReadRepository<UUID, Audited<Document>> documentReadRepository) {
     this.documentReadRepository = documentReadRepository;
   }

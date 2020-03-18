@@ -2,10 +2,11 @@ package fi.vero.lakied.web;
 
 import fi.vero.lakied.service.concept.ConceptCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.exception.NotFoundException;
+import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ public class ConceptReadController {
 
   private final ReadRepository<String, Document> conceptReadRepository;
 
+  @Autowired
   public ConceptReadController(ReadRepository<String, Document> conceptReadRepository) {
     this.conceptReadRepository = conceptReadRepository;
   }

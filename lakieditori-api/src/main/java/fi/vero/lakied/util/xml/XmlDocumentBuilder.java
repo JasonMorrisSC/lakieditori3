@@ -19,6 +19,10 @@ public class XmlDocumentBuilder {
     return this;
   }
 
+  public XmlDocumentBuilder pushExternal(Document document) {
+    return pushExternal(document.getDocumentElement());
+  }
+
   public XmlDocumentBuilder pushExternal(Node node) {
     currentNode = currentNode.appendChild(document.importNode(node, true));
     return this;

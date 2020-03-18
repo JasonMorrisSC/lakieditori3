@@ -6,6 +6,7 @@ import fi.vero.lakied.util.xml.PostXmlMapping;
 import java.io.IOException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,7 @@ public class DocumentValidateController {
 
   private final Schema schema;
 
+  @Autowired
   public DocumentValidateController(Schema schema) {
     this.schema = schema;
   }

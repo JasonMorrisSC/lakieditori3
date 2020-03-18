@@ -1,9 +1,16 @@
 package fi.vero.lakied.service.user;
 
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
+import fi.vero.lakied.util.security.AnyPermissionEvaluator;
+import fi.vero.lakied.util.security.AuthorizedReadRepository;
+import fi.vero.lakied.util.security.AuthorizedWriteRepository;
+import fi.vero.lakied.util.security.Permission;
+import fi.vero.lakied.util.security.PermissionEvaluator;
+import fi.vero.lakied.util.security.SuperuserPermissionEvaluator;
+import fi.vero.lakied.util.security.User;
+import java.util.UUID;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,14 +20,29 @@ import org.springframework.transaction.PlatformTransactionManager;
 public class UserRepositoryConfiguration {
 
   @Bean
-  public ReadRepository<String, User> userReadRepository(DataSource ds) {
-    return new JdbcUserReadRepository(ds);
+  public ReadRepository<UUID, User> userReadRepository(DataSource ds) {
+    return
+        new AuthorizedReadRepository<>(
+            new JdbcUserReadRepository(ds),
+            userPermissionEvaluator());
   }
 
   @Bean
-  public WriteRepository<String, User> userWriteRepository(DataSource ds,
+  public WriteRepository<UUID, User> userWriteRepository(DataSource ds,
       PlatformTransactionManager txm) {
-    return new TransactionalJdbcWriteRepository<>(new JdbcUserWriteRepository(ds), txm);
+    return
+        new AuthorizedWriteRepository<>(
+            new TransactionalJdbcWriteRepository<>(new JdbcUserWriteRepository(ds), txm),
+            userPermissionEvaluator());
+  }
+
+  private PermissionEvaluator<UUID> userPermissionEvaluator() {
+    return new AnyPermissionEvaluator<>(
+        new SuperuserPermissionEvaluator<>(),
+        // allow read to user's own information
+        (principal, userId, permission) ->
+            permission == Permission.READ && principal.getId().equals(userId)
+    );
   }
 
 }

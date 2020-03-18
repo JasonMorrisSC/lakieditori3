@@ -1,11 +1,16 @@
 package fi.vero.lakied.web;
 
-import fi.vero.lakied.util.common.User;
+import fi.vero.lakied.util.common.Empty;
+import fi.vero.lakied.util.common.Tuple;
+import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.common.WriteRepository;
+import fi.vero.lakied.util.security.Permission;
+import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.PutXmlMapping;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,9 +27,16 @@ import org.w3c.dom.Document;
 public class DocumentWriteController {
 
   private final WriteRepository<UUID, Document> documentWriteRepository;
+  private final WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository;
+  private final User documentPermissionInitializer = User
+      .superuser("documentPermissionInitializer");
 
-  public DocumentWriteController(WriteRepository<UUID, Document> documentWriteRepository) {
+  @Autowired
+  public DocumentWriteController(
+      WriteRepository<UUID, Document> documentWriteRepository,
+      WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository) {
     this.documentWriteRepository = documentWriteRepository;
+    this.documentUserPermissionWriteRepository = documentUserPermissionWriteRepository;
   }
 
   @PostXmlMapping
@@ -36,6 +48,17 @@ public class DocumentWriteController {
     UUID id = UUID.randomUUID();
 
     documentWriteRepository.insert(id, document, user);
+
+    // add read and write permissions to the new document
+    documentUserPermissionWriteRepository.insert(
+        Tuple.of(id, user.getUsername(), Permission.READ), Empty.INSTANCE,
+        documentPermissionInitializer);
+    documentUserPermissionWriteRepository.insert(
+        Tuple.of(id, user.getUsername(), Permission.UPDATE), Empty.INSTANCE,
+        documentPermissionInitializer);
+    documentUserPermissionWriteRepository.insert(
+        Tuple.of(id, user.getUsername(), Permission.DELETE), Empty.INSTANCE,
+        documentPermissionInitializer);
 
     String resultUrl = "/api/documents/" + id;
     response.setHeader(HttpHeaders.LOCATION, resultUrl);

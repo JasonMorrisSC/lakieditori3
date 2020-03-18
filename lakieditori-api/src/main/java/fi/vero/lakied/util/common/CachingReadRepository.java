@@ -4,6 +4,7 @@ import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.collect.ImmutableList;
 import fi.vero.lakied.util.criteria.Criteria;
+import fi.vero.lakied.util.security.User;
 import java.util.concurrent.ExecutionException;
 import java.util.stream.Stream;
 

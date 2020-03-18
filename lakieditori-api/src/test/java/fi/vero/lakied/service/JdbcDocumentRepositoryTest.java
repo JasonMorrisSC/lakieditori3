@@ -9,8 +9,8 @@ import fi.vero.lakied.service.document.JdbcDocumentWriteRepository;
 import fi.vero.lakied.service.user.JdbcUserWriteRepository;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
+import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -32,12 +32,12 @@ class JdbcDocumentRepositoryTest {
   private ReadRepository<UUID, Audited<Document>> documentReadRepository;
   private WriteRepository<UUID, Document> documentWriteRepository;
 
-  private User user = User.of("ExampleUser");
+  private User user = User.superuser("ExampleUser");
 
   @BeforeEach
   void setUp() {
     JdbcUserWriteRepository userWriteRepository = new JdbcUserWriteRepository(dataSource);
-    userWriteRepository.insert(user.getUsername(), user, user);
+    userWriteRepository.insert(UUID.randomUUID(), user, user);
 
     this.documentReadRepository = new JdbcDocumentReadRepository(dataSource);
     this.documentWriteRepository = new JdbcDocumentWriteRepository(dataSource);

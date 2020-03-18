@@ -1,6 +1,7 @@
 package fi.vero.lakied.util.common;
 
 import fi.vero.lakied.util.criteria.Criteria;
+import fi.vero.lakied.util.security.User;
 import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;

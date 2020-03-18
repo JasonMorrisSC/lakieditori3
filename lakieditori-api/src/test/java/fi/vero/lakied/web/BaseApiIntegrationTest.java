@@ -5,13 +5,14 @@ import static io.restassured.config.DecoderConfig.decoderConfig;
 import static io.restassured.config.EncoderConfig.encoderConfig;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
-import fi.vero.lakied.util.common.User;
 import fi.vero.lakied.util.common.WriteRepository;
+import fi.vero.lakied.util.security.User;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.RestAssuredConfig;
 import io.restassured.specification.RequestSpecification;
 import java.util.Base64;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public abstract class BaseApiIntegrationTest {
 
   @Autowired
-  private WriteRepository<String, User> userWriteRepository;
+  private WriteRepository<UUID, User> userWriteRepository;
 
   @Autowired
   private PasswordEncoder passwordEncoder;
@@ -38,6 +39,7 @@ public abstract class BaseApiIntegrationTest {
   @LocalServerPort
   private int serverPort;
 
+  private UUID testAdminId = UUID.randomUUID();
   private String testAdminUsername = "test-admin";
   private String testAdminPassword = "test-admin";
 
@@ -58,16 +60,16 @@ public abstract class BaseApiIntegrationTest {
   @BeforeAll
   public void insertTestUsers() {
     userWriteRepository.insert(
-        testAdminUsername,
-        User.of(testAdminUsername, passwordEncoder.encode(testAdminPassword)),
-        User.of("test-initializer"));
+        testAdminId,
+        User.superuser(testAdminUsername, passwordEncoder.encode(testAdminPassword)),
+        User.superuser("test-initializer"));
   }
 
   @AfterAll
   public void deleteTestUsers() {
     userWriteRepository.delete(
-        testAdminUsername,
-        User.of("test-cleaner"));
+        testAdminId,
+        User.superuser("test-cleaner"));
   }
 
   private String basicAuth(String username, String password) {

@@ -1,5 +1,7 @@
 package fi.vero.lakied.util.common;
 
+import fi.vero.lakied.util.security.User;
+
 public interface WriteRepository<K, V> {
 
   void insert(K key, V value, User user);
