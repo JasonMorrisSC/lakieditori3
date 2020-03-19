@@ -10,7 +10,7 @@ public final class BooleanUtils {
    * {@code true}. Returns {@code true} e.g. on {@code null} value or on "foo".
    */
   public static boolean parseWithDefaultTrue(String s) {
-    return s == null || s.equalsIgnoreCase("false");
+    return s == null || !s.equalsIgnoreCase("false");
   }
 
 }

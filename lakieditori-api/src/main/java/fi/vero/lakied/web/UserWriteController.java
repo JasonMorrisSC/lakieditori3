@@ -46,11 +46,11 @@ public class UserWriteController {
     userWriteRepository.insert(id,
         User.of(
             id,
-            XmlUtils.queryFirstText(user, "/user/username"),
+            XmlUtils.queryText(user, "/user/username"),
             passwordEncoder.encode(
-                XmlUtils.queryFirstText(user, "/user/password")),
-            Boolean.parseBoolean(XmlUtils.queryFirstText(user, "/user/superuser")),
-            BooleanUtils.parseWithDefaultTrue(XmlUtils.queryFirstText(user, "/user/enabled"))),
+                XmlUtils.queryText(user, "/user/password")),
+            Boolean.parseBoolean(XmlUtils.queryText(user, "/user/superuser")),
+            BooleanUtils.parseWithDefaultTrue(XmlUtils.queryText(user, "/user/enabled"))),
         principal);
 
     String resultUrl = "/api/users/" + id;
@@ -67,11 +67,11 @@ public class UserWriteController {
     userWriteRepository.update(id,
         User.of(
             id,
-            XmlUtils.queryFirstText(user, "/user/username"),
+            XmlUtils.queryText(user, "/user/username"),
             passwordEncoder.encode(
-                XmlUtils.queryFirstText(user, "/user/password")),
-            Boolean.parseBoolean(XmlUtils.queryFirstText(user, "/user/superuser")),
-            BooleanUtils.parseWithDefaultTrue(XmlUtils.queryFirstText(user, "/user/enabled"))),
+                XmlUtils.queryText(user, "/user/password")),
+            Boolean.parseBoolean(XmlUtils.queryText(user, "/user/superuser")),
+            BooleanUtils.parseWithDefaultTrue(XmlUtils.queryText(user, "/user/enabled"))),
         principal);
   }
 

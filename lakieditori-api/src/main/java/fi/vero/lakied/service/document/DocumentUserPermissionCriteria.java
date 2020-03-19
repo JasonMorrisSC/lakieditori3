@@ -23,4 +23,12 @@ public final class DocumentUserPermissionCriteria {
         permission.toString());
   }
 
+  public static SqlCriteria<Tuple3<UUID, String, Permission>, Empty> byDocumentId(
+      UUID documentId) {
+    return Criteria.sql(
+        (k, v) -> documentId.equals(k._1),
+        "document_id = ?",
+        documentId);
+  }
+
 }

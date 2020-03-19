@@ -38,7 +38,8 @@ public class JdbcDocumentUserPermissionReadRepository implements
     SqlCriteria<Tuple3<UUID, String, Permission>, Empty> sqlCriteria =
         (SqlCriteria<Tuple3<UUID, String, Permission>, Empty>) criteria;
     return JdbcUtils.queryForStream(jdbc.getDataSource(),
-        "select * from document_user_permission where " + sqlCriteria.sql(), sqlCriteria.args(),
+        "select * from document_user_permission where " + sqlCriteria.sql()
+            + " order by permission", sqlCriteria.args(),
         rowMapper);
   }
 

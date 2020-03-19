@@ -1,5 +1,7 @@
 package fi.vero.lakied.util.xml;
 
+import com.google.common.collect.AbstractIterator;
+import com.google.common.collect.Streams;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -29,6 +31,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 public final class XmlUtils {
@@ -130,11 +133,24 @@ public final class XmlUtils {
     }
   }
 
-  public static Node queryFirstNode(Node context, String xPathExpression) {
+  public static Node queryNode(Node context, String xPathExpression) {
     return (Node) query(context, xPathExpression, XPathConstants.NODE);
   }
 
-  public static String queryFirstText(Node context, String xPathExpression) {
+  public static Stream<Node> queryNodes(Node context, String xPathExpression) {
+    NodeList nodeList = (NodeList) query(context, xPathExpression, XPathConstants.NODESET);
+
+    return Streams.stream(new AbstractIterator<Node>() {
+      int i = 0;
+
+      @Override
+      protected Node computeNext() {
+        return i < nodeList.getLength() ? nodeList.item(i++) : endOfData();
+      }
+    });
+  }
+
+  public static String queryText(Node context, String xPathExpression) {
     return (String) query(context, xPathExpression, XPathConstants.STRING);
   }
 

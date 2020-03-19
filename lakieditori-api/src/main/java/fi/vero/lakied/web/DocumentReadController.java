@@ -1,6 +1,6 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.util.xml.XmlUtils.queryFirstText;
+import static fi.vero.lakied.util.xml.XmlUtils.queryText;
 
 import fi.vero.lakied.service.document.DocumentCriteria;
 import fi.vero.lakied.util.common.Audited;
@@ -59,7 +59,7 @@ public class DocumentReadController {
     try (Stream<Tuple2<UUID, Audited<Document>>> entries = documentReadRepository
         .entries(Criteria.matchAll(), user)) {
       return entries
-          .filter(entry -> number.equals(queryFirstText(entry._2.value, "/document/@number")))
+          .filter(entry -> number.equals(queryText(entry._2.value, "/document/@number")))
           .map(entry -> new XmlDocumentBuilder()
               .pushExternal(entry._2.value.getDocumentElement())
               .attribute("id", entry._1.toString())

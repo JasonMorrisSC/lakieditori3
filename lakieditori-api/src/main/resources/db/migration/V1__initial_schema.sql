@@ -1,4 +1,4 @@
-create table users
+CREATE TABLE users
 (
     id        uuid PRIMARY KEY,
     username  varchar(255) NOT NULL UNIQUE,
@@ -7,7 +7,9 @@ create table users
     enabled   boolean      NOT NULL
 );
 
-create table document
+CREATE INDEX users_username_idx ON users (username);
+
+CREATE TABLE document
 (
     id                 uuid PRIMARY KEY,
 
