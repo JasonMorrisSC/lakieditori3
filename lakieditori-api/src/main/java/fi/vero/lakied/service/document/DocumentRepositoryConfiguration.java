@@ -59,27 +59,25 @@ public class DocumentRepositoryConfiguration {
   @Bean
   public ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository(
       DataSource ds) {
-    PermissionEvaluator<UUID> documentPermissionEvaluator = documentPermissionEvaluator(ds);
-    // if document reading is allowed, user permission reading is allowed
-    PermissionEvaluator<Tuple3<UUID, String, Permission>> permissionPermissionEvaluator =
-        (user, id, p) -> documentPermissionEvaluator.hasPermission(user, id._1, p);
-
     return new AuthorizedReadRepository<>(
         new JdbcDocumentUserPermissionReadRepository(ds),
-        permissionPermissionEvaluator);
+        documentUserPermissionPermissionEvaluator(ds));
   }
 
   @Bean
   public WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository(
       DataSource ds) {
-    PermissionEvaluator<UUID> documentPermissionEvaluator = documentPermissionEvaluator(ds);
-    // if document writing is allowed, user permission writing is allowed
-    PermissionEvaluator<Tuple3<UUID, String, Permission>> permissionPermissionEvaluator =
-        (user, id, p) -> documentPermissionEvaluator.hasPermission(user, id._1, p);
-
     return new AuthorizedWriteRepository<>(
         new JdbcDocumentUserPermissionWriteRepository(ds),
-        permissionPermissionEvaluator);
+        documentUserPermissionPermissionEvaluator(ds));
+  }
+
+  @Bean
+  public PermissionEvaluator<Tuple3<UUID, String, Permission>> documentUserPermissionPermissionEvaluator(
+      DataSource ds) {
+    // delegate to document permission evaluator
+    PermissionEvaluator<UUID> documentPermissionEvaluator = documentPermissionEvaluator(ds);
+    return (user, id, p) -> documentPermissionEvaluator.hasPermission(user, id._1, p);
   }
 
   @Bean
