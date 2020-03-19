@@ -70,6 +70,12 @@ export const TableSmall = styled.table`
   & > tbody > tr > td.right {
     text-align: right; 
   };
+  & > thead > tr > th.center,
+  & > thead > tr > td.center,
+  & > tbody > tr > th.center,
+  & > tbody > tr > td.center {
+    text-align: center; 
+  };
 `;
 
 export const Table = styled.table`
@@ -91,5 +97,11 @@ export const Table = styled.table`
   & > tbody > tr > th.right,
   & > tbody > tr > td.right {
     text-align: right; 
+  };
+  & > thead > tr > th.center,
+  & > thead > tr > td.center,
+  & > tbody > tr > th.center,
+  & > tbody > tr > td.center {
+    text-align: center; 
   };
 `;

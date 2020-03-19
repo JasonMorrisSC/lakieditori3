@@ -43,11 +43,11 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
           onClick={() => history.push(`/documents/${id}/info`)}>
         Lisätietoja
       </Button.secondary>
-      <Button.secondary
+      <Button
           icon={"edit"}
           onClick={() => history.push(`/documents/${id}/edit`)}>
         Muokkaa
-      </Button.secondary>
+      </Button>
     </div>
   </div>;
 

@@ -7,8 +7,9 @@ import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
-import "./DocumentInfo.css";
 import {XmlViewProperties} from "../view/XmlViewProperties";
+import UserPermissions from "./UserPermissions";
+import {Table} from "../../common/StyledComponents";
 
 const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
@@ -43,26 +44,32 @@ const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   return (
       <LayoutWithRightBar topContent={topBar}>
         <div style={{margin: sdt.spacing.xl}}>
-          <Heading.h1hero>
+          <Heading.h1hero style={{margin: `${sdt.spacing.l} 0`}}>
             <small style={{color: sdt.colors.depthDark27}}>Lisätietoja</small>
             <br/>
             {title}
           </Heading.h1hero>
-          <br/>
-          <table>
+
+          <Table style={{tableLayout: 'fixed'}}>
             <tbody>
             <tr>
-              <th>Lisätty</th>
-              <td>{new Date(createdDate).toLocaleString('fi-Fi', {timeZone: "UTC"})}</td>
-              <td>{createdBy}</td>
+              <th>Muokattu</th>
+              <td>{lastModifiedBy}</td>
+              <td>{new Date(lastModifiedDate).toLocaleString('fi-FI', {timeZone: "UTC"})}</td>
             </tr>
             <tr>
-              <th>Muokattu</th>
-              <td>{new Date(lastModifiedDate).toLocaleString('fi-FI', {timeZone: "UTC"})}</td>
-              <td>{lastModifiedBy}</td>
+              <th>Lisätty</th>
+              <td>{createdBy}</td>
+              <td>{new Date(createdDate).toLocaleString('fi-Fi', {timeZone: "UTC"})}</td>
             </tr>
             </tbody>
-          </table>
+          </Table>
+
+          <Heading.h2 style={{margin: `${sdt.spacing.xl} 0 ${sdt.spacing.m} 0`}}>
+            Käyttöoikeudet
+          </Heading.h2>
+
+          <UserPermissions id={id}/>
         </div>
       </LayoutWithRightBar>
   );

@@ -57,6 +57,7 @@ public class DocumentUserPermissionWriteController {
             .flatMap(permission -> {
               String username = XmlUtils.queryText(permission, "@username");
               return Stream.of(XmlUtils.queryText(permission, "@value").split(","))
+                  .filter(s -> !s.isEmpty())
                   .map(Permission::valueOf)
                   .map(value -> Tuple.of(documentId, username, value));
             })
@@ -65,7 +66,8 @@ public class DocumentUserPermissionWriteController {
     Set<Tuple3<UUID, String, Permission>> oldPermissionSet;
     try (Stream<Tuple2<Tuple3<UUID, String, Permission>, Empty>> entries =
         documentUserPermissionReadRepository.entries(
-            DocumentUserPermissionCriteria.byDocumentId(documentId), user)) {
+            DocumentUserPermissionCriteria.byDocumentId(documentId),
+            User.superuser("permissionReader"))) {
       oldPermissionSet = entries.map(e -> e._1).collect(Collectors.toSet());
     }
 
