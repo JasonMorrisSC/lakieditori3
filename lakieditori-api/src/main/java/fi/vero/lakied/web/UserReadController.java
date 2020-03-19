@@ -49,7 +49,7 @@ public class UserReadController {
 
     userReadRepository.forEachEntry(principal.isSuperuser()
             ? UserCriteria.isEnabled(enabled)
-            : UserCriteria.byId(principal.getId()),
+            : UserCriteria.isEnabled(true),
         principal, (id, user) -> builder.pushExternal(user.toDocument()).pop());
 
     return builder.build();

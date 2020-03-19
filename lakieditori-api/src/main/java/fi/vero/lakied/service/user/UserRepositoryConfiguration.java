@@ -39,9 +39,7 @@ public class UserRepositoryConfiguration {
   private PermissionEvaluator<UUID> userPermissionEvaluator() {
     return new AnyPermissionEvaluator<>(
         new SuperuserPermissionEvaluator<>(),
-        // allow read to user's own information
-        (principal, userId, permission) ->
-            permission == Permission.READ && principal.getId().equals(userId)
+        (principal, userId, permission) -> permission == Permission.READ
     );
   }
 
