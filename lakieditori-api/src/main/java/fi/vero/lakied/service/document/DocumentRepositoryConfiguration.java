@@ -75,9 +75,15 @@ public class DocumentRepositoryConfiguration {
   @Bean
   public PermissionEvaluator<Tuple3<UUID, String, Permission>> documentUserPermissionPermissionEvaluator(
       DataSource ds) {
-    // delegate to document permission evaluator
+    // Delegate READ and UPDATE permissions to documentPermissionEvaluator. Inserting or deleting
+    // permissions requires also an UPDATE permission (inserting new documents is always allowed,
+    // but inserting new permissions for existing document should be allowed only if user can
+    // update the document, and deleting document means a different thing than deleting permissions).
     PermissionEvaluator<UUID> documentPermissionEvaluator = documentPermissionEvaluator(ds);
-    return (user, id, p) -> documentPermissionEvaluator.hasPermission(user, id._1, p);
+    return (user, id, p) ->
+        p == Permission.INSERT || p == Permission.DELETE ?
+            documentPermissionEvaluator.hasPermission(user, id._1, Permission.UPDATE) :
+            documentPermissionEvaluator.hasPermission(user, id._1, p);
   }
 
   @Bean
