@@ -2,13 +2,18 @@ import React from "react";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {ContentContainer, HeaderBackground, TopNavigationBackground} from "./components/common/StyledComponents";
+import {
+  ContentContainer,
+  HeaderBackground,
+  TopNavigationBackground
+} from "./components/common/StyledComponents";
 import About from "./components/about/About";
 import Home from "./components/home/Home";
 import Header from "./components/common/Header";
 import Navigation from "./components/common/Navigation";
 import DocumentList from "./components/documents/DocumentList";
 import DocumentContainer from "./components/documents/DocumentContainer";
+import Admin from "./components/admin/Admin";
 
 const App: React.FC = () => {
   const bodyText = tokens.values.typography.bodyText;
@@ -66,6 +71,9 @@ const App: React.FC = () => {
               </Route>
               <Route path="/about">
                 <About/>
+              </Route>
+              <Route path="/admin">
+                <Admin/>
               </Route>
               <Route path="/">
                 <Home/>
