@@ -4,8 +4,8 @@ import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
 import fi.vero.lakied.util.security.AnyPermissionEvaluator;
-import fi.vero.lakied.util.security.AuthorizedReadRepository;
-import fi.vero.lakied.util.security.AuthorizedWriteRepository;
+import fi.vero.lakied.util.security.KeyAuthorizingReadRepository;
+import fi.vero.lakied.util.security.KeyAuthorizingWriteRepository;
 import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.PermissionEvaluator;
 import fi.vero.lakied.util.security.SuperuserPermissionEvaluator;
@@ -22,7 +22,7 @@ public class UserRepositoryConfiguration {
   @Bean
   public ReadRepository<UUID, User> userReadRepository(DataSource ds) {
     return
-        new AuthorizedReadRepository<>(
+        new KeyAuthorizingReadRepository<>(
             new JdbcUserReadRepository(ds),
             userPermissionEvaluator());
   }
@@ -31,7 +31,7 @@ public class UserRepositoryConfiguration {
   public WriteRepository<UUID, User> userWriteRepository(DataSource ds,
       PlatformTransactionManager txm) {
     return
-        new AuthorizedWriteRepository<>(
+        new KeyAuthorizingWriteRepository<>(
             new TransactionalJdbcWriteRepository<>(new JdbcUserWriteRepository(ds), txm),
             userPermissionEvaluator());
   }

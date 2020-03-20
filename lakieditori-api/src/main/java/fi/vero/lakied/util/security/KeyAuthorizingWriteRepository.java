@@ -7,12 +7,12 @@ import org.springframework.security.access.AccessDeniedException;
  * Checks WRITE permission before operation, throws {@code AccessDeniedException} if permission is
  * missing.
  */
-public class AuthorizedWriteRepository<K, V> implements WriteRepository<K, V> {
+public class KeyAuthorizingWriteRepository<K, V> implements WriteRepository<K, V> {
 
   private final WriteRepository<K, V> delegate;
   private final PermissionEvaluator<K> permissionEvaluator;
 
-  public AuthorizedWriteRepository(
+  public KeyAuthorizingWriteRepository(
       WriteRepository<K, V> delegate,
       PermissionEvaluator<K> permissionEvaluator) {
     this.delegate = delegate;

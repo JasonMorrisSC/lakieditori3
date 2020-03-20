@@ -1,5 +1,5 @@
 import React from "react";
-import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
+import {Button, Dropdown, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
@@ -30,11 +30,34 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
 
   const id = queryFirstText(currentElement, "@id");
   const number = queryFirstText(currentElement, "@number");
+  const state = queryFirstText(currentElement, "@state");
   const title = queryFirstElement(currentElement, "title");
   const titleText = title?.textContent || '';
   const note = queryFirstElement(currentElement, "note");
   const intro = queryFirstElement(currentElement, "intro");
   const linkUrls = queryNodes(currentElement, '//a/@href').map(n => n.textContent || "");
+
+  function stateLabel(state: string) {
+    switch (state) {
+      case 'DRAFT':
+        return 'Luonnos';
+      case 'RECOMMENDATION':
+        return 'Suositus';
+      case 'DEPRECATED':
+        return 'Poistettu';
+      case 'UNSTABLE':
+      default:
+        return 'Kesken';
+    }
+  }
+
+  function updateDocumentState(newValue: string) {
+    updateDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+      newDocument.documentElement.setAttribute('state', newValue);
+      return newDocument;
+    });
+  }
 
   function updateTitle(newValue: string) {
     updateDocument((prevDocument) => {
@@ -106,7 +129,23 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
       <LayoutWithRightBar topContent={topBar} rhsContent={toc}>
         <article style={{margin: sdt.spacing.xl}}>
           <Heading.h1hero>
-            <small style={{color: sdt.colors.accentBase}}>{number}</small>
+            <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
+              <small style={{color: sdt.colors.accentBase}}>{number}</small>
+              <Dropdown name={stateLabel(state)} changeNameToSelection={false}>
+                <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
+                  {stateLabel('UNSTABLE')}
+                </Dropdown.item>
+                <Dropdown.item onSelect={() => updateDocumentState('DRAFT')}>
+                  {stateLabel('DRAFT')}
+                </Dropdown.item>
+                <Dropdown.item onSelect={() => updateDocumentState('RECOMMENDATION')}>
+                  {stateLabel('RECOMMENDATION')}
+                </Dropdown.item>
+                <Dropdown.item onSelect={() => updateDocumentState('DEPRECATED')}>
+                  {stateLabel('DEPRECATED')}
+                </Dropdown.item>
+              </Dropdown>
+            </div>
             <br/>
             <RichTextEditor
                 value={title}

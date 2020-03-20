@@ -6,16 +6,16 @@ import fi.vero.lakied.util.criteria.Criteria;
 import java.util.stream.Stream;
 
 /**
- * Filters out values that the user has no READ permission.
+ * Filters out entries that the user has no READ permission.
  */
-public class AuthorizedReadRepository<K, V> implements ReadRepository<K, V> {
+public class EntryAuthorizingReadRepository<K, V> implements ReadRepository<K, V> {
 
   private final ReadRepository<K, V> delegate;
-  private final PermissionEvaluator<K> permissionEvaluator;
+  private final PermissionEvaluator<Tuple2<K, V>> permissionEvaluator;
 
-  public AuthorizedReadRepository(
+  public EntryAuthorizingReadRepository(
       ReadRepository<K, V> delegate,
-      PermissionEvaluator<K> permissionEvaluator) {
+      PermissionEvaluator<Tuple2<K, V>> permissionEvaluator) {
     this.delegate = delegate;
     this.permissionEvaluator = permissionEvaluator;
   }
@@ -23,7 +23,7 @@ public class AuthorizedReadRepository<K, V> implements ReadRepository<K, V> {
   @Override
   public Stream<Tuple2<K, V>> entries(Criteria<K, V> criteria, User user) {
     return delegate.entries(criteria, user)
-        .filter(t -> permissionEvaluator.hasPermission(user, t._1, Permission.READ));
+        .filter(t -> permissionEvaluator.hasPermission(user, t, Permission.READ));
   }
 
 }
