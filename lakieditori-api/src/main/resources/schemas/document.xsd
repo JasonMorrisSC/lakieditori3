@@ -75,6 +75,7 @@
       <xs:attribute name="createdDate" type="xs:dateTime"/>
       <xs:attribute name="lastModifiedBy" type="xs:string"/>
       <xs:attribute name="lastModifiedDate" type="xs:dateTime"/>
+      <xs:attribute name="state" type="documentState" default="UNSTABLE"/>
     </xs:complexType>
     <xs:unique name="uniqueDocumentTitleLang">
       <xs:selector xpath="title"/>
@@ -89,6 +90,15 @@
       <xs:field xpath="@xml:lang"/>
     </xs:unique>
   </xs:element>
+
+  <xs:simpleType name="documentState">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="UNSTABLE"/>
+      <xs:enumeration value="DRAFT"/>
+      <xs:enumeration value="RECOMMENDATION"/>
+      <xs:enumeration value="DEPRECATED"/>
+    </xs:restriction>
+  </xs:simpleType>
 
   <xs:complexType name="chapterType">
     <xs:annotation>
