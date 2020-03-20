@@ -104,7 +104,13 @@ const UserPermissions: React.FC<Props> = ({id}) => {
           </tr>
           </thead>
           <tbody>
-          {queryElements(permissions.documentElement, 'permission').map((permission, i) => {
+          {queryElements(permissions.documentElement, 'permission')
+          .sort((a, b) => {
+            const aName = a.getAttribute('username') || '';
+            const bName = b.getAttribute('username') || '';
+            return aName < bName ? -1 : (aName > bName ? 1 : 0);
+          })
+          .map((permission, i) => {
             const username = permission.getAttribute('username') || '';
             return <tr key={i}>
               <th>{username}</th>

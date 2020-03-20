@@ -26,6 +26,7 @@ import RichTextEditor from "./richtext/RichTextEditor";
 import {useHistory} from "react-router-dom";
 import {buildNavigationTree} from "../../common/TableOfContentsUtils";
 import ConceptList from "../../common/ConceptList";
+import {DocumentState, parseDocumentState} from "../DocumentStateEnum";
 
 const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const history = useHistory();
@@ -38,20 +39,6 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
   const note = queryFirstElement(currentElement, "note");
   const intro = queryFirstElement(currentElement, "intro");
   const linkUrls = queryNodes(currentElement, '//a/@href').map(n => n.textContent || "");
-
-  function stateLabel(state: string) {
-    switch (state) {
-      case 'DRAFT':
-        return 'Luonnos';
-      case 'RECOMMENDATION':
-        return 'Suositus';
-      case 'DEPRECATED':
-        return 'Poistettu';
-      case 'UNSTABLE':
-      default:
-        return 'Kesken';
-    }
-  }
 
   function updateDocumentState(newValue: string) {
     updateDocument((prevDocument) => {
@@ -133,19 +120,19 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
           <Heading.h1hero>
             <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
               <small style={{color: sdt.colors.accentBase}}>{number}</small>
-              <Dropdown name={stateLabel(state)} changeNameToSelection={false}
+              <Dropdown name={parseDocumentState(state)} changeNameToSelection={false}
                         css={css`button { margin: 0; }`}>
                 <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
-                  {stateLabel('UNSTABLE')}
+                  {DocumentState.UNSTABLE}
                 </Dropdown.item>
                 <Dropdown.item onSelect={() => updateDocumentState('DRAFT')}>
-                  {stateLabel('DRAFT')}
+                  {DocumentState.DRAFT}
                 </Dropdown.item>
                 <Dropdown.item onSelect={() => updateDocumentState('RECOMMENDATION')}>
-                  {stateLabel('RECOMMENDATION')}
+                  {DocumentState.RECOMMENDATION}
                 </Dropdown.item>
                 <Dropdown.item onSelect={() => updateDocumentState('DEPRECATED')}>
-                  {stateLabel('DEPRECATED')}
+                  {DocumentState.DEPRECATED}
                 </Dropdown.item>
               </Dropdown>
             </div>

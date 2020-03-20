@@ -50,16 +50,16 @@ const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
             {title}
           </Heading.h1hero>
 
-          <Table style={{tableLayout: 'fixed'}}>
+          <Table>
             <tbody>
             <tr>
-              <th>Muokattu</th>
-              <td className={"right"}>{lastModifiedBy}</td>
+              <th style={{width: "15%"}}>Muokattu</th>
+              <td style={{width: "15%"}}>{lastModifiedBy}</td>
               <td>{new Date(lastModifiedDate).toLocaleString('fi-FI', {timeZone: "UTC"})}</td>
             </tr>
             <tr>
-              <th>Lisätty</th>
-              <td className={"right"}>{createdBy}</td>
+              <th style={{width: "15%"}}>Lisätty</th>
+              <td style={{width: "15%"}}>{createdBy}</td>
               <td>{new Date(createdDate).toLocaleString('fi-Fi', {timeZone: "UTC"})}</td>
             </tr>
             </tbody>

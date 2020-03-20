@@ -7,6 +7,7 @@ import {parseXml, toString, updateElement} from "../../utils/xmlUtils";
 import {Table} from "../common/StyledComponents";
 import {inputStyle} from "../common/inputStyle";
 import Layout from "../common/Layout";
+import {parseDocumentState} from "./DocumentStateEnum";
 
 const DocumentList: React.FC = () => {
   const history = useHistory();
@@ -54,10 +55,13 @@ const DocumentList: React.FC = () => {
           <thead>
           <tr>
             <th style={{width: "15%"}}>
-              Säädösnumero
+              Numero
+            </th>
+            <th style={{width: "35%"}}>
+              Nimi
             </th>
             <th>
-              Nimi
+              Tila
             </th>
             <th style={{width: "20%"}}>
               Viimeksi muokattu
@@ -79,7 +83,10 @@ const DocumentList: React.FC = () => {
               <td>
                 {e.getElementsByTagName('title')[0]!.textContent}
               </td>
-              <td style={{width: "20%"}}>
+              <td>
+                {parseDocumentState(e.getAttribute('state') || '')}
+              </td>
+              <td>
                 {lastModifiedDate ? new Date(lastModifiedDate).toLocaleString("fi-FI", {timeZone: "UTC"}) : ''}
               </td>
               <td style={{width: "12%"}} className={"right"}>
