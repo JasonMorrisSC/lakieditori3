@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import {css, jsx} from '@emotion/core'
 import React from "react";
 import {Button, Dropdown, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import "codemirror/lib/codemirror.css";
@@ -131,7 +133,8 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
           <Heading.h1hero>
             <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
               <small style={{color: sdt.colors.accentBase}}>{number}</small>
-              <Dropdown name={stateLabel(state)} changeNameToSelection={false}>
+              <Dropdown name={stateLabel(state)} changeNameToSelection={false}
+                        css={css`button { margin: 0; }`}>
                 <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
                   {stateLabel('UNSTABLE')}
                 </Dropdown.item>
