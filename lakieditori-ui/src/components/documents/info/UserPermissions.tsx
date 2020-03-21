@@ -134,12 +134,15 @@ const UserPermissions: React.FC<Props> = ({id}) => {
           </tbody>
         </Table>
         <br/>
-        <Dropdown name="Lisää käyttöoikeus">
+        <Dropdown name="Lisää käyttöoikeus" changeNameToSelection={false}>
           {queryElements(users.documentElement, 'user')
           .filter(user => !permissionsExistsFor(queryFirstText(user, 'username')))
           .map((user, i) => {
             const username = queryFirstText(user, 'username');
-            return <Dropdown.item key={i} onSelect={() => togglePermission(username, 'READ')}>
+            return <Dropdown.item key={i} onSelect={() => {
+              togglePermission(username, 'READ');
+              togglePermission(username, 'UPDATE');
+            }}>
               {username}
             </Dropdown.item>
           })}
