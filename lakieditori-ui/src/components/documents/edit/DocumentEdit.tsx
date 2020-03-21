@@ -120,7 +120,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
           <Heading.h1hero>
             <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
               <small style={{color: sdt.colors.accentBase}}>{number}</small>
-              <Dropdown name={parseDocumentState(state)} changeNameToSelection={false}
+              <Dropdown name={"Tila: " + parseDocumentState(state)} changeNameToSelection={false}
                         css={css`button { margin: 0; }`}>
                 <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
                   {DocumentState.UNSTABLE}
