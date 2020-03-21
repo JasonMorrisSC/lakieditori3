@@ -32,12 +32,11 @@ const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
           {title} / Lisätietoja
         </Text>
         <div>
-          <Button.secondaryNoborder
+          <Button.secondary
               icon={"close"}
-              style={{background: "none"}}
               onClick={() => history.push(`/documents/${id}`)}>
             Sulje
-          </Button.secondaryNoborder>
+          </Button.secondary>
         </div>
       </div>;
 

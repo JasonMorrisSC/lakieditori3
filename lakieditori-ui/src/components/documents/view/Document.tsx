@@ -37,17 +37,17 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   }}>
     <Text style={{maxWidth: "600px"}}>{titleText}</Text>
     <div>
-      <Button.secondary
+      <Button.secondaryNoborder
           icon={"info"}
-          style={{marginRight: sdt.spacing.xs}}
+          style={{background: 'none', marginRight: sdt.spacing.xs}}
           onClick={() => history.push(`/documents/${id}/info`)}>
         Lisätietoja
-      </Button.secondary>
-      <Button
+      </Button.secondaryNoborder>
+      <Button.secondary
           icon={"edit"}
           onClick={() => history.push(`/documents/${id}/edit`)}>
         Muokkaa
-      </Button>
+      </Button.secondary>
     </div>
   </div>;
 
