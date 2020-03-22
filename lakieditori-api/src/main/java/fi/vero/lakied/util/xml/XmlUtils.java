@@ -150,6 +150,10 @@ public final class XmlUtils {
     });
   }
 
+  public static boolean queryBoolean(Node context, String xPathExpression) {
+    return (boolean) query(context, xPathExpression, XPathConstants.BOOLEAN);
+  }
+
   public static String queryText(Node context, String xPathExpression) {
     return (String) query(context, xPathExpression, XPathConstants.STRING);
   }

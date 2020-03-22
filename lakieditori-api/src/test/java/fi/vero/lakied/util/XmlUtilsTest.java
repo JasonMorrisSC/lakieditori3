@@ -1,6 +1,7 @@
 package fi.vero.lakied.util;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import fi.vero.lakied.util.xml.XmlUtils;
@@ -24,6 +25,19 @@ class XmlUtilsTest {
 
     assertTrue(XmlUtils.queryText(document, "/hello/bar").isEmpty());
     assertTrue(XmlUtils.queryText(document, "/hello/@foo").isEmpty());
+  }
+
+  @Test
+  void shouldQueryBoolean() {
+    Document document = XmlUtils.parseUnchecked("<hello id=\"123\">World!</hello>");
+
+    assertTrue(XmlUtils.queryBoolean(document, "/hello = \"World!\""));
+    assertTrue(XmlUtils.queryBoolean(document, "/hello = 'World!'"));
+    assertTrue(XmlUtils.queryBoolean(document, "/hello/@id = \"123\""));
+
+    assertFalse(XmlUtils.queryBoolean(document, "/hello = \"Wor\""));
+    assertFalse(XmlUtils.queryBoolean(document, "/hello/bar = \"World!\""));
+    assertFalse(XmlUtils.queryBoolean(document, "/hello/@foo = \"123\""));
   }
 
 }

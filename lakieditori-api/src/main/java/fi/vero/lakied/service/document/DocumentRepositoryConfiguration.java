@@ -1,6 +1,9 @@
 package fi.vero.lakied.service.document;
 
 import static fi.vero.lakied.util.common.ResourceUtils.resourceToString;
+import static fi.vero.lakied.util.security.PermissionEvaluator.permitAuthenticated;
+import static fi.vero.lakied.util.security.PermissionEvaluator.permitInsert;
+import static fi.vero.lakied.util.security.PermissionEvaluator.permitRead;
 
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.Empty;
@@ -9,14 +12,11 @@ import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
-import fi.vero.lakied.util.security.AnyPermissionEvaluator;
 import fi.vero.lakied.util.security.EntryAuthorizingReadRepository;
-import fi.vero.lakied.util.security.InsertPermissionEvaluator;
 import fi.vero.lakied.util.security.KeyAuthorizingReadRepository;
 import fi.vero.lakied.util.security.KeyAuthorizingWriteRepository;
 import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.PermissionEvaluator;
-import fi.vero.lakied.util.security.SuperuserPermissionEvaluator;
 import fi.vero.lakied.util.xml.DocumentValidatingWriteRepository;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.UUID;
@@ -42,7 +42,7 @@ public class DocumentRepositoryConfiguration {
     return
         new EntryAuthorizingReadRepository<>(
             new JdbcDocumentReadRepository(ds),
-            documentReadPermissionEvaluator(ds));
+            documentEntryReadPermissionEvaluator(ds));
   }
 
   @Bean
@@ -59,62 +59,72 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository
-      (
-          DataSource ds) {
+  public ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository(
+      DataSource ds) {
     return new KeyAuthorizingReadRepository<>(
         new JdbcDocumentUserPermissionReadRepository(ds),
         documentUserPermissionPermissionEvaluator(ds));
   }
 
   @Bean
-  public WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository
-      (
-          DataSource ds) {
+  public WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository(
+      DataSource ds) {
     return new KeyAuthorizingWriteRepository<>(
         new JdbcDocumentUserPermissionWriteRepository(ds),
         documentUserPermissionPermissionEvaluator(ds));
   }
 
   @Bean
-  public PermissionEvaluator<Tuple3<UUID, String, Permission>> documentUserPermissionPermissionEvaluator
-      (
-          DataSource ds) {
-    // Delegate READ and UPDATE permissions to documentPermissionEvaluator. Inserting or deleting
-    // permissions requires also an UPDATE permission (inserting new documents is always allowed,
-    // but inserting new permissions for existing document should be allowed only if user can
-    // update the document, and deleting document means a different thing than deleting permissions).
-    PermissionEvaluator<UUID> documentPermissionEvaluator = documentPermissionEvaluator(ds);
-    return (user, id, p) ->
-        p == Permission.INSERT || p == Permission.DELETE ?
-            documentPermissionEvaluator.hasPermission(user, id._1, Permission.UPDATE) :
-            documentPermissionEvaluator.hasPermission(user, id._1, p);
+  public PermissionEvaluator<Tuple3<UUID, String, Permission>> documentUserPermissionPermissionEvaluator(
+      DataSource ds) {
+    // delegate to document evaluator by extracting a document id from the permission tuple
+    PermissionEvaluator<Tuple3<UUID, String, Permission>> delegate =
+        documentPermissionEvaluator(ds).mapObject(o -> o._1);
+
+    // document permission modifications always require an update permission to the document
+    return delegate
+        .mapPermission(p -> p == Permission.INSERT ? Permission.UPDATE : p)
+        .mapPermission(p -> p == Permission.DELETE ? Permission.UPDATE : p);
   }
 
   @Bean
-  public PermissionEvaluator<Tuple2<UUID, Audited<Document>>> documentReadPermissionEvaluator(
+  public PermissionEvaluator<Tuple2<UUID, Audited<Document>>> documentEntryReadPermissionEvaluator(
       DataSource ds) {
 
-    PermissionEvaluator<Tuple2<UUID, Audited<Document>>> allowReadsBasedOnDocumentState =
-        (user, entry, permission) -> {
-          String documentStateAttrValue = XmlUtils.queryText(entry._2.value, "/document/@state");
-          return permission == Permission.READ
-              && documentStateAttrValue.matches("DRAFT|RECOMMENDATION");
-        };
+    PermissionEvaluator<Tuple2<UUID, Audited<Document>>> permitRecommendation =
+        xPathPermissionEvaluator("/document/@state = 'RECOMMENDATION'").mapObject(t -> t._2.value);
+    PermissionEvaluator<Tuple2<UUID, Audited<Document>>> permitDraft =
+        xPathPermissionEvaluator("/document/@state = 'DRAFT'").mapObject(t -> t._2.value);
 
-    return new AnyPermissionEvaluator<>(
-        allowReadsBasedOnDocumentState,
-        (u, e, p) -> documentPermissionEvaluator(ds).hasPermission(u, e._1, p));
+    return PermissionEvaluator.<Tuple2<UUID, Audited<Document>>>denyAll()
+        // anyone can read recommendations
+        .or(permitRecommendation
+            .and(permitRead()))
+        // authenticated can read drafts
+        .or(permitDraft
+            .and(permitAuthenticated())
+            .and(permitRead()))
+        // otherwise delegate
+        .or(documentPermissionEvaluator(ds)
+            .mapObject(e -> e._1));
+  }
+
+  private PermissionEvaluator<Document> xPathPermissionEvaluator(String xPathExpression) {
+    return (u, o, p) -> XmlUtils.queryBoolean(o, xPathExpression);
   }
 
   @Bean
   public PermissionEvaluator<UUID> documentPermissionEvaluator(DataSource ds) {
-    return
-        new AnyPermissionEvaluator<>(
-            new SuperuserPermissionEvaluator<>(),
-            new InsertPermissionEvaluator<>(),
-            new DocumentUserPermissionEvaluator(
-                new JdbcDocumentUserPermissionReadRepository(ds)));
+    PermissionEvaluator<UUID> authenticated = PermissionEvaluator.permitAuthenticated();
+    PermissionEvaluator<UUID> userPermission =
+        new DocumentUserPermissionEvaluator(
+            new JdbcDocumentUserPermissionReadRepository(ds));
+
+    return PermissionEvaluator.<UUID>permitSuperuser()
+        // authenticated can create new docs
+        .or(authenticated.and(permitInsert()))
+        // otherwise check database for user specific permissions
+        .or(authenticated.and(userPermission));
   }
 
 }

@@ -1,14 +1,13 @@
 package fi.vero.lakied.service.user;
 
+import static fi.vero.lakied.util.security.PermissionEvaluator.permitRead;
+
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
-import fi.vero.lakied.util.security.AnyPermissionEvaluator;
 import fi.vero.lakied.util.security.KeyAuthorizingReadRepository;
 import fi.vero.lakied.util.security.KeyAuthorizingWriteRepository;
-import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.PermissionEvaluator;
-import fi.vero.lakied.util.security.SuperuserPermissionEvaluator;
 import fi.vero.lakied.util.security.User;
 import java.util.UUID;
 import javax.sql.DataSource;
@@ -37,10 +36,10 @@ public class UserRepositoryConfiguration {
   }
 
   private PermissionEvaluator<UUID> userPermissionEvaluator() {
-    return new AnyPermissionEvaluator<>(
-        new SuperuserPermissionEvaluator<>(),
-        (principal, userId, permission) -> permission == Permission.READ
-    );
+    PermissionEvaluator<UUID> superuser = PermissionEvaluator.permitSuperuser();
+    PermissionEvaluator<UUID> authenticated = PermissionEvaluator.permitAuthenticated();
+
+    return superuser.or(authenticated.and(permitRead()));
   }
 
 }
