@@ -1,6 +1,6 @@
 import styled from '@emotion/styled'
 import {css} from "@emotion/core";
-import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 
 export const panelWithBorderCss = css`
   background-color: ${tokens.colors.whiteBase};
@@ -48,6 +48,68 @@ export const ContentContainer = styled.div`
   padding: 0 ${tokens.spacing.m};
   width: 100%;
   max-width: 1200px;
+`;
+
+export const inputCss = css`
+  border: 1px solid ${tokens.colors.depthLight13};
+  border-radius: 2px;
+  box-sizing: border-box;
+  font-family: ${tokens.values.typography.bodyText.fontFamily};
+  font-size: ${tokens.values.typography.bodyText.fontSize.value}${tokens.values.typography.bodyText.fontSize.unit};
+  font-weight: ${tokens.values.typography.bodyText.fontWeight};
+  line-height: ${tokens.values.typography.bodyText.lineHeight.value};
+  margin: ${tokens.spacing.xxs} 0;
+  padding: ${tokens.spacing.s};
+  width: 100%;
+`;
+
+export const Input = styled.input`
+  ${inputCss}
+`;
+
+export const Heading1WithBottomBorder = styled(Heading.h1)`
+  border-bottom: 1px solid ${tokens.colors.depthLight13};
+  padding-bottom: ${tokens.spacing.s};
+`;
+
+export const Heading2WithBottomBorder = styled(Heading.h2)`
+  border-bottom: 1px solid ${tokens.colors.depthLight13};
+  padding-bottom: ${tokens.spacing.s};
+`;
+
+export const FlexRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  & > * {
+    flex: 1;
+  }
+  & > * + * {
+    margin-left: ${tokens.spacing.l};  
+  };
+  @media (max-width: 800px) {
+    display: block;
+    & > * + * {
+      margin-left: 0;
+      margin-top: ${tokens.spacing.l};
+    }
+  }
+`;
+
+export const FlexCol = styled.div`
+  display: flex;
+  flex-direction: column;
+  & > * + * {
+    margin-top: ${tokens.spacing.l};  
+  };
+`;
+
+export const FlexColTight = styled.div`
+  display: flex;
+  flex-direction: column;
+  & > * + * {
+    margin-top: ${tokens.spacing.m};  
+  };
 `;
 
 export const TableSmall = styled.table`
@@ -104,4 +166,28 @@ export const Table = styled.table`
   & > tbody > tr > td.center {
     text-align: center; 
   };
+`;
+
+export const LinkButton = styled.button`
+  background: none;
+  border: none;
+  color: ${tokens.colors.highlightBase};
+  cursor: pointer;
+  font-family: ${tokens.values.typography.bodyText.fontFamily};
+  font-size: ${tokens.values.typography.bodyText.fontSize.value}${tokens.values.typography.bodyText.fontSize.unit};
+  font-weight: ${tokens.values.typography.bodyText.fontWeight};
+  line-height: ${tokens.values.typography.bodyText.lineHeight.value};
+  padding: 0;
+`;
+
+export const LinkButtonSmall = styled.button`
+  background: none;
+  border: none;
+  color: ${tokens.colors.highlightBase};
+  cursor: pointer;
+  font-family: ${tokens.values.typography.bodyTextSmall.fontFamily};
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
+  font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
+  line-height: ${tokens.values.typography.bodyTextSmall.lineHeight.value};
+  padding: 0;
 `;

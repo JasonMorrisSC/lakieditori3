@@ -9,7 +9,7 @@ class XmlDocumentBuilderTest {
 
   @Test
   void shouldBuildDocument() {
-    XmlDocumentBuilder builder = new XmlDocumentBuilder();
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder();
     builder.pushElement("root");
     builder.attribute("id", "123");
 

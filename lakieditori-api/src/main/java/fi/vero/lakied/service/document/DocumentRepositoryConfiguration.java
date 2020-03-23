@@ -4,6 +4,7 @@ import static fi.vero.lakied.util.common.ResourceUtils.resourceToString;
 import static fi.vero.lakied.util.security.PermissionEvaluator.permitAuthenticated;
 import static fi.vero.lakied.util.security.PermissionEvaluator.permitInsert;
 import static fi.vero.lakied.util.security.PermissionEvaluator.permitRead;
+import static fi.vero.lakied.util.security.PermissionEvaluator.xPathPermissionEvaluator;
 
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.Empty;
@@ -42,7 +43,7 @@ public class DocumentRepositoryConfiguration {
     return
         new EntryAuthorizingReadRepository<>(
             new JdbcDocumentReadRepository(ds),
-            documentEntryReadPermissionEvaluator(ds));
+            documentEntryPermissionEvaluator(ds));
   }
 
   @Bean
@@ -88,7 +89,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public PermissionEvaluator<Tuple2<UUID, Audited<Document>>> documentEntryReadPermissionEvaluator(
+  public PermissionEvaluator<Tuple2<UUID, Audited<Document>>> documentEntryPermissionEvaluator(
       DataSource ds) {
 
     PermissionEvaluator<Tuple2<UUID, Audited<Document>>> permitRecommendation =
@@ -107,10 +108,6 @@ public class DocumentRepositoryConfiguration {
         // otherwise delegate
         .or(documentPermissionEvaluator(ds)
             .mapObject(e -> e._1));
-  }
-
-  private PermissionEvaluator<Document> xPathPermissionEvaluator(String xPathExpression) {
-    return (u, o, p) -> XmlUtils.queryBoolean(o, xPathExpression);
   }
 
   @Bean

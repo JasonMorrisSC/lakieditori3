@@ -32,7 +32,7 @@ public class ConceptReadController {
 
   @GetXmlMapping(params = "query")
   public Document query(@RequestParam("query") String query, @AuthenticationPrincipal User user) {
-    XmlDocumentBuilder builder = new XmlDocumentBuilder().pushElement("concepts");
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("concepts");
 
     if (!query.isEmpty()) {
       conceptReadRepository.forEachEntry(ConceptCriteria.byQuery(query), user,

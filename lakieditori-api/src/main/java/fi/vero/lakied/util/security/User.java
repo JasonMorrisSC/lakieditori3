@@ -90,7 +90,7 @@ public class User implements UserDetails {
   }
 
   public Document toDocument() {
-    return new XmlDocumentBuilder()
+    return XmlDocumentBuilder.builder()
         .pushElement("user").attribute("id", id.toString())
         .pushElement("username").text(username).pop()
         .pushElement("superuser").text(String.valueOf(isSuperuser())).pop()

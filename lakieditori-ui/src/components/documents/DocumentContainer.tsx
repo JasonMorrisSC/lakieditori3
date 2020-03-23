@@ -1,13 +1,17 @@
-import React, {useEffect, useState} from "react";
-import {Route, Switch, useParams, useRouteMatch} from "react-router-dom";
+import React, {useContext, useEffect, useState} from "react";
+import {Route, Switch, useHistory, useParams, useRouteMatch} from "react-router-dom";
 import axios from "axios";
 import {parseXml, toString} from "../../utils/xmlUtils";
 import DocumentEditSource from "./edit/DocumentEditSource";
 import DocumentEdit from "./edit/DocumentEdit";
 import DocumentInfo from "./info/DocumentInfo";
 import DocumentView from "./view/Document";
+import {AuthenticationContext} from "../../App";
 
 const DocumentContainer: React.FC = () => {
+  const history = useHistory();
+  const [user] = useContext(AuthenticationContext);
+
   const match = useRouteMatch();
   const {documentId} = useParams();
   const [document, setDocument] = useState<Document>(parseXml("<document/>"));
@@ -19,8 +23,14 @@ const DocumentContainer: React.FC = () => {
     }).then(res => {
       setDocument(res.data);
       setLastSavedDocument(res.data);
+    }).catch(error => {
+      if (error.response.status === 404) {
+        history.push("/documents");
+      } else {
+        return Promise.reject(error.response);
+      }
     });
-  }, [documentId]);
+  }, [documentId, user]);
 
   useEffect(() => {
     function saveDocument() {

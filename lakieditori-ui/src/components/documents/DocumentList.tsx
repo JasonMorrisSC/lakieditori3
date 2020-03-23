@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {Link, useHistory} from "react-router-dom";
 import axios from "axios";
 import Modal from "react-modal";
@@ -8,9 +8,12 @@ import {Table} from "../common/StyledComponents";
 import {inputStyle} from "../common/inputStyle";
 import Layout from "../common/Layout";
 import {parseDocumentState} from "./DocumentStateEnum";
+import {AuthenticationContext} from "../../App";
+import {NULL_USER} from "../../utils/User";
 
 const DocumentList: React.FC = () => {
   const history = useHistory();
+  const [user] = useContext(AuthenticationContext);
 
   const [documents, setDocuments] = useState<Element>(document.createElement("documents"));
 
@@ -24,7 +27,7 @@ const DocumentList: React.FC = () => {
     }).then(res => {
       setDocuments(res.data.documentElement);
     });
-  }, []);
+  }, [user]);
 
   function addNewDocument() {
     let newDocument = parseXml('<document><title/></document>');
@@ -66,7 +69,7 @@ const DocumentList: React.FC = () => {
             <th style={{width: "20%"}}>
               Viimeksi muokattu
             </th>
-            <th style={{width: "12%"}}/>
+            {user === NULL_USER ? <th style={{width: 0}}/> : <th style={{width: "12%"}}/>}
           </tr>
           </thead>
           <tbody>
@@ -89,21 +92,26 @@ const DocumentList: React.FC = () => {
               <td>
                 {lastModifiedDate ? new Date(lastModifiedDate).toLocaleString("fi-FI", {timeZone: "UTC"}) : ''}
               </td>
-              <td style={{width: "12%"}} className={"right"}>
-                <Button.secondaryNoborder
-                    icon={"remove"}
-                    onClick={() => removeDocument(id)}>
-                  Poista
-                </Button.secondaryNoborder>
-              </td>
+              {user === NULL_USER
+                  ? <td style={{width: 0}}/>
+                  : <td style={{width: "12%"}} className={"right"}>
+                    <Button.secondaryNoborder
+                        icon={"remove"}
+                        onClick={() => removeDocument(id)}>
+                      Poista
+                    </Button.secondaryNoborder>
+                  </td>
+              }
             </tr>
           })}
           </tbody>
         </Table>
 
-        <Button icon={"plus"} onClick={() => setModalIsOpen(true)}>
-          Lisää uusi lakiluonnos
-        </Button>
+        {user === NULL_USER ? '' :
+            <Button icon={"plus"} onClick={() => setModalIsOpen(true)}>
+              Lisää uusi lakiluonnos
+            </Button>
+        }
 
         <Modal isOpen={modalIsOpen} contentLabel="Lisää uusi lakiluonnos" style={{
           content: {

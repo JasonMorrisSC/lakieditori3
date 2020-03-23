@@ -39,7 +39,7 @@ public class DocumentReadController {
     try (Stream<Tuple2<UUID, Audited<Document>>> entries = documentReadRepository
         .entries(DocumentCriteria.byId(id), user)) {
       return entries
-          .map(entry -> new XmlDocumentBuilder()
+          .map(entry -> XmlDocumentBuilder.builder()
               .pushExternal(entry._2.value.getDocumentElement())
               .attribute("id", entry._1.toString())
               .attribute("createdBy", entry._2.createdBy)
@@ -60,7 +60,7 @@ public class DocumentReadController {
         .entries(Criteria.matchAll(), user)) {
       return entries
           .filter(entry -> number.equals(queryText(entry._2.value, "/document/@number")))
-          .map(entry -> new XmlDocumentBuilder()
+          .map(entry -> XmlDocumentBuilder.builder()
               .pushExternal(entry._2.value.getDocumentElement())
               .attribute("id", entry._1.toString())
               .attribute("createdBy", entry._2.createdBy)
@@ -75,7 +75,7 @@ public class DocumentReadController {
 
   @GetXmlMapping
   public Document getAll(@AuthenticationPrincipal User user) {
-    XmlDocumentBuilder builder = new XmlDocumentBuilder().pushElement("documents");
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("documents");
 
     documentReadRepository.forEachEntry(Criteria.matchAll(), user, (id, auditedDocument) -> {
       builder.pushExternal(auditedDocument.value.getDocumentElement())

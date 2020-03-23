@@ -3,6 +3,7 @@ package fi.vero.lakied.web;
 import fi.vero.lakied.service.user.UserCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
+import fi.vero.lakied.util.common.UUIDs;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
@@ -28,6 +29,16 @@ public class UserReadController {
     this.userReadRepository = userReadRepository;
   }
 
+  @GetXmlMapping("/whoami")
+  public Document get(@AuthenticationPrincipal User principal) {
+    return principal != null
+        ? principal.toDocument()
+        : XmlDocumentBuilder.builder()
+            .pushElement("user")
+            .attribute("id", UUIDs.nilUuid().toString())
+            .build();
+  }
+
   @GetXmlMapping("/{id}")
   public Document get(
       @PathVariable("id") UUID id,
@@ -45,12 +56,12 @@ public class UserReadController {
   public Document getAll(
       @RequestParam(name = "enabled", defaultValue = "true") boolean enabled,
       @AuthenticationPrincipal User principal) {
-    XmlDocumentBuilder builder = new XmlDocumentBuilder().pushElement("users");
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("users");
 
-    userReadRepository.forEachEntry(principal.isSuperuser()
-            ? UserCriteria.isEnabled(enabled)
-            : UserCriteria.isEnabled(true),
-        principal, (id, user) -> builder.pushExternal(user.toDocument()).pop());
+    userReadRepository.forEachEntry(
+        UserCriteria.isEnabled(enabled),
+        principal,
+        (id, user) -> builder.pushExternal(user.toDocument()).pop());
 
     return builder.build();
   }

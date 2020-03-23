@@ -9,9 +9,13 @@ public class XmlDocumentBuilder {
   private final Document document;
   private Node currentNode;
 
-  public XmlDocumentBuilder() {
+  private XmlDocumentBuilder() {
     this.document = XmlUtils.newDocument();
     this.currentNode = document;
+  }
+
+  public static XmlDocumentBuilder builder() {
+    return new XmlDocumentBuilder();
   }
 
   public XmlDocumentBuilder pushElement(String name) {

@@ -38,7 +38,7 @@ public class DocumentUserPermissionReadController {
       @PathVariable("documentId") UUID documentId,
       @AuthenticationPrincipal User user) {
 
-    XmlDocumentBuilder builder = new XmlDocumentBuilder();
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder();
     builder.pushElement("permissions");
 
     try (Stream<Tuple2<Tuple3<UUID, String, Permission>, Empty>> entries =

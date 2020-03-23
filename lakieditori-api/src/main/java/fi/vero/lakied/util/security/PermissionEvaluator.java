@@ -1,7 +1,9 @@
 package fi.vero.lakied.util.security;
 
+import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import org.w3c.dom.Document;
 
 public interface PermissionEvaluator<E> {
 
@@ -41,6 +43,10 @@ public interface PermissionEvaluator<E> {
 
   static <E> PermissionEvaluator<E> permitDelete() {
     return (u, o, p) -> p == Permission.DELETE;
+  }
+
+  static PermissionEvaluator<Document> xPathPermissionEvaluator(String xPathExpression) {
+    return (u, o, p) -> XmlUtils.queryBoolean(o, xPathExpression);
   }
 
   default PermissionEvaluator<E> and(PermissionEvaluator<E> evaluator) {

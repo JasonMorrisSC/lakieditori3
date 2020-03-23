@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useContext} from "react";
 import {useHistory} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import {
@@ -16,11 +16,14 @@ import TableOfContents from "../../common/TableOfContents";
 import {buildNavigationTree} from "../../common/TableOfContentsUtils";
 import {assertEquals} from "../../../utils/assertUtils";
 import ConceptList from "../../common/ConceptList";
+import {AuthenticationContext} from "../../../App";
+import {NULL_USER} from "../../../utils/User";
 
 const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   assertEquals("document", currentElement.tagName);
 
   const history = useHistory();
+  const [user] = useContext(AuthenticationContext);
 
   const id = queryFirstText(currentElement, "@id");
   const number = queryFirstText(currentElement, "@number");
@@ -51,6 +54,14 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
     </div>
   </div>;
 
+  const topBarTitleOnly = <div style={{
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "flex-end"
+  }}>
+    <Text style={{maxWidth: "600px"}}>{titleText}</Text>
+  </div>;
+
   const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`,}}>
     <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
     <hr/>
@@ -58,7 +69,8 @@ const Document: React.FC<XmlViewProperties> = ({currentElement}) => {
   </div>;
 
   return (
-      <LayoutWithRightBar topContent={topBar} rhsContent={toc}>
+      <LayoutWithRightBar topContent={user === NULL_USER ? topBarTitleOnly : topBar}
+                          rhsContent={toc}>
         <article className="document" style={{margin: sdt.spacing.xl}}>
           <Heading.h1hero>
             <small style={{color: sdt.colors.accentBase}}>{number}</small>

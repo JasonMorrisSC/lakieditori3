@@ -1,4 +1,4 @@
-import React from "react";
+import React, {Dispatch, SetStateAction} from "react";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
@@ -14,12 +14,15 @@ import Navigation from "./components/common/Navigation";
 import DocumentList from "./components/documents/DocumentList";
 import DocumentContainer from "./components/documents/DocumentContainer";
 import Admin from "./components/admin/Admin";
+import {NULL_USER, User} from "./utils/User";
+
+export const AuthenticationContext = React.createContext<[User, Dispatch<SetStateAction<User>>]>([NULL_USER, () => null]);
 
 const App: React.FC = () => {
   const bodyText = tokens.values.typography.bodyText;
 
   return (
-      <>
+      <AuthenticationContext.Provider value={React.useState<User>(NULL_USER)}>
         <Global styles={css`
             body {
               background-color: ${tokens.colors.depthLight30};
@@ -81,7 +84,7 @@ const App: React.FC = () => {
             </Switch>
           </ContentContainer>
         </Router>
-      </>
+      </AuthenticationContext.Provider>
   );
 };
 

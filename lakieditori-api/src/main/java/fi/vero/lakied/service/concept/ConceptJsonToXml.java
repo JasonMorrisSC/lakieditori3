@@ -27,7 +27,7 @@ public class ConceptJsonToXml implements Function<JsonObject, Document> {
     DocumentContext conceptJsonContext = JsonPath.parse(conceptObject.toString(),
         Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
 
-    XmlDocumentBuilder builder = new XmlDocumentBuilder();
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder();
 
     builder.pushElement("concept")
         .attribute("uri", conceptJsonContext.read("$.uri"));
