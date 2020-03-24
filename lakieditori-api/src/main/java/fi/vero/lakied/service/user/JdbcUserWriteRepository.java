@@ -17,14 +17,41 @@ public class JdbcUserWriteRepository implements WriteRepository<UUID, User> {
   @Override
   public void insert(UUID id, User value, User user) {
     jdbc.update(
-        "insert into users (id, username, password, superuser, enabled) values (?, ?, ?, ?, ?)",
-        id, value.getUsername(), value.getPassword(), value.isSuperuser(), value.isEnabled());
+        "insert into users ("
+            + "id, "
+            + "username, "
+            + "password, "
+            + "first_name, "
+            + "last_name, "
+            + "superuser, "
+            + "enabled) values (?, ?, ?, ?, ?, ?, ?)",
+        id,
+        value.getUsername(),
+        value.getPassword(),
+        value.getFirstName().orElse(null),
+        value.getLastName().orElse(null),
+        value.isSuperuser(),
+        value.isEnabled());
   }
 
   @Override
   public void update(UUID id, User value, User user) {
-    jdbc.update("update users set password = ?, superuser = ?, enabled = ? where id = ?",
-        value.getPassword(), value.isSuperuser(), value.isEnabled(), id);
+    jdbc.update(
+        "update users "
+            + "set username = ?, "
+            + "    password = ?, "
+            + "    first_name = ?, "
+            + "    last_name = ?, "
+            + "    superuser = ?, "
+            + "    enabled = ? "
+            + "where id = ?",
+        value.getUsername(),
+        value.getPassword(),
+        value.getFirstName().orElse(null),
+        value.getLastName().orElse(null),
+        value.isSuperuser(),
+        value.isEnabled(),
+        id);
   }
 
   @Override

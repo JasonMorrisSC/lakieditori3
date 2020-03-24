@@ -22,13 +22,15 @@ public class JdbcUserReadRepository implements ReadRepository<UUID, User> {
     this.jdbc = new JdbcTemplate(dataSource);
     this.rowMapper = (rs, rowNum) -> Tuple.of(
         UUID.fromString(rs.getString("id")),
-        User.of(
-            UUID.fromString(rs.getString("id")),
-            rs.getString("username"),
-            rs.getString("password"),
-            rs.getBoolean("superuser"),
-            rs.getBoolean("enabled")
-        ));
+        User.builder()
+            .id(UUID.fromString(rs.getString("id")))
+            .username(rs.getString("username"))
+            .password(rs.getString("password"))
+            .firstName(rs.getString("first_name"))
+            .lastName(rs.getString("last_name"))
+            .superuser(rs.getBoolean("superuser"))
+            .enabled(rs.getBoolean("enabled"))
+            .build());
   }
 
   @Override

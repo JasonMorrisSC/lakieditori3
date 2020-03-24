@@ -20,6 +20,8 @@ const Admin: React.FC = () => {
   const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
   const [newUserUsername, setNewUserUsername] = useState<string>('');
   const [newUserPassword, setNewUserPassword] = useState<string>('');
+  const [newUserFirstName, setNewUserFirstName] = useState<string>('');
+  const [newUserLastName, setNewUserLastName] = useState<string>('');
 
   useEffect(() => {
     if (load) {
@@ -33,14 +35,18 @@ const Admin: React.FC = () => {
   }, [load]);
 
   function addNewUser() {
-    let newUser = parseXml('<user><username/><password/></user>');
+    let newUser = parseXml('<user><username/><password/><firstName/><lastName/></user>');
 
     updateElement(newUser, "/user/username", (e) => e.textContent = newUserUsername);
     updateElement(newUser, "/user/password", (e) => e.textContent = newUserPassword);
+    updateElement(newUser, "/user/firstName", (e) => e.textContent = newUserFirstName);
+    updateElement(newUser, "/user/lastName", (e) => e.textContent = newUserLastName);
 
     axios.post('/api/users', toString(newUser), {
       headers: {'Content-Type': 'text/xml'}
     }).then(() => {
+      setNewUserFirstName('');
+      setNewUserLastName('');
       setNewUserUsername('');
       setNewUserPassword('');
       setModalOpen(false);
@@ -88,6 +94,20 @@ const Admin: React.FC = () => {
       </Heading.h1>
 
       <hr/>
+
+      <div style={{marginTop: tokens.spacing.m}}>
+        <label htmlFor="newUserFirstNameInput">Etunimi</label>
+        <input type="text" name="newUserFirstNameInput" style={inputStyle}
+               value={newUserFirstName}
+               onChange={(e) => setNewUserFirstName(e.currentTarget.value)}/>
+      </div>
+
+      <div style={{marginTop: tokens.spacing.m, marginBottom: tokens.spacing.m}}>
+        <label htmlFor="newUserLastNameInput">Sukunimi</label>
+        <input type="text" name="newUserLastNameInput" style={inputStyle}
+               value={newUserLastName}
+               onChange={(e) => setNewUserLastName(e.currentTarget.value)}/>
+      </div>
 
       <div style={{marginTop: tokens.spacing.m}}>
         <label htmlFor="newUserUsernameInput">Käyttäjätunnus</label>

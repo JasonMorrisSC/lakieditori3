@@ -22,7 +22,10 @@ const Header: React.FC = () => {
     }).then(res => {
       const id = queryFirstText(res.data, '/user/@id');
       setUser(id === nilUuid ? NULL_USER : {
-        username: queryFirstText(res.data, '/user/username')
+        username: queryFirstText(res.data, '/user/username'),
+        firstName: queryFirstText(res.data, '/user/firstName'),
+        lastName: queryFirstText(res.data, '/user/lastName'),
+        superuser: queryFirstText(res.data, '/user/superuser') === 'true',
       });
     });
   }, [setUser]);
@@ -40,11 +43,22 @@ const Header: React.FC = () => {
       headers: {'Content-Type': 'multipart/form-data'}
     })
     .then(() => {
-      setUser({username});
+      return axios.get('/api/users/whoami', {
+        responseType: 'document'
+      })
+    })
+    .then(res => {
+      const id = queryFirstText(res.data, '/user/@id');
+      setUser(id === nilUuid ? NULL_USER : {
+        username: queryFirstText(res.data, '/user/username'),
+        firstName: queryFirstText(res.data, '/user/firstName'),
+        lastName: queryFirstText(res.data, '/user/lastName'),
+        superuser: queryFirstText(res.data, '/user/superuser') === 'true',
+      });
       setLoginModalIsOpen(false);
     })
-    .catch(() => {
-      console.warn("Login failed");
+    .catch(res => {
+      console.warn("Login failed", res);
     });
   };
 
@@ -84,7 +98,9 @@ const Header: React.FC = () => {
                   Kirjaudu
                 </Button>
                 : <span>
-                  {user.username}
+                  {user.firstName && user.lastName
+                      ? (user.firstName + " " + user.lastName)
+                      : user.username}
                   <br/>
                   <LinkButtonSmall
                       style={{textTransform: "uppercase", lineHeight: 1.2}}

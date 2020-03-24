@@ -1,11 +1,9 @@
 package fi.vero.lakied.web;
 
-import fi.vero.lakied.util.common.BooleanUtils;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.PutXmlMapping;
-import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,13 +42,7 @@ public class UserWriteController {
     UUID id = UUID.randomUUID();
 
     userWriteRepository.insert(id,
-        User.of(
-            id,
-            XmlUtils.queryText(user, "/user/username"),
-            passwordEncoder.encode(
-                XmlUtils.queryText(user, "/user/password")),
-            Boolean.parseBoolean(XmlUtils.queryText(user, "/user/superuser")),
-            BooleanUtils.parseWithDefaultTrue(XmlUtils.queryText(user, "/user/enabled"))),
+        User.fromDocument(id, user, passwordEncoder),
         principal);
 
     String resultUrl = "/api/users/" + id;
@@ -65,13 +57,7 @@ public class UserWriteController {
       @RequestBody Document user,
       @AuthenticationPrincipal User principal) {
     userWriteRepository.update(id,
-        User.of(
-            id,
-            XmlUtils.queryText(user, "/user/username"),
-            passwordEncoder.encode(
-                XmlUtils.queryText(user, "/user/password")),
-            Boolean.parseBoolean(XmlUtils.queryText(user, "/user/superuser")),
-            BooleanUtils.parseWithDefaultTrue(XmlUtils.queryText(user, "/user/enabled"))),
+        User.fromDocument(id, user, passwordEncoder),
         principal);
   }
 

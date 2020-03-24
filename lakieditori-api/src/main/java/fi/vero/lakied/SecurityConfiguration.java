@@ -14,7 +14,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.event.AbstractAuthenticationEvent;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -35,6 +37,11 @@ public class SecurityConfiguration {
   @Autowired
   public SecurityConfiguration(ReadRepository<UUID, User> userReadRepository) {
     this.userReadRepository = userReadRepository;
+  }
+
+  @EventListener
+  public void logAuthenticationEvent(AbstractAuthenticationEvent event) {
+    log.info("{}", event.toString());
   }
 
   @Bean

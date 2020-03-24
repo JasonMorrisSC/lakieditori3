@@ -30,7 +30,7 @@ const DocumentContainer: React.FC = () => {
         return Promise.reject(error.response);
       }
     });
-  }, [documentId, user]);
+  }, [documentId, user, history]);
 
   useEffect(() => {
     function saveDocument() {

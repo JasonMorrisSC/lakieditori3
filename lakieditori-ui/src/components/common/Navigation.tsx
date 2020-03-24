@@ -1,8 +1,11 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import {Link, useRouteMatch} from "react-router-dom";
 import {suomifiDesignTokens as tokens} from 'suomifi-ui-components';
+import {AuthenticationContext} from "../../App";
 
 const Navigation: React.FC = () => {
+  const [user] = useContext(AuthenticationContext);
+
   return (
       <nav>
         <ul style={{
@@ -20,6 +23,11 @@ const Navigation: React.FC = () => {
           <li>
             <NavigationLink to="/about" label="Ohjeet ja tuki"/>
           </li>
+          {user.superuser ?
+              <li>
+                <NavigationLink to="/admin" label="Ylläpito"/>
+              </li>
+              : ''}
         </ul>
       </nav>
   );

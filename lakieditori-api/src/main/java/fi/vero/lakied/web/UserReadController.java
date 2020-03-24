@@ -23,6 +23,10 @@ import org.w3c.dom.Document;
 public class UserReadController {
 
   private final ReadRepository<UUID, User> userReadRepository;
+  private final Document nullUser = XmlDocumentBuilder.builder()
+      .pushElement("user")
+      .attribute("id", UUIDs.nilUuid().toString())
+      .build();
 
   @Autowired
   public UserReadController(ReadRepository<UUID, User> userReadRepository) {
@@ -33,10 +37,7 @@ public class UserReadController {
   public Document get(@AuthenticationPrincipal User principal) {
     return principal != null
         ? principal.toDocument()
-        : XmlDocumentBuilder.builder()
-            .pushElement("user")
-            .attribute("id", UUIDs.nilUuid().toString())
-            .build();
+        : nullUser;
   }
 
   @GetXmlMapping("/{id}")
