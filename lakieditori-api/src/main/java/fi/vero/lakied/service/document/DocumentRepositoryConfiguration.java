@@ -60,6 +60,27 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
+  public ReadRepository<UUID, Audited<Document>> documentVersionReadRepository(DataSource ds) {
+    return
+        new EntryAuthorizingReadRepository<>(
+            new JdbcDocumentVersionReadRepository(ds),
+            documentPermissionEvaluator(ds).mapObject(t -> t._1));
+  }
+
+  @Bean
+  public WriteRepository<UUID, Document> documentVersionWriteRepository(
+      PlatformTransactionManager txm,
+      DataSource ds) {
+    return
+        new KeyAuthorizingWriteRepository<>(
+            new DocumentValidatingWriteRepository<>(
+                new TransactionalJdbcWriteRepository<>(
+                    new JdbcDocumentVersionWriteRepository(ds), txm),
+                documentSchema()),
+            documentPermissionEvaluator(ds));
+  }
+
+  @Bean
   public ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository(
       DataSource ds) {
     return new KeyAuthorizingReadRepository<>(
