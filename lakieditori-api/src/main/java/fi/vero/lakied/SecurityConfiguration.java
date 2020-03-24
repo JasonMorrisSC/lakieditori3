@@ -7,6 +7,7 @@ import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
 import fi.vero.lakied.service.user.UserCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
+import fi.vero.lakied.util.security.AuthenticationEventPrinter;
 import fi.vero.lakied.util.security.User;
 import java.util.UUID;
 import org.slf4j.Logger;
@@ -41,7 +42,7 @@ public class SecurityConfiguration {
 
   @EventListener
   public void logAuthenticationEvent(AbstractAuthenticationEvent event) {
-    log.info("{}", event.toString());
+    log.info(AuthenticationEventPrinter.prettyPrint(event));
   }
 
   @Bean
