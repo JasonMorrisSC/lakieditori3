@@ -17,7 +17,7 @@ const Header: React.FC = () => {
   const [password, setPassword] = useState('');
 
   useEffect(() => {
-    axios.get('/api/users/whoami', {
+    axios.get('/api/whoami', {
       responseType: 'document'
     }).then(res => {
       const id = queryFirstText(res.data, '/user/@id');
@@ -43,7 +43,7 @@ const Header: React.FC = () => {
       headers: {'Content-Type': 'multipart/form-data'}
     })
     .then(() => {
-      return axios.get('/api/users/whoami', {
+      return axios.get('/api/whoami', {
         responseType: 'document'
       })
     })
@@ -64,8 +64,13 @@ const Header: React.FC = () => {
 
   const logout = () => {
     axios.post('/api/logout')
-    .catch(() => {
-      console.warn("Logout failed");
+    .then(() => {
+      return axios.get('/api/whoami', {
+        responseType: 'document'
+      });
+    })
+    .catch(res => {
+      console.warn("Logout failed", res);
     })
     .finally(() => {
       setUser(NULL_USER);

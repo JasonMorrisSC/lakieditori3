@@ -3,7 +3,6 @@ package fi.vero.lakied.web;
 import fi.vero.lakied.service.user.UserCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.UUIDs;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
@@ -23,21 +22,10 @@ import org.w3c.dom.Document;
 public class UserReadController {
 
   private final ReadRepository<UUID, User> userReadRepository;
-  private final Document nullUser = XmlDocumentBuilder.builder()
-      .pushElement("user")
-      .attribute("id", UUIDs.nilUuid().toString())
-      .build();
 
   @Autowired
   public UserReadController(ReadRepository<UUID, User> userReadRepository) {
     this.userReadRepository = userReadRepository;
-  }
-
-  @GetXmlMapping("/whoami")
-  public Document get(@AuthenticationPrincipal User principal) {
-    return principal != null
-        ? principal.toDocument()
-        : nullUser;
   }
 
   @GetXmlMapping("/{id}")
