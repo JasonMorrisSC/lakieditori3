@@ -1,7 +1,10 @@
 package fi.vero.lakied.util.xml;
 
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Streams;
+import fi.vero.lakied.util.common.StreamUtils;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -9,6 +12,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.XMLConstants;
 import javax.xml.namespace.QName;
@@ -30,6 +37,7 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
@@ -138,16 +146,7 @@ public final class XmlUtils {
   }
 
   public static Stream<Node> queryNodes(Node context, String xPathExpression) {
-    NodeList nodeList = (NodeList) query(context, xPathExpression, XPathConstants.NODESET);
-
-    return Streams.stream(new AbstractIterator<Node>() {
-      int i = 0;
-
-      @Override
-      protected Node computeNext() {
-        return i < nodeList.getLength() ? nodeList.item(i++) : endOfData();
-      }
-    });
+    return asStream((NodeList) query(context, xPathExpression, XPathConstants.NODESET));
   }
 
   public static boolean queryBoolean(Node context, String xPathExpression) {
@@ -166,6 +165,157 @@ public final class XmlUtils {
     } catch (XPathExpressionException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static Stream<Node> asStream(NodeList nodeList) {
+    return Streams.stream(new AbstractIterator<Node>() {
+      int i = 0;
+
+      @Override
+      protected Node computeNext() {
+        return i < nodeList.getLength() ? nodeList.item(i++) : endOfData();
+      }
+    });
+  }
+
+  public static boolean isDocumentNode(Node node) {
+    return node.getNodeType() == Node.DOCUMENT_NODE;
+  }
+
+  public static boolean isTextNode(Node node) {
+    return node.getNodeType() == Node.TEXT_NODE;
+  }
+
+  public static boolean isElementNode(Node node) {
+    return node.getNodeType() == Node.ELEMENT_NODE;
+  }
+
+  public static String getPath(Node node) {
+    Node parent = node.getParentNode();
+    if (parent == null) {
+      return isElementNode(node) ? node.getNodeName() : "";
+    }
+    return getPath(parent) + "/" + node.getNodeName();
+  }
+
+  public static List<Difference> textDiff(Document left, Document right) {
+    return textDiff(
+        left.getDocumentElement(),
+        right.getDocumentElement());
+  }
+
+  public static List<Difference> textDiff(Element left, Element right) {
+    if (left.getTagName().equals(right.getTagName())) {
+      return StreamUtils.zipFull(
+          asStream(left.getChildNodes()),
+          asStream(right.getChildNodes()),
+          XmlUtils::textDiff)
+          .flatMap(Collection::stream)
+          .collect(Collectors.toList());
+    }
+
+    if (!left.getTextContent().equals(right.getTextContent())) {
+      return Collections.singletonList(
+          new Difference(
+              getPath(left), left.getTextContent(),
+              getPath(right), right.getTextContent()));
+    }
+
+    // tag names etc. might differ but text contents are same
+    return Collections.emptyList();
+  }
+
+  public static List<Difference> textDiff(Node left, Node right) {
+    Preconditions
+        .checkArgument(left != null || right != null, "Both arguments should not be null.");
+
+    if (left == null) {
+      return right.getTextContent().isEmpty()
+          ? Collections.emptyList()
+          : Collections.singletonList(
+              new Difference("", "", getPath(right), right.getTextContent()));
+    }
+
+    if (right == null) {
+      return left.getTextContent().isEmpty()
+          ? Collections.emptyList()
+          : Collections.singletonList(
+              new Difference(getPath(left), left.getTextContent(), "", ""));
+    }
+
+    if (isElementNode(left) && isElementNode(right)) {
+      return textDiff((Element) left, (Element) right);
+    }
+
+    if (!left.getTextContent().equals(right.getTextContent())) {
+      return Collections.singletonList(
+          new Difference(
+              getPath(left), left.getTextContent(),
+              getPath(right), right.getTextContent()));
+    }
+
+    return Collections.emptyList();
+  }
+
+  public static class Difference {
+
+    private final String leftPath;
+    private final String leftText;
+
+    private final String rightPath;
+    private final String rightText;
+
+    public Difference(
+        String leftPath,
+        String leftText,
+        String rightPath,
+        String rightText) {
+      this.leftPath = leftPath;
+      this.leftText = leftText;
+      this.rightPath = rightPath;
+      this.rightText = rightText;
+    }
+
+    public String getLeftPath() {
+      return leftPath;
+    }
+
+    public String getLeftText() {
+      return leftText;
+    }
+
+    public String getRightPath() {
+      return rightPath;
+    }
+
+    public String getRightText() {
+      return rightText;
+    }
+
+    @Override
+    public String toString() {
+      return MoreObjects.toStringHelper(this)
+          .add("leftPath", leftPath)
+          .add("leftText", leftText)
+          .add("rightPath", rightPath)
+          .add("rightText", rightText)
+          .toString();
+    }
+
+    public Document toDocument() {
+      return XmlDocumentBuilder.builder()
+          .pushElement("difference")
+          .pushElement("left")
+          .pushElement("path").text(leftPath).pop()
+          .pushElement("text").text(leftText).pop()
+          .pop()
+          .pushElement("right")
+          .pushElement("path").text(rightPath).pop()
+          .pushElement("text").text(rightText).pop()
+          .pop()
+          .build();
+    }
+
   }
 
 }

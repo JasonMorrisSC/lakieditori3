@@ -20,11 +20,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/documents/{id}/versions")
+@RequestMapping("/api/documents/{id}")
 public class DocumentVersionReadController {
 
   private final ReadRepository<UUID, Audited<Document>> documentVersionReadRepository;
@@ -35,7 +36,7 @@ public class DocumentVersionReadController {
     this.documentVersionReadRepository = documentVersionReadRepository;
   }
 
-  @GetXmlMapping
+  @GetXmlMapping("/versions")
   public Document getDocumentVersions(
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
@@ -70,10 +71,10 @@ public class DocumentVersionReadController {
     return builder.build();
   }
 
-  @GetXmlMapping("/{number}")
-  public Document getDocumentVersionByNumber(
+  @GetXmlMapping("/versions/{number}")
+  public Document getDocumentVersion(
       @PathVariable("id") UUID id,
-      @PathVariable("number") Integer number,
+      @PathVariable("number") Long number,
       @AuthenticationPrincipal User user) {
 
     if (number < 1) {
@@ -113,6 +114,39 @@ public class DocumentVersionReadController {
           })
           .orElseThrow(InternalServerErrorException::new);
     }
+  }
+
+  @GetXmlMapping(path = "/diff", params = {"leftVersion", "rightVersion"})
+  public Document getDocumentVersionDiff(
+      @PathVariable("id") UUID id,
+      @RequestParam("leftVersion") Long leftVersionNumber,
+      @RequestParam("rightVersion") Long rightVersionNumber,
+      @AuthenticationPrincipal User user) {
+
+    long versionCount = documentVersionReadRepository.count(DocumentCriteria.byId(id), user);
+
+    if (versionCount == 0) {
+      throw new NotFoundException();
+    }
+
+    if (leftVersionNumber > versionCount || rightVersionNumber > versionCount) {
+      throw new BadRequestException();
+    }
+
+    Document left = getDocumentVersion(id, leftVersionNumber, user);
+    Document right = getDocumentVersion(id, rightVersionNumber, user);
+
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder()
+        .pushElement("differences")
+        .attribute("documentId", id.toString())
+        .attribute("leftVersion", leftVersionNumber.toString())
+        .attribute("rightVersion", rightVersionNumber.toString());
+
+    XmlUtils.textDiff(left, right).forEach(difference -> {
+      builder.pushExternal(difference.toDocument()).pop();
+    });
+
+    return builder.build();
   }
 
 }

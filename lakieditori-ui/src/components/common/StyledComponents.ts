@@ -168,6 +168,18 @@ export const Table = styled.table`
   };
 `;
 
+export const TableStyleRow = styled.div`
+  border-bottom: 1px solid ${tokens.colors.depthLight26};
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  & > * {
+    flex: 1;
+    padding: ${tokens.spacing.s};
+  } 
+`;
+
 export const LinkButton = styled.button`
   background: none;
   border: none;
