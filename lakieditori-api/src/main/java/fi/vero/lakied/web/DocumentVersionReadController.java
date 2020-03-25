@@ -12,8 +12,9 @@ import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
+import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.UUID;
-import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,7 +40,9 @@ public class DocumentVersionReadController {
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
 
-    if (documentVersionReadRepository.count(DocumentCriteria.byId(id), user) == 0) {
+    long versionCount = documentVersionReadRepository.count(DocumentCriteria.byId(id), user);
+
+    if (versionCount == 0) {
       throw new NotFoundException();
     }
 
@@ -48,7 +51,7 @@ public class DocumentVersionReadController {
     try (Stream<Tuple2<UUID, Audited<Document>>> entries = documentVersionReadRepository
         .entries(DocumentCriteria.byId(id), user)) {
 
-      Stream<Integer> indexStream = IntStream.iterate(1, i -> i + 1).boxed();
+      Stream<Long> indexStream = LongStream.iterate(versionCount, i -> i - 1).boxed();
 
       Streams
           .zip(entries, indexStream, (idValue, index) -> Tuple.of(idValue._1, index, idValue._2))
@@ -59,6 +62,8 @@ public class DocumentVersionReadController {
               .attribute("createdDate", idIndexValue._3.createdDate.toString())
               .attribute("lastModifiedBy", idIndexValue._3.lastModifiedBy)
               .attribute("lastModifiedDate", idIndexValue._3.lastModifiedDate.toString())
+              .appendExternal(idIndexValue._3.value != null ? XmlUtils
+                  .queryNodes(idIndexValue._3.value, "/document/title") : Stream.empty())
               .pop());
     }
 
@@ -75,9 +80,9 @@ public class DocumentVersionReadController {
       throw new BadRequestException("Version number can't be less than one.");
     }
 
-    long maxNumber = documentVersionReadRepository.count(DocumentCriteria.byId(id), user);
+    long versionCount = documentVersionReadRepository.count(DocumentCriteria.byId(id), user);
 
-    if (number > maxNumber) {
+    if (number > versionCount) {
       throw new NotFoundException();
     }
 
@@ -85,7 +90,7 @@ public class DocumentVersionReadController {
         .entries(DocumentCriteria.byId(id), user)) {
 
       return entries
-          .skip(maxNumber - number)
+          .skip(versionCount - number)
           .findFirst()
           .map(entry -> {
             XmlDocumentBuilder builder = XmlDocumentBuilder.builder();

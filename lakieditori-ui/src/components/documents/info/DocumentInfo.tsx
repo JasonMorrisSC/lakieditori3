@@ -10,6 +10,7 @@ import LayoutWithRightBar from "../../common/LayoutWithRightBar";
 import {XmlViewProperties} from "../view/XmlViewProperties";
 import UserPermissions from "./UserPermissions";
 import {Table} from "../../common/StyledComponents";
+import VersionHistory from "./VersionHistory";
 
 const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
   const history = useHistory();
@@ -69,6 +70,12 @@ const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
           </Heading.h2>
 
           <UserPermissions id={id}/>
+
+          <Heading.h2 style={{margin: `${sdt.spacing.xl} 0 ${sdt.spacing.m} 0`}}>
+            Muutoshistoria
+          </Heading.h2>
+
+          <VersionHistory id={id}/>
         </div>
       </LayoutWithRightBar>
   );

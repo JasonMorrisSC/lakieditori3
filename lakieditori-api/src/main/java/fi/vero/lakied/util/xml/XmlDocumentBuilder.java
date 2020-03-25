@@ -1,5 +1,6 @@
 package fi.vero.lakied.util.xml;
 
+import java.util.stream.Stream;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -29,6 +30,11 @@ public class XmlDocumentBuilder {
 
   public XmlDocumentBuilder pushExternal(Node node) {
     currentNode = currentNode.appendChild(document.importNode(node, true));
+    return this;
+  }
+
+  public XmlDocumentBuilder appendExternal(Stream<Node> nodes) {
+    nodes.forEach(node -> currentNode.appendChild(document.importNode(node, true)));
     return this;
   }
 
