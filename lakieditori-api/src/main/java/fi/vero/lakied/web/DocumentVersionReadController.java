@@ -133,8 +133,12 @@ public class DocumentVersionReadController {
       throw new BadRequestException();
     }
 
-    Document left = getDocumentVersion(id, leftVersionNumber, user);
-    Document right = getDocumentVersion(id, rightVersionNumber, user);
+    Document left = leftVersionNumber == 0
+        ? XmlUtils.parseUnchecked("<document></document>")
+        : getDocumentVersion(id, leftVersionNumber, user);
+    Document right = rightVersionNumber == 0
+        ? XmlUtils.parseUnchecked("<document></document>")
+        : getDocumentVersion(id, rightVersionNumber, user);
 
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder()
         .pushElement("differences")
