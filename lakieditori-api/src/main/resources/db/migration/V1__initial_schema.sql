@@ -28,10 +28,13 @@ CREATE TABLE document
 );
 
 
+-- sequence for revisions to ensure temporal ordering and unique key
+CREATE SEQUENCE document_revision_seq;
+
 CREATE TABLE document_version
 (
     id                 uuid,
-    revision           bigserial,
+    revision           bigint DEFAULT nextval('document_revision_seq'),
 
     created_by         varchar(255) NOT NULL,
     created_date       timestamp    NOT NULL,
