@@ -7,6 +7,7 @@ import DocumentEdit from "./edit/DocumentEdit";
 import DocumentInfo from "./info/DocumentInfo";
 import DocumentView from "./view/Document";
 import {AuthenticationContext} from "../../App";
+import DocumentEdit3 from "./edit/DocumentEdit3";
 
 const DocumentContainer: React.FC = () => {
   const history = useHistory();
@@ -14,6 +15,7 @@ const DocumentContainer: React.FC = () => {
 
   const match = useRouteMatch();
   const {documentId} = useParams();
+  const [referenceDocument, setReferenceDocument] = useState<Document>(parseXml("<document/>"));
   const [document, setDocument] = useState<Document>(parseXml("<document/>"));
   const [lastSavedDocument, setLastSavedDocument] = useState<Document>(parseXml("<document/>"));
 
@@ -23,6 +25,7 @@ const DocumentContainer: React.FC = () => {
     }).then(res => {
       setDocument(res.data);
       setLastSavedDocument(res.data);
+      setReferenceDocument(res.data);
     }).catch(error => {
       if (error.response.status === 404) {
         history.push("/documents");
@@ -58,6 +61,14 @@ const DocumentContainer: React.FC = () => {
     </Route>
     <Route path={`${match.path}/edit`}>
       <DocumentEdit
+          document={document}
+          currentElement={document.documentElement}
+          currentPath={"/document"}
+          updateDocument={setDocument}/>
+    </Route>
+    <Route path={`${match.path}/edit3`}>
+      <DocumentEdit3
+          referenceCurrentElement={referenceDocument.documentElement}
           document={document}
           currentElement={document.documentElement}
           currentPath={"/document"}

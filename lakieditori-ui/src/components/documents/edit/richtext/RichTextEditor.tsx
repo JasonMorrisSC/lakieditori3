@@ -15,7 +15,15 @@ import Toolbar from "./RichTextEditorToolbar";
 import HoveringToolbar from "./RichTextEditorHoveringToolbar";
 import axios from "axios";
 
-const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
+interface Props {
+  value: Element | null,
+  placeholder?: string,
+  onChange?: (newValue: string) => void,
+  style?: CSSProperties,
+  showToolbar?: boolean,
+}
+
+const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style, showToolbar = true}) => {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
   const [concepts, setConcepts] = useState<string[]>([]);
@@ -133,20 +141,13 @@ const RichTextEditor: React.FC<Props> = ({value, onChange = () => null, placehol
                 }
               }}
           />
-          <div style={{display: focused ? 'block' : 'none'}}>
+          <div style={{display: focused && showToolbar ? 'block' : 'none'}}>
             <Toolbar/>
           </div>
         </Slate>
       </div>
   );
 };
-
-interface Props {
-  value: Element | null,
-  placeholder?: string,
-  onChange?: (newValue: string) => void,
-  style?: CSSProperties
-}
 
 const withInlineLinks = (editor: ReactEditor): ReactEditor => {
   const {isInline} = editor;

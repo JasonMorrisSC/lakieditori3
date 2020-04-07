@@ -96,6 +96,25 @@ export const FlexRow = styled.div`
   }
 `;
 
+export const FlexRowTight = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  & > * {
+    flex: 1;
+  }
+  & > * + * {
+    margin-left: ${tokens.spacing.m};  
+  };
+  @media (max-width: 800px) {
+    display: block;
+    & > * + * {
+      margin-left: 0;
+      margin-top: ${tokens.spacing.m};
+    }
+  }
+`;
+
 export const FlexCol = styled.div`
   display: flex;
   flex-direction: column;
