@@ -2,19 +2,14 @@ import React, {Dispatch, SetStateAction} from "react";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {
-  ContentContainer,
-  HeaderBackground,
-  TopNavigationBackground
-} from "./components/common/StyledComponents";
 import About from "./components/about/About";
 import Home from "./components/home/Home";
-import Header from "./components/common/Header";
-import Navigation from "./components/common/Navigation";
-import DocumentList from "./components/documents/DocumentList";
-import DocumentContainer from "./components/documents/DocumentContainer";
+import Header from "./components/header/Header";
+import DocumentList from "./components/document/list/DocumentList";
 import Admin from "./components/admin/Admin";
 import {NULL_USER, User} from "./utils/User";
+import {Container} from "./components/common/StyledComponents";
+import DocumentRoutes from "./components/document/DocumentRoutes";
 
 export const AuthenticationContext = React.createContext<[User, Dispatch<SetStateAction<User>>]>([NULL_USER, () => null]);
 
@@ -48,26 +43,29 @@ const App: React.FC = () => {
               border-bottom: 1px solid ${tokens.colors.depthLight26};
               margin: ${tokens.spacing.m} 0;
             }
+            label {
+              font-weight: ${tokens.values.typography.bodySemiBold.fontWeight}
+            }
+            ul, ol {
+              margin: 0;
+              padding: 0;
+            }
+            li {
+              margin: 0;
+              padding: 0;            
+            }
+            p {
+              margin: ${tokens.spacing.m} 0;
+            }
           `}
         />
 
         <Router>
-          <HeaderBackground>
-            <ContentContainer>
-              <Header/>
-            </ContentContainer>
-          </HeaderBackground>
-
-          <TopNavigationBackground>
-            <ContentContainer>
-              <Navigation/>
-            </ContentContainer>
-          </TopNavigationBackground>
-
-          <ContentContainer>
+          <Header/>
+          <Container>
             <Switch>
               <Route path="/documents/:documentId">
-                <DocumentContainer/>
+                <DocumentRoutes/>
               </Route>
               <Route path="/documents">
                 <DocumentList/>
@@ -82,7 +80,7 @@ const App: React.FC = () => {
                 <Home/>
               </Route>
             </Switch>
-          </ContentContainer>
+          </Container>
         </Router>
       </AuthenticationContext.Provider>
   );

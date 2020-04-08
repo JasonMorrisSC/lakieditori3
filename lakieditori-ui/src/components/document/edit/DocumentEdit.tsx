@@ -26,7 +26,7 @@ import RichTextEditor from "./richtext/RichTextEditor";
 import {useHistory} from "react-router-dom";
 import {buildNavigationTree} from "../../common/TableOfContentsUtils";
 import ConceptList from "../../common/ConceptList";
-import {DocumentState, parseDocumentState} from "../DocumentStateEnum";
+import {DocumentState, parseDocumentState} from "../DocumentTypes";
 
 const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
   const history = useHistory();

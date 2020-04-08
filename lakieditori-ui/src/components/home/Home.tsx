@@ -1,10 +1,17 @@
 import React from "react";
-import Layout from "../common/Layout";
+import {PageHeading, Panel} from "../common/StyledComponents";
 
 const Home: React.FC = () => {
-  return <Layout title="Etusivu">
-    Verkkopalvelu lakiehdotusten työstämiseen.
-  </Layout>;
+  return (
+      <main>
+        <PageHeading>
+          Etusivu
+        </PageHeading>
+        <Panel>
+          Verkkopalvelu lakiehdotusten työstämiseen.
+        </Panel>
+      </main>
+  );
 };
 
 export default Home;

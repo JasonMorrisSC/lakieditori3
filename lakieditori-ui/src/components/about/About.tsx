@@ -1,10 +1,18 @@
 import React from "react";
-import Layout from "../common/Layout";
+import {PageHeading, Panel} from "../common/StyledComponents";
 
 const About: React.FC = () => {
-  return <Layout title="Ohjeet ja tuki">
-    Verkkopalvelu lakiehdotusten työstämiseen.
-  </Layout>;
+  return (
+      <main>
+        <PageHeading>
+          Ohjeet ja tuki
+        </PageHeading>
+        <Panel>
+          Verkkopalvelu lakiehdotusten työstämiseen.
+        </Panel>
+      </main>
+  );
+
 };
 
 export default About;

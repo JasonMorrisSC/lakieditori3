@@ -1,19 +1,15 @@
 import React, {useContext} from 'react';
-import {Link, useRouteMatch} from "react-router-dom";
+import {useRouteMatch} from "react-router-dom";
 import {suomifiDesignTokens as tokens} from 'suomifi-ui-components';
 import {AuthenticationContext} from "../../App";
+import {StyledNavigationLink} from "./HeaderStyles";
 
 const Navigation: React.FC = () => {
   const [user] = useContext(AuthenticationContext);
 
   return (
       <nav>
-        <ul style={{
-          display: 'flex',
-          listStyle: 'none',
-          margin: 0,
-          padding: 0,
-        }}>
+        <ul style={{display: 'flex', listStyle: 'none'}}>
           <li>
             <NavigationLink to="/" label="Etusivu"/>
           </li>
@@ -23,40 +19,35 @@ const Navigation: React.FC = () => {
           <li>
             <NavigationLink to="/about" label="Ohjeet ja tuki"/>
           </li>
-          {user.superuser ?
-              <li>
-                <NavigationLink to="/admin" label="Ylläpito"/>
-              </li>
-              : ''}
+          {
+            user.superuser &&
+            <li>
+              <NavigationLink to="/admin" label="Ylläpito"/>
+            </li>
+          }
         </ul>
       </nav>
   );
 };
 
-const NavigationLink: React.FC<Props> = ({to, label}) => {
+interface NavigationLinkProps {
+  to: string;
+  label: string;
+}
+
+const NavigationLink: React.FC<NavigationLinkProps> = ({to, label}) => {
   let match = useRouteMatch({
     path: to,
     exact: to === '/'
   });
 
   return (
-      <Link to={to} style={{
-        color: tokens.colors.blackBase,
+      <StyledNavigationLink to={to} style={{
         borderBottom: match ? `4px solid ${tokens.colors.highlightBase}` : `none`,
-        lineHeight: 2.5,
-        padding: `${tokens.spacing.s} 0`,
-        marginRight: tokens.spacing.l,
-        textDecoration: 'none',
-        whiteSpace: 'nowrap',
       }}>
         {label}
-      </Link>
+      </StyledNavigationLink>
   );
 };
-
-interface Props {
-  to: string;
-  label: string;
-}
 
 export default Navigation;

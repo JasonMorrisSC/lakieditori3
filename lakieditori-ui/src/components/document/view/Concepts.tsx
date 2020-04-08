@@ -1,10 +1,15 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
 import {suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
-import {queryFirstText} from "../../utils/xmlUtils";
-import {ElementViewProps} from "../document/view/elements/ElementViewProps";
+import {queryFirstText, queryNodes} from "../../../utils/xmlUtils";
+import {ElementViewProps} from "./elements/ElementViewProps";
 
-const ConceptList: React.FC<Props> = ({urls}) => {
+interface Props {
+  document: Document
+}
+
+const Concepts: React.FC<Props> = ({document}) => {
+  const urls = queryNodes(document.documentElement, "//a/@href").map(n => n.textContent || "");
   const [concepts, setConcepts] = useState<Element[]>([]);
 
   useEffect(() => {
@@ -40,10 +45,6 @@ const ConceptList: React.FC<Props> = ({urls}) => {
   );
 };
 
-interface Props {
-  urls: string[]
-}
-
 const Concept: React.FC<ElementViewProps> = ({element}) => {
   const uri = element.getAttribute("uri") || '';
   const label = queryFirstText(element, "label");
@@ -77,4 +78,4 @@ const Concept: React.FC<ElementViewProps> = ({element}) => {
   );
 };
 
-export default ConceptList;
+export default Concepts;

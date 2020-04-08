@@ -1,9 +1,5 @@
 import React, {useEffect, useState} from "react";
 import axios from "axios";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/theme/eclipse.css";
-import "codemirror/mode/xml/xml";
 import {
   cloneDocument,
   countNodes,

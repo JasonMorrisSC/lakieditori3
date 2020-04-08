@@ -1,9 +1,10 @@
 import React from "react";
 import sanitizeHtml from 'sanitize-html';
 
-/**
- * Sanitizes and renders element's inner HTML.
- */
+interface Props {
+  element: Element | null;
+}
+
 const SanitizedHtml: React.FC<Props> = ({element}) => {
   const clean = sanitizeHtml(element?.innerHTML || '', {
     allowedTags: ['em', 'strong', 'a'],
@@ -14,9 +15,5 @@ const SanitizedHtml: React.FC<Props> = ({element}) => {
 
   return <span dangerouslySetInnerHTML={{__html: clean}}/>;
 };
-
-interface Props {
-  element: Element | null;
-}
 
 export default SanitizedHtml;

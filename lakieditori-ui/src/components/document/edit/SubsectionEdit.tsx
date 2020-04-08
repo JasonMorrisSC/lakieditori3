@@ -34,7 +34,7 @@ const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement
         {/*
         <ul style={{padding: 0}}>
           {queryElements(document, currentElement, 'paragraph').map((paragraph, i) => {
-            return <Paragraph key={i} paragraph={paragraph}/>
+            return <ParagraphElement key={i} paragraph={paragraph}/>
           })}
         </ul>
         */}

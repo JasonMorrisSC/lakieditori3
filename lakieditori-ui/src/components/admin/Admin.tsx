@@ -1,141 +1,58 @@
-import React, {useEffect, useState} from "react";
-import Layout from "../common/Layout";
+import React, {useState} from "react";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {Table} from "../common/StyledComponents";
-import axios from "axios";
-import {
-  parseXml,
-  queryElements,
-  queryFirstText,
-  toString,
-  updateElement
-} from "../../utils/xmlUtils";
-import Modal from "react-modal";
-import {inputStyle} from "../common/inputStyle";
+import {PageHeading, Panel, Table} from "../common/StyledComponents";
+import {queryElements, queryFirstText} from "../../utils/xmlUtils";
+import {useUsers} from "./useUsers";
+import AddUserModal from "./AddUserModal";
 
 const Admin: React.FC = () => {
-  const [load, setLoad] = useState<boolean>(true);
-  const [users, setUsers] = useState<Document>(parseXml("<users/>"));
+  const {users, saveUser} = useUsers();
+  const [isModalOpen, setModalOpen] = useState(false);
 
-  const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
-  const [newUserUsername, setNewUserUsername] = useState<string>('');
-  const [newUserPassword, setNewUserPassword] = useState<string>('');
-  const [newUserFirstName, setNewUserFirstName] = useState<string>('');
-  const [newUserLastName, setNewUserLastName] = useState<string>('');
+  const usernameComparator = (a: Element, b: Element): number => {
+    const aName = queryFirstText(a, 'username') || '';
+    const bName = queryFirstText(b, 'username') || '';
+    return aName < bName ? -1 : (aName > bName ? 1 : 0);
+  };
 
-  useEffect(() => {
-    if (load) {
-      setLoad(false);
-      axios.get('/api/users/', {
-        responseType: 'document'
-      }).then(res => {
-        setUsers(res.data);
-      });
-    }
-  }, [load]);
+  const renderUserRow = (user: Element, i: number) => {
+    const username = queryFirstText(user, 'username');
+    const superuser = queryFirstText(user, 'superuser') === 'true';
 
-  function addNewUser() {
-    let newUser = parseXml('<user><username/><password/><firstName/><lastName/></user>');
+    return (
+        <tr key={i}>
+          <td>{username} {superuser ? '(pääkäyttäjä)' : ''}</td>
+        </tr>
+    );
+  };
 
-    updateElement(newUser, "/user/username", (e) => e.textContent = newUserUsername);
-    updateElement(newUser, "/user/password", (e) => e.textContent = newUserPassword);
-    updateElement(newUser, "/user/firstName", (e) => e.textContent = newUserFirstName);
-    updateElement(newUser, "/user/lastName", (e) => e.textContent = newUserLastName);
+  return (
+      <main>
+        <PageHeading>
+          Ylläpito
+        </PageHeading>
+        <Panel>
+          <Heading.h2>Käyttäjät</Heading.h2>
 
-    axios.post('/api/users', toString(newUser), {
-      headers: {'Content-Type': 'text/xml'}
-    }).then(() => {
-      setNewUserFirstName('');
-      setNewUserLastName('');
-      setNewUserUsername('');
-      setNewUserPassword('');
-      setModalOpen(false);
-      setLoad(true);
-    });
-  }
+          <Table style={{margin: `${tokens.spacing.m} 0 ${tokens.spacing.l}`}}>
+            <tbody>
+            {queryElements(users.documentElement, 'user')
+            .sort(usernameComparator)
+            .map(renderUserRow)}
+            </tbody>
+          </Table>
 
-  return <Layout title="Ylläpito">
-    <Heading.h2>Käyttäjät</Heading.h2>
-    <Table style={{margin: `${tokens.spacing.m} 0 ${tokens.spacing.l}`}}>
-      <tbody>
-      {queryElements(users.documentElement, 'user')
-      .sort((a, b) => {
-        const aName = queryFirstText(a, 'username') || '';
-        const bName = queryFirstText(b, 'username') || '';
-        return aName < bName ? -1 : (aName > bName ? 1 : 0);
-      })
-      .map((user, i) => {
-        const username = queryFirstText(user, 'username');
-        const superuser = queryFirstText(user, 'superuser') === 'true';
+          <Button icon={'plus'} onClick={() => setModalOpen(true)}>
+            Lisää käyttäjä
+          </Button>
 
-        return (
-            <tr key={i}>
-              <td>{username} {superuser ? '(pääkäyttäjä)' : ''}</td>
-            </tr>
-        );
-      })}
-      </tbody>
-    </Table>
-    <Button icon={'plus'} onClick={() => setModalOpen(true)}>Lisää käyttäjä</Button>
-
-    <Modal isOpen={isModalOpen} contentLabel="Lisää uusi käyttäjä" style={{
-      content: {
-        display: "flex",
-        flexDirection: "column",
-        height: "60%",
-        marginLeft: "auto",
-        marginRight: "auto",
-        maxWidth: 800,
-        padding: `${tokens.spacing.l}`,
-      }
-    }}>
-      <Heading.h1>
-        Lisää uusi käyttäjä
-      </Heading.h1>
-
-      <hr/>
-
-      <div style={{marginTop: tokens.spacing.m}}>
-        <label htmlFor="newUserFirstNameInput">Etunimi</label>
-        <input type="text" name="newUserFirstNameInput" style={inputStyle}
-               value={newUserFirstName}
-               onChange={(e) => setNewUserFirstName(e.currentTarget.value)}/>
-      </div>
-
-      <div style={{marginTop: tokens.spacing.m, marginBottom: tokens.spacing.m}}>
-        <label htmlFor="newUserLastNameInput">Sukunimi</label>
-        <input type="text" name="newUserLastNameInput" style={inputStyle}
-               value={newUserLastName}
-               onChange={(e) => setNewUserLastName(e.currentTarget.value)}/>
-      </div>
-
-      <div style={{marginTop: tokens.spacing.m}}>
-        <label htmlFor="newUserUsernameInput">Käyttäjätunnus</label>
-        <input type="text" name="newUserUsernameInput" style={inputStyle}
-               value={newUserUsername}
-               onChange={(e) => setNewUserUsername(e.currentTarget.value)}/>
-      </div>
-
-      <div style={{flex: 1, marginTop: tokens.spacing.m}}>
-        <label htmlFor="newUserPasswordInput">Salasana</label>
-        <input type="password" name="newUserPasswordInput" style={inputStyle}
-               value={newUserPassword}
-               onChange={(e) => setNewUserPassword(e.currentTarget.value)}/>
-      </div>
-
-      <div style={{flex: "0", marginTop: tokens.spacing.m}}>
-        <Button icon={"plus"} onClick={addNewUser}>
-          Lisää
-        </Button>
-        <Button.secondaryNoborder
-            icon={"close"}
-            onClick={() => setModalOpen(false)}
-            style={{marginLeft: tokens.spacing.xs}}>
-          Peruuta
-        </Button.secondaryNoborder>
-      </div>
-    </Modal>
-  </Layout>;
+          <AddUserModal
+              isModalOpen={isModalOpen}
+              setModalOpen={setModalOpen}
+              saveUser={saveUser}/>
+        </Panel>
+      </main>
+  );
 };
 
 export default Admin;

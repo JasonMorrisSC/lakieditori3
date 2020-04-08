@@ -7,21 +7,26 @@ import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
-import {XmlViewProperties} from "../view/XmlViewProperties";
 import UserPermissions from "./UserPermissions";
 import {Table} from "../../common/StyledComponents";
 import VersionHistory from "./VersionHistory";
+import {useDocument} from "../useDocument";
 
-const DocumentInfo: React.FC<XmlViewProperties> = ({currentElement}) => {
+interface Props {
+  id: string,
+}
+
+const DocumentInfo: React.FC<Props> = ({id}) => {
   const history = useHistory();
+  const {document} = useDocument(id);
+  const element = document.documentElement;
 
-  const id = queryFirstText(currentElement, "@id");
-  const title = queryFirstText(currentElement, "title");
+  const title = queryFirstText(element, "title");
 
-  const createdBy = queryFirstText(currentElement, "@createdBy");
-  const createdDate = queryFirstText(currentElement, "@createdDate");
-  const lastModifiedBy = queryFirstText(currentElement, "@lastModifiedBy");
-  const lastModifiedDate = queryFirstText(currentElement, "@lastModifiedDate");
+  const createdBy = queryFirstText(element, "@createdBy");
+  const createdDate = queryFirstText(element, "@createdDate");
+  const lastModifiedBy = queryFirstText(element, "@lastModifiedBy");
+  const lastModifiedDate = queryFirstText(element, "@lastModifiedDate");
 
   const topBar =
       <div style={{

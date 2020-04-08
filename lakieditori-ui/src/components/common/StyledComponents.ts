@@ -21,66 +21,38 @@ export const horizontalLabeledInputCss = css`
   }
 `;
 
+export const Container = styled.div`
+  margin: 0 auto;
+  padding-left: ${tokens.spacing.m};
+  padding-right: ${tokens.spacing.m};
+  max-width: 1560px;
+  @media (max-width: 800px) {
+    padding-left: ${tokens.spacing.s};
+    padding-right: ${tokens.spacing.s};
+  }
+`;
+
 export const MainWithBorders = styled.main`
   ${panelWithBorderCss};
   min-height: 400px;
 `;
 
-export const PanelWithBorders = styled.div`
-  ${panelWithBorderCss}
-`;
-
-export const HeaderBackground = styled.div`
-  background: ${tokens.colors.whiteBase};
-  border-top: 4px solid ${tokens.colors.brandBase};
-  border-bottom: 1px solid ${tokens.colors.depthLight13};
-  padding: ${tokens.spacing.m} 0;
-`;
-
-export const TopNavigationBackground = styled.div`
-  background: ${tokens.colors.whiteBase};
-  border-bottom: 1px solid ${tokens.colors.depthLight13};
-`;
-
-export const ContentContainer = styled.div`
-  box-sizing: border-box;
-  margin: 0 auto;
-  padding: 0 ${tokens.spacing.m};
-  width: 100%;
-  max-width: 1200px;
-`;
-
-export const inputCss = css`
+export const Panel = styled.div`
+  background-color: ${tokens.colors.whiteBase};
   border: 1px solid ${tokens.colors.depthLight13};
-  border-radius: 2px;
-  box-sizing: border-box;
-  font-family: ${tokens.values.typography.bodyText.fontFamily};
-  font-size: ${tokens.values.typography.bodyText.fontSize.value}${tokens.values.typography.bodyText.fontSize.unit};
-  font-weight: ${tokens.values.typography.bodyText.fontWeight};
-  line-height: ${tokens.values.typography.bodyText.lineHeight.value};
-  margin: ${tokens.spacing.xxs} 0;
-  padding: ${tokens.spacing.s};
-  width: 100%;
+  padding: ${tokens.spacing.l};
+  @media (max-width: 800px) {
+    padding: ${tokens.spacing.s};
+  }
 `;
 
-export const Input = styled.input`
-  ${inputCss}
-`;
-
-export const Heading1WithBottomBorder = styled(Heading.h1)`
-  border-bottom: 1px solid ${tokens.colors.depthLight13};
-  padding-bottom: ${tokens.spacing.s};
-`;
-
-export const Heading2WithBottomBorder = styled(Heading.h2)`
-  border-bottom: 1px solid ${tokens.colors.depthLight13};
-  padding-bottom: ${tokens.spacing.s};
+export const PageHeading = styled(Heading.h1)`
+  margin: ${tokens.spacing.l} 0 ${tokens.spacing.s} 0;
 `;
 
 export const FlexRow = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
   & > * {
     flex: 1;
   }
@@ -99,7 +71,6 @@ export const FlexRow = styled.div`
 export const FlexRowTight = styled.div`
   display: flex;
   justify-content: space-between;
-  width: 100%;
   & > * {
     flex: 1;
   }
@@ -197,28 +168,4 @@ export const TableStyleRow = styled.div`
     flex: 1;
     padding: ${tokens.spacing.s};
   } 
-`;
-
-export const LinkButton = styled.button`
-  background: none;
-  border: none;
-  color: ${tokens.colors.highlightBase};
-  cursor: pointer;
-  font-family: ${tokens.values.typography.bodyText.fontFamily};
-  font-size: ${tokens.values.typography.bodyText.fontSize.value}${tokens.values.typography.bodyText.fontSize.unit};
-  font-weight: ${tokens.values.typography.bodyText.fontWeight};
-  line-height: ${tokens.values.typography.bodyText.lineHeight.value};
-  padding: 0;
-`;
-
-export const LinkButtonSmall = styled.button`
-  background: none;
-  border: none;
-  color: ${tokens.colors.highlightBase};
-  cursor: pointer;
-  font-family: ${tokens.values.typography.bodyTextSmall.fontFamily};
-  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
-  font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
-  line-height: ${tokens.values.typography.bodyTextSmall.lineHeight.value};
-  padding: 0;
 `;
