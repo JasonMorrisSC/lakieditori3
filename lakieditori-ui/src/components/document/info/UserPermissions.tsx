@@ -1,96 +1,31 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios";
-import {
-  cloneDocument,
-  countNodes,
-  parseXml,
-  queryElements,
-  queryFirstElement,
-  queryFirstText,
-  toString
-} from "../../../utils/xmlUtils";
-import {Table} from "../../common/StyledComponents";
-import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
+import React from "react";
 import {Dropdown} from "suomifi-ui-components";
+import {countNodes, queryElements, queryFirstText} from "../../../utils/xmlUtils";
+import {Table} from "../../common/StyledComponents";
+import {useUsers} from "./useUsers";
+import {usePermissions} from "./usePermissions";
+
+interface Props {
+  id: string
+}
 
 const UserPermissions: React.FC<Props> = ({id}) => {
-  const [users, setUsers] = useState<Document>(parseXml('<users></users>'));
-  const [permissions, setPermissions] = useState<Document>(parseXml('<permissions></permissions>'));
-  const [errorMessage, setErrorMessage] = useState<string>('');
-  const [reload, setReload] = useState<boolean>(false);
-
-  useEffect(() => {
-    axios.get('/api/users/', {
-      responseType: 'document'
-    }).then(res => {
-      setUsers(res.data);
-    }).catch((error) => {
-      setErrorMessage(error.response.data.message);
-    });
-  }, []);
-
-  useEffect(() => {
-    if (id || reload) {
-      setReload(false);
-      axios.get('/api/documents/' + id + '/permissions', {
-        responseType: 'document'
-      }).then(res => {
-        setPermissions(res.data);
-      }).catch((error) => {
-        setErrorMessage(error.response.data.message);
-      });
-    }
-  }, [id, reload]);
+  const {users} = useUsers();
+  const {permissions, togglePermission} = usePermissions(id);
 
   const permissionsExistsFor = (username: string) => {
     return countNodes(permissions, '/permissions/permission[@username="' + username + '"]') > 0;
   };
 
-  const togglePermission = (username: string, permission: string) => {
-    setPermissions((oldPermissions) => {
-      const newPermissions = cloneDocument(oldPermissions);
-
-      let permissionElement =
-          queryFirstElement(newPermissions, '/permissions/permission[@username="' + username + '"]');
-
-      if (!permissionElement) {
-        permissionElement = newPermissions.createElement('permission');
-        permissionElement.setAttribute('username', username);
-        newPermissions.documentElement.appendChild(permissionElement);
-      }
-
-      let permissions: string[] = permissionElement.getAttribute('value')?.split(',') || [];
-
-      if (permissions.includes(permission)) {
-        permissions.splice(permissions.indexOf(permission), 1);
-      } else {
-        permissions.push(permission);
-      }
-
-      permissionElement.setAttribute('value', permissions.join(','));
-
-      axios.post('/api/documents/' + id + '/permissions', toString(newPermissions), {
-        headers: {'Content-Type': 'text/xml'}
-      }).catch((error) => {
-        setErrorMessage(error.response.data.message);
-        setReload(true);
-      });
-
-      return newPermissions;
-    });
+  const usernameComparator = (a: Element, b: Element): number => {
+    const aName = queryFirstText(a, '@username') || '';
+    const bName = queryFirstText(b, '@username') || '';
+    return aName < bName ? -1 : (aName > bName ? 1 : 0);
   };
 
   return (
       <div>
-        {errorMessage ?
-            <div style={{
-              backgroundColor: sdt.colors.alertLight47,
-              margin: `${sdt.spacing.s} 0`,
-              padding: sdt.spacing.m,
-            }}>
-              Virhe: {errorMessage ? errorMessage : ''}<br/>
-            </div> : ''}
-        <Table style={{tableLayout: 'fixed'}}>
+        <Table>
           <thead>
           <tr>
             <th>Käyttäjätunnus</th>
@@ -101,11 +36,7 @@ const UserPermissions: React.FC<Props> = ({id}) => {
           </thead>
           <tbody>
           {queryElements(permissions.documentElement, 'permission')
-          .sort((a, b) => {
-            const aName = a.getAttribute('username') || '';
-            const bName = b.getAttribute('username') || '';
-            return aName < bName ? -1 : (aName > bName ? 1 : 0);
-          })
+          .sort(usernameComparator)
           .map((permission, i) => {
             const username = permission.getAttribute('username') || '';
             return <tr key={i}>
@@ -146,9 +77,5 @@ const UserPermissions: React.FC<Props> = ({id}) => {
       </div>
   );
 };
-
-interface Props {
-  id: string
-}
 
 export default UserPermissions;

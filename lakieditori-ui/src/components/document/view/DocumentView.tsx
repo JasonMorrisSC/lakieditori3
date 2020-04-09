@@ -19,7 +19,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({id}) => {
   const title = queryFirstText(element, "title");
 
   return (
-      <div>
+      <main>
         <DocumentViewToolbar id={id} title={title}/>
 
         <FlexRow style={{
@@ -52,7 +52,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({id}) => {
           </div>
 
         </FlexRow>
-      </div>
+      </main>
   );
 };
 
