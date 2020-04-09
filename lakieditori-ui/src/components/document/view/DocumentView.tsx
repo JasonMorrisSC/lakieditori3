@@ -1,7 +1,7 @@
 import React from "react";
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {queryFirstText} from "../../../utils/xmlUtils";
-import {FlexRow} from "../../common/StyledComponents";
+import {FlexRowPlain} from "../../common/StyledComponents";
 import TableOfContents from "./TableOfContents";
 import Concepts from "./Concepts";
 import {useDocument} from "../useDocument";
@@ -22,7 +22,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({id}) => {
       <main>
         <DocumentViewToolbar id={id} title={title}/>
 
-        <FlexRow style={{
+        <FlexRowPlain style={{
           backgroundColor: tokens.colors.whiteBase,
           border: `1px solid ${tokens.colors.depthLight13}`,
         }}>
@@ -51,7 +51,7 @@ const DocumentView: React.FC<DocumentViewProps> = ({id}) => {
             <Concepts document={document}/>
           </div>
 
-        </FlexRow>
+        </FlexRowPlain>
       </main>
   );
 };

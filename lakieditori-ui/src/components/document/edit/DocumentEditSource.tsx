@@ -9,16 +9,21 @@ import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
-import {XmlEditorProperties} from "./XmlEditorProperties";
 import "./DocumentEditSource.css";
+import {useDocument} from "../useDocument";
 
-const DocumentEditSource: React.FC<XmlEditorProperties> = ({document, currentElement, updateDocument}) => {
+interface Props {
+  id: string;
+}
+
+const DocumentEditSource: React.FC<Props> = ({id}) => {
+  const {document} = useDocument(id);
+
+  const history = useHistory();
   const [editorData, updateEditorData] = useState<string>(new XMLSerializer().serializeToString(document));
   const [errorMessage, setErrorMessage] = useState<string>('');
-  const history = useHistory();
 
-  const id = queryFirstText(currentElement, "@id");
-  const title = queryFirstText(currentElement, "title");
+  const title = queryFirstText(document.documentElement, "title");
 
   function validateDocument(data: string): Promise<AxiosResponse> {
     return axios.post('/api/validate', data, {
@@ -28,7 +33,7 @@ const DocumentEditSource: React.FC<XmlEditorProperties> = ({document, currentEle
 
   function updateDocumentAndCloseEditorIfValid() {
     validateDocument(editorData).then(() => {
-      updateDocument(new DOMParser().parseFromString(editorData, 'text/xml'));
+      // updateDocument(new DOMParser().parseFromString(editorData, 'text/xml'));
       history.push(`/documents/${id}/edit`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);

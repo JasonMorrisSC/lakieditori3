@@ -68,6 +68,14 @@ export const FlexRow = styled.div`
   }
 `;
 
+export const FlexRowPlain = styled.div`
+  display: flex;
+  justify-content: space-between;
+  & > * {
+    flex: 1;
+  }
+`;
+
 export const FlexRowTight = styled.div`
   display: flex;
   justify-content: space-between;
