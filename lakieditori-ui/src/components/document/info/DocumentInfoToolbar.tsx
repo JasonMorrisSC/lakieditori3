@@ -1,5 +1,5 @@
 import React from "react";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {Button, Text} from "suomifi-ui-components";
 import {Toolbar} from "../DocumentStyles";
 
@@ -12,9 +12,12 @@ const DocumentInfoToolbar: React.FC<Props> = ({id, title}) => {
   const history = useHistory();
   return (
       <Toolbar>
-        <Text>
-          {title} / Lisätietoja
-        </Text>
+        <div>
+          <Text>
+            <Link to={"/documents"}>Etusivu</Link> / <Link
+              to={`/documents/${id}`}>{title}</Link> / Lisätietoja
+          </Text>
+        </div>
         <div>
           <Button.secondary
               icon={"close"}

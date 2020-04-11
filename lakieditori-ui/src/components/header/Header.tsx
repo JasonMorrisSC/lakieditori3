@@ -1,24 +1,19 @@
 import React from 'react';
 import Login from "./Login";
-import {AppName, HeaderBackground, HeaderContainer, NavigationBackground} from "./HeaderStyles";
-import {Container} from "../common/StyledComponents";
-import Navigation from "./Navigation";
+import {AppName, HeaderBackground, HeaderContainer} from "./HeaderStyles";
+import {Link} from "react-router-dom";
 
 const Header: React.FC = () => {
   return (
       <header>
         <HeaderBackground>
           <HeaderContainer>
-            <AppName>Lakieditori</AppName>
+            <Link to={"/"}>
+              <AppName>Lakieditori</AppName>
+            </Link>
             <Login/>
           </HeaderContainer>
         </HeaderBackground>
-
-        <NavigationBackground>
-          <Container>
-            <Navigation/>
-          </Container>
-        </NavigationBackground>
       </header>
   );
 };

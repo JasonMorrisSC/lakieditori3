@@ -1,9 +1,7 @@
 import React, {Dispatch, SetStateAction} from "react";
-import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import About from "./components/about/About";
-import Home from "./components/home/Home";
 import Header from "./components/header/Header";
 import DocumentList from "./components/document/list/DocumentList";
 import Admin from "./components/admin/Admin";
@@ -70,14 +68,11 @@ const App: React.FC = () => {
               <Route path="/documents">
                 <DocumentList/>
               </Route>
-              <Route path="/about">
-                <About/>
-              </Route>
               <Route path="/admin">
                 <Admin/>
               </Route>
               <Route path="/">
-                <Home/>
+                <Redirect to={"/documents"}/>
               </Route>
             </Switch>
           </Container>

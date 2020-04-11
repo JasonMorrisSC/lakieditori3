@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import {Link} from "react-router-dom";
-import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {PageHeading, Panel, Table} from "../../common/StyledComponents";
+import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {Panel, Table} from "../../common/StyledComponents";
 import {documentStateLabelFi, parseDocumentState} from "../DocumentTypes";
 import {AuthenticationContext} from "../../../App";
 import {NULL_USER} from "../../../utils/User";
@@ -10,6 +10,7 @@ import {useDocuments} from "./useDocuments";
 import AddDocumentModal from "./AddDocumentModal";
 import {queryElements, queryFirstText} from "../../../utils/xmlUtils";
 import {toFiDateTimeStringInUtc} from "../../../utils/dateUtils";
+import {Toolbar} from "../DocumentStyles";
 
 const DocumentList: React.FC = () => {
   const [user] = useContext(AuthenticationContext);
@@ -47,11 +48,23 @@ const DocumentList: React.FC = () => {
 
   return (
       <main>
-        <PageHeading>
-          Lakiluonnokset
-        </PageHeading>
+        <Toolbar>Etusivu</Toolbar>
         <Panel>
-          <Table style={{marginBottom: tokens.spacing.l, tableLayout: "initial"}}>
+          <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+            <Heading.h2 style={{marginBottom: tokens.spacing.m}}>
+              Dokumentit
+            </Heading.h2>
+
+            {user !== NULL_USER &&
+            <Button icon={"plus"} onClick={() => setModalOpen(true)}>
+              Lisää uusi dokumentti
+            </Button>}
+          </div>
+
+          <Table style={{
+            margin: `${tokens.spacing.s} 0 ${tokens.spacing.m} 0`,
+            tableLayout: "initial",
+          }}>
             <thead>
             <tr>
               <th>Numero</th>
@@ -67,11 +80,6 @@ const DocumentList: React.FC = () => {
             .map(renderDocumentRow)}
             </tbody>
           </Table>
-
-          {user !== NULL_USER &&
-          <Button icon={"plus"} onClick={() => setModalOpen(true)}>
-            Lisää uusi lakiluonnos
-          </Button>}
 
           <AddDocumentModal
               isModalOpen={isModalOpen}

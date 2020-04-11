@@ -40,9 +40,9 @@ export const MainWithBorders = styled.main`
 export const Panel = styled.div`
   background-color: ${tokens.colors.whiteBase};
   border: 1px solid ${tokens.colors.depthLight13};
-  padding: ${tokens.spacing.l};
+  padding: ${tokens.spacing.xl} ${tokens.spacing.l};
   @media (max-width: 800px) {
-    padding: ${tokens.spacing.s};
+    padding: ${tokens.spacing.l} ${tokens.spacing.s};
   }
 `;
 
@@ -124,6 +124,10 @@ export const TableSmall = styled.table`
     text-align: left; 
     vertical-align: center;
   };
+  & > tbody > tr:last-child > th,
+  & > tbody > tr:last-child > td {
+    border-bottom: none;
+  };
   & > thead > tr > th.right,
   & > thead > tr > td.right,
   & > tbody > tr > th.right,
@@ -151,6 +155,10 @@ export const Table = styled.table`
     padding: ${tokens.spacing.s};
     text-align: left; 
     vertical-align: center;
+  };
+  & > tbody > tr:last-child > th,
+  & > tbody > tr:last-child > td {
+    border-bottom: none;
   };
   & > thead > tr > th.right,
   & > thead > tr > td.right,

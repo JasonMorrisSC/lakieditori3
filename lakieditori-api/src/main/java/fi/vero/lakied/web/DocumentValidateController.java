@@ -2,8 +2,11 @@ package fi.vero.lakied.web;
 
 import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.exception.InternalServerErrorException;
+import fi.vero.lakied.util.xml.LineCountingDocumentHandler;
 import fi.vero.lakied.util.xml.PostXmlMapping;
+import fi.vero.lakied.util.xml.XmlUtils;
 import java.io.IOException;
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.validation.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 @RestController
-@RequestMapping("/api/validate")
+@RequestMapping("/api")
 public class DocumentValidateController {
 
   private final Schema schema;
@@ -26,14 +29,27 @@ public class DocumentValidateController {
     this.schema = schema;
   }
 
-  @PostXmlMapping
+  @PostXmlMapping("/validate")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void post(@RequestBody Document document) {
+  public void validate(@RequestBody Document document) {
     try {
       schema.newValidator().validate(new DOMSource(document));
     } catch (SAXException e) {
       throw new BadRequestException(e);
     } catch (IOException e) {
+      throw new InternalServerErrorException(e);
+    }
+  }
+
+  @PostXmlMapping("/annotateLineNumbers")
+  public Document annotateLineNumbers(@RequestBody Document document) {
+    try {
+      LineCountingDocumentHandler handler = new LineCountingDocumentHandler(true);
+      XmlUtils.parse(XmlUtils.print(document), handler);
+      return handler.getDocument();
+    } catch (SAXException e) {
+      throw new BadRequestException(e);
+    } catch (IOException | ParserConfigurationException e) {
       throw new InternalServerErrorException(e);
     }
   }

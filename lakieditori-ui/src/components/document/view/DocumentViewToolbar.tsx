@@ -1,5 +1,5 @@
 import React, {useContext} from "react";
-import {useHistory} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {Button, suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
 import {AuthenticationContext} from "../../../App";
 import {NULL_USER} from "../../../utils/User";
@@ -15,7 +15,9 @@ const DocumentViewToolbar: React.FC<Props> = ({id, title}) => {
   const [user] = useContext(AuthenticationContext);
   return (
       <Toolbar>
-        <Text>{title}</Text>
+        <div>
+          <Link to={"/"}>Etusivu</Link> / <Text>{title}</Text>
+        </div>
         {user !== NULL_USER &&
         <div>
           <Button.secondary

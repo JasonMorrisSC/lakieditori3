@@ -4,9 +4,11 @@ import axios from "axios";
 import {queryFirstText} from "../../utils/xmlUtils";
 import {NIL_UUID} from "../../utils/uuidUtils";
 import {NULL_USER} from "../../utils/User";
+import { useHistory } from "react-router-dom";
 
 export function useAuthentication() {
   const [user, setUser] = useContext(AuthenticationContext);
+  const history = useHistory();
 
   useEffect(() => {
     axios.get('/api/whoami', {
@@ -56,6 +58,7 @@ export function useAuthentication() {
     })
     .finally(() => {
       setUser(NULL_USER);
+      history.push("/");
     });
   };
 

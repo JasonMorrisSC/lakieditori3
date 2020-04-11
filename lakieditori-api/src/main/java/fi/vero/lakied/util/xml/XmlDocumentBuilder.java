@@ -38,6 +38,11 @@ public class XmlDocumentBuilder {
     return this;
   }
 
+  public XmlDocumentBuilder appendText(String data) {
+    currentNode.appendChild(document.createTextNode(data));
+    return this;
+  }
+
   public XmlDocumentBuilder attribute(String name, String value) {
     ((Element) currentNode).setAttribute(name, value);
     return this;
@@ -45,6 +50,11 @@ public class XmlDocumentBuilder {
 
   public XmlDocumentBuilder text(String value) {
     currentNode.setTextContent(value);
+    return this;
+  }
+
+  public XmlDocumentBuilder userData(String key, Object value) {
+    currentNode.setUserData(key, value, null);
     return this;
   }
 

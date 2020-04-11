@@ -5,6 +5,8 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.Streams;
 import fi.vero.lakied.util.common.StreamUtils;
+import fi.vero.lakied.util.common.Tuple;
+import fi.vero.lakied.util.common.Tuple2;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -22,6 +24,8 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.parsers.SAXParser;
+import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
@@ -40,7 +44,9 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
+import org.xml.sax.helpers.DefaultHandler;
 
 public final class XmlUtils {
 
@@ -89,6 +95,22 @@ public final class XmlUtils {
     }
   }
 
+  public static void parseUnchecked(String xml, DefaultHandler handler) {
+    try {
+      parse(xml, handler);
+    } catch (ParserConfigurationException | SAXException | IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static void parseUnchecked(InputStream xml, DefaultHandler handler) {
+    try {
+      parse(xml, handler);
+    } catch (ParserConfigurationException | SAXException | IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public static Document parse(String xml)
       throws SAXException, ParserConfigurationException, IOException {
     return parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
@@ -99,6 +121,18 @@ public final class XmlUtils {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
     return factory.newDocumentBuilder().parse(xml);
+  }
+
+  public static void parse(String xml, DefaultHandler handler)
+      throws ParserConfigurationException, SAXException, IOException {
+    parse(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)), handler);
+  }
+
+  public static void parse(InputStream xml, DefaultHandler handler)
+      throws ParserConfigurationException, SAXException, IOException {
+    SAXParserFactory factory = SAXParserFactory.newInstance();
+    SAXParser saxParser = factory.newSAXParser();
+    saxParser.parse(xml, handler);
   }
 
   public static String prettyPrint(Document doc) {
@@ -174,6 +208,22 @@ public final class XmlUtils {
       @Override
       protected Node computeNext() {
         return i < nodeList.getLength() ? nodeList.item(i++) : endOfData();
+      }
+    });
+  }
+
+  public static Stream<Tuple2<String, String>> asStream(Attributes attrs) {
+    return Streams.stream(new AbstractIterator<Tuple2<String, String>>() {
+      int i = 0;
+
+      @Override
+      protected Tuple2<String, String> computeNext() {
+        if (i < attrs.getLength()) {
+          Tuple2<String, String> next = Tuple.of(attrs.getLocalName(i), attrs.getValue(i));
+          i++;
+          return next;
+        }
+        return endOfData();
       }
     });
   }

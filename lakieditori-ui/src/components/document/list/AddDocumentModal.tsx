@@ -31,7 +31,10 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModa
   }
 
   return (
-      <Modal isOpen={isModalOpen} contentLabel="Lisää uusi lakiluonnos" style={{
+      <Modal isOpen={isModalOpen} contentLabel="Lisää uusi dokumentti" style={{
+        overlay:{
+          zIndex: 3,
+        },
         content: {
           height: "60%",
           marginLeft: "auto",
@@ -42,19 +45,19 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModa
       }}>
         <FlexColTight style={{height: "100%"}}>
           <Heading.h1>
-            Lisää uusi lakiluonnos
+            Lisää uusi dokumentti
           </Heading.h1>
 
           <hr/>
 
           <label>
-            Luonnoksen numero
+            Dokumentin numero
             <Input value={newDocumentNumber}
                    onChange={(e) => setNewDocumentNumber(e.currentTarget.value)}/>
           </label>
 
           <label>
-            Luonnoksen nimi
+            Dokumentin nimi
             <Input value={newDocumentTitle}
                    onChange={(e) => setNewDocumentTitle(e.currentTarget.value)}/>
           </label>
