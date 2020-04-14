@@ -1,11 +1,11 @@
 import React, {useState} from "react";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {PageHeading, Panel, Table} from "../common/StyledComponents";
+import {Table} from "../common/StyledComponents";
 import {queryElements, queryFirstText} from "../../utils/xmlUtils";
 import {useUsers} from "./useUsers";
 import AddUserModal from "./AddUserModal";
 
-const Admin: React.FC = () => {
+const UserList: React.FC = () => {
   const {users, saveUser} = useUsers();
   const [isModalOpen, setModalOpen] = useState(false);
 
@@ -27,32 +27,31 @@ const Admin: React.FC = () => {
   };
 
   return (
-      <main>
-        <PageHeading>
-          Ylläpito
-        </PageHeading>
-        <Panel>
-          <Heading.h2>Käyttäjät</Heading.h2>
-
-          <Table style={{margin: `${tokens.spacing.m} 0 ${tokens.spacing.l}`}}>
-            <tbody>
-            {queryElements(users.documentElement, 'user')
-            .sort(usernameComparator)
-            .map(renderUserRow)}
-            </tbody>
-          </Table>
+      <div>
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+          <Heading.h2 style={{marginBottom: tokens.spacing.m}}>
+            Käyttäjät
+          </Heading.h2>
 
           <Button icon={'plus'} onClick={() => setModalOpen(true)}>
-            Lisää käyttäjä
+            Lisää uusi käyttäjä
           </Button>
+        </div>
 
-          <AddUserModal
-              isModalOpen={isModalOpen}
-              setModalOpen={setModalOpen}
-              saveUser={saveUser}/>
-        </Panel>
-      </main>
+        <Table style={{margin: `${tokens.spacing.s} 0 ${tokens.spacing.m} 0`}}>
+          <tbody>
+          {queryElements(users.documentElement, 'user')
+          .sort(usernameComparator)
+          .map(renderUserRow)}
+          </tbody>
+        </Table>
+
+        <AddUserModal
+            isModalOpen={isModalOpen}
+            setModalOpen={setModalOpen}
+            saveUser={saveUser}/>
+      </div>
   );
 };
 
-export default Admin;
+export default UserList;

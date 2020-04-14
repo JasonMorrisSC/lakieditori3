@@ -1,7 +1,7 @@
 import React, {useContext} from "react";
 import {Link} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {Panel, Table} from "../../common/StyledComponents";
+import {Table} from "../../common/StyledComponents";
 import {documentStateLabelFi, parseDocumentState} from "../DocumentTypes";
 import {AuthenticationContext} from "../../../App";
 import {NULL_USER} from "../../../utils/User";
@@ -10,7 +10,6 @@ import {useDocuments} from "./useDocuments";
 import AddDocumentModal from "./AddDocumentModal";
 import {queryElements, queryFirstText} from "../../../utils/xmlUtils";
 import {toFiDateTimeStringInUtc} from "../../../utils/dateUtils";
-import {Toolbar} from "../DocumentStyles";
 
 const DocumentList: React.FC = () => {
   const [user] = useContext(AuthenticationContext);
@@ -47,46 +46,43 @@ const DocumentList: React.FC = () => {
   };
 
   return (
-      <main>
-        <Toolbar>Etusivu</Toolbar>
-        <Panel>
-          <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
-            <Heading.h2 style={{marginBottom: tokens.spacing.m}}>
-              Dokumentit
-            </Heading.h2>
+      <div>
+        <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
+          <Heading.h2 style={{marginBottom: tokens.spacing.m}}>
+            Dokumentit
+          </Heading.h2>
 
-            {user !== NULL_USER &&
-            <Button icon={"plus"} onClick={() => setModalOpen(true)}>
-              Lisää uusi dokumentti
-            </Button>}
-          </div>
+          {user !== NULL_USER &&
+          <Button icon={"plus"} onClick={() => setModalOpen(true)}>
+            Lisää uusi dokumentti
+          </Button>}
+        </div>
 
-          <Table style={{
-            margin: `${tokens.spacing.s} 0 ${tokens.spacing.m} 0`,
-            tableLayout: "initial",
-          }}>
-            <thead>
-            <tr>
-              <th>Numero</th>
-              <th>Nimi</th>
-              <th>Tila</th>
-              <th>Muokattu</th>
-              {user !== NULL_USER && <th/>}
-            </tr>
-            </thead>
-            <tbody>
-            {queryElements(documents.documentElement, 'document')
-            .sort(documentComparator)
-            .map(renderDocumentRow)}
-            </tbody>
-          </Table>
+        <Table style={{
+          margin: `${tokens.spacing.s} 0 ${tokens.spacing.m} 0`,
+          tableLayout: "initial",
+        }}>
+          <thead>
+          <tr>
+            <th>Numero</th>
+            <th>Nimi</th>
+            <th>Tila</th>
+            <th>Muokattu</th>
+            {user !== NULL_USER && <th/>}
+          </tr>
+          </thead>
+          <tbody>
+          {queryElements(documents.documentElement, 'document')
+          .sort(documentComparator)
+          .map(renderDocumentRow)}
+          </tbody>
+        </Table>
 
-          <AddDocumentModal
-              isModalOpen={isModalOpen}
-              setModalOpen={setModalOpen}
-              saveDocument={saveDocument}/>
-        </Panel>
-      </main>
+        <AddDocumentModal
+            isModalOpen={isModalOpen}
+            setModalOpen={setModalOpen}
+            saveDocument={saveDocument}/>
+      </div>
   );
 };
 

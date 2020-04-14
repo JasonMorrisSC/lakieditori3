@@ -3,11 +3,11 @@ import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import Header from "./components/header/Header";
-import DocumentList from "./components/document/list/DocumentList";
-import Admin from "./components/admin/Admin";
+import UserList from "./components/users/UserList";
 import {NULL_USER, User} from "./utils/User";
 import {Container} from "./components/common/StyledComponents";
 import DocumentRoutes from "./components/document/DocumentRoutes";
+import Home from "./components/home/Home";
 
 export const AuthenticationContext = React.createContext<[User, Dispatch<SetStateAction<User>>]>([NULL_USER, () => null]);
 
@@ -66,13 +66,13 @@ const App: React.FC = () => {
                 <DocumentRoutes/>
               </Route>
               <Route path="/documents">
-                <DocumentList/>
+                <Redirect to={"/"}/>
               </Route>
               <Route path="/admin">
-                <Admin/>
+                <UserList/>
               </Route>
               <Route path="/">
-                <Redirect to={"/documents"}/>
+                <Home/>
               </Route>
             </Switch>
           </Container>

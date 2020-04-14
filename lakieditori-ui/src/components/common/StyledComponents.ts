@@ -2,12 +2,6 @@ import styled from '@emotion/styled'
 import {css} from "@emotion/core";
 import {Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 
-export const panelWithBorderCss = css`
-  background-color: ${tokens.colors.whiteBase};
-  border: 1px solid ${tokens.colors.depthLight13};
-  padding: ${tokens.spacing.l};
-`;
-
 export const horizontalLabeledInputCss = css`
   display: flex;
   align-items: center;
@@ -32,11 +26,6 @@ export const Container = styled.div`
   }
 `;
 
-export const MainWithBorders = styled.main`
-  ${panelWithBorderCss};
-  min-height: 400px;
-`;
-
 export const Panel = styled.div`
   background-color: ${tokens.colors.whiteBase};
   border: 1px solid ${tokens.colors.depthLight13};
@@ -46,8 +35,17 @@ export const Panel = styled.div`
   }
 `;
 
+export const PanelWithShadow = styled.div`
+  background-color: ${tokens.colors.whiteBase};
+  box-shadow: #29292924 0px 1px 2px 0px, #2929291f 0px 1px 5px 0px;
+  border-radius: 2px;
+  padding: ${tokens.spacing.l};
+`;
+
 export const PageHeading = styled(Heading.h1)`
-  margin: ${tokens.spacing.l} 0 ${tokens.spacing.s} 0;
+  border-bottom: 1px solid ${tokens.colors.depthLight13};
+  padding-bottom: ${tokens.spacing.s};
+  margin: ${tokens.spacing.l} 0 ${tokens.spacing.m};
 `;
 
 export const FlexRow = styled.div`
