@@ -21,7 +21,6 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
   const number = queryFirstText(currentElement, "@number");
   const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
-  const note = queryFirstElement(currentElement, "note");
   const intro = queryFirstElement(currentElement, "intro");
 
   function updateDocumentState(newValue: string) {
