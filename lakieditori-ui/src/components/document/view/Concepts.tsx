@@ -9,7 +9,10 @@ interface Props {
 }
 
 const Concepts: React.FC<Props> = ({document}) => {
-  const urls = queryNodes(document.documentElement, "//a/@href").map(n => n.textContent || "");
+  const urls = queryNodes(document.documentElement, "//a/@href")
+  .map(href => href.textContent || "")
+  .filter(uri => uri.startsWith("http://uri.suomi.fi"));
+
   const [concepts, setConcepts] = useState<Element[]>([]);
 
   useEffect(() => {
