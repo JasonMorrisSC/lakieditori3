@@ -40,7 +40,7 @@ export const MainWithBorders = styled.main`
 export const Panel = styled.div`
   background-color: ${tokens.colors.whiteBase};
   border: 1px solid ${tokens.colors.depthLight13};
-  padding: ${tokens.spacing.xl} ${tokens.spacing.l};
+  padding: ${tokens.spacing.l} ${tokens.spacing.l};
   @media (max-width: 800px) {
     padding: ${tokens.spacing.l} ${tokens.spacing.s};
   }

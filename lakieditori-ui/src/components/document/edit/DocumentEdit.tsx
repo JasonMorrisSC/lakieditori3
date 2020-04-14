@@ -101,12 +101,6 @@ const DocumentEdit: React.FC<Props> = ({id}) => {
           {titleText} / Muokkaa
         </Text>
         <div>
-          <Button.secondaryNoborder
-              icon={"registers"}
-              style={{background: "none", marginRight: sdt.spacing.xs}}
-              onClick={() => history.push(`/documents/${id}/source`)}>
-            XML
-          </Button.secondaryNoborder>
           <Button.secondary
               icon={"close"}
               onClick={() => history.push(`/documents/${id}`)}>

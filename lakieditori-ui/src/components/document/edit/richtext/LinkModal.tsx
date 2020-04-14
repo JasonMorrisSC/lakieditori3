@@ -188,6 +188,7 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
           </thead>
           <tbody>
           {Array.from(concepts.documentElement.childNodes)
+          .filter(n => n.nodeType === Node.ELEMENT_NODE)
           .map(n => n as Element)
           .map((e, i) => {
             const uri = e.getAttribute('uri') || '';

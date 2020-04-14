@@ -20,6 +20,12 @@ const DocumentViewToolbar: React.FC<Props> = ({id, title}) => {
         </div>
         {user !== NULL_USER &&
         <div>
+          <Button.secondaryNoborder
+              icon={"registers"}
+              style={{marginRight: tokens.spacing.s, background: "none"}}
+              onClick={() => history.push(`/documents/${id}/source`)}>
+            XML
+          </Button.secondaryNoborder>
           <Button.secondary
               icon={"info"}
               style={{marginRight: tokens.spacing.s}}

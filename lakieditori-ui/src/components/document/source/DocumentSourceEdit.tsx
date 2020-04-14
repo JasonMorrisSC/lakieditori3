@@ -23,14 +23,14 @@ const Content = styled.div`
 `;
 
 const Source = styled.div`
-  flex: 4;
+  flex: 5;
   overflow: scroll;
 `;
 
 const Preview = styled.div`
   background-color: ${tokens.colors.highlightLight53};
   border-left: 1px solid ${tokens.colors.depthLight13};
-  flex: 2;
+  flex: 3;
   overflow: scroll;
   padding: ${tokens.spacing.l};
 `;
@@ -114,7 +114,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
 
   function saveAndClose() {
     saveDocument(editorValue).then(() => {
-      history.push(`/documents/${id}/edit`);
+      history.push(`/documents/${id}`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
     });
@@ -133,7 +133,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
                 style={{marginRight: tokens.spacing.s, background: "none"}}
                 icon={"close"}
                 onClick={() => history.push(`/documents/${id}`)}>
-              Sulje
+              Peruuta
             </Button.secondaryNoborder>
             <Button
                 icon={"save"}
@@ -157,6 +157,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
                 width={"100%"}
                 height={"100%"}
                 wrapEnabled={true}
+                showPrintMargin={false}
                 fontSize={tokens.values.typography.bodyTextSmall.fontSize.value}
                 value={editorValue}
                 onChange={(value) => setEditorValue(value)}
