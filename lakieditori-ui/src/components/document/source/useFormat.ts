@@ -1,5 +1,6 @@
 import axios, {AxiosRequestConfig} from "axios";
 import {toString} from "../../../utils/xmlUtils";
+import {useEffect, useState} from "react";
 
 const config: AxiosRequestConfig = {
   headers: {
@@ -9,13 +10,15 @@ const config: AxiosRequestConfig = {
   responseType: 'document'
 };
 
-export function useFormat() {
-  const formatXml = (document: string | Document): Promise<Document> => {
-    return axios.post(`/api/format`,
+export function useFormat(document: string | Document) {
+  const [formattedDocument, setFormattedDocument] = useState<null | Document>(null);
+
+  useEffect(() => {
+    axios.post(`/api/format`,
         typeof document === "string" ? document : toString(document),
         config)
-    .then(res => res.data);
-  };
+    .then(res => setFormattedDocument(res.data));
+  }, [document]);
 
-  return {formatXml};
+  return {formattedDocument};
 }

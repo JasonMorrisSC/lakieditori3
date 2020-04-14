@@ -49,21 +49,20 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
   const history = useHistory();
 
   const {document, saveDocument} = useDocument(id);
+  const {formattedDocument} = useFormat(document);
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [editorValue, setEditorValue] = useState<string>(
-      new XMLSerializer().serializeToString(document));
+  const [editorValue, setEditorValue] = useState<string>(toString(document));
   const previewElementRef = useRef<HTMLDivElement>(null);
   const [lineNumberMap, setLineNumberMap] = useState<LineNumberElementId[]>([]);
   const {annotatedDocument} = useLineNumberAnnotations(editorValue);
   const {validationErrorMessage} = useValidation(editorValue);
-  const {formatXml} = useFormat();
 
   useEffect(() => {
-    formatXml(document).then(result => setEditorValue(toString(result)))
-  }, [document, formatXml]);
+    setEditorValue(toString(formattedDocument ? formattedDocument : document));
+  }, [formattedDocument]);
 
   useEffect(() => {
     setErrorMessage(validationErrorMessage);
