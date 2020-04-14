@@ -1,7 +1,7 @@
 import {useContext, useEffect, useState} from "react";
-import axios from "axios";
+import axios, {AxiosResponse} from "axios";
 import {AuthenticationContext} from "../../App";
-import {parseXml} from "../../utils/xmlUtils";
+import {parseXml, toString} from "../../utils/xmlUtils";
 
 export function useDocument(id: string) {
   const [user] = useContext(AuthenticationContext);
@@ -15,5 +15,13 @@ export function useDocument(id: string) {
     });
   }, [id, user]);
 
-  return {document};
+  const saveDocument = (document: string | Document): Promise<AxiosResponse> => {
+    setDocument(typeof document === "string" ? parseXml(document) : document);
+    return axios.put('/api/documents/' + id,
+        typeof document === "string" ? document : toString(document), {
+          headers: {'Content-Type': 'text/xml'}
+        });
+  };
+
+  return {document, setDocument, saveDocument};
 }

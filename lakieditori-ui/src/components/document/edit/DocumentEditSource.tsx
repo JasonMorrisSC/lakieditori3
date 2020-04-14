@@ -2,7 +2,6 @@ import React, {useEffect, useRef, useState} from "react";
 import {Button, Text} from "suomifi-ui-components";
 import styled from '@emotion/styled'
 import {Link, useHistory} from "react-router-dom";
-import axios, {AxiosResponse} from "axios";
 import {parseXml, queryElements, queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {ErrorPanel, Toolbar} from "../DocumentStyles";
@@ -14,9 +13,9 @@ import 'ace-builds'
 import 'ace-builds/webpack-resolver'
 import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-eclipse";
+import {useValidation} from "./useValidation";
 
-
-const Row = styled.div`
+const Content = styled.div`
   display: flex;
   justify-content: space-between;
   background-color: ${tokens.colors.whiteBase};
@@ -48,21 +47,25 @@ interface LineNumberElementId {
 const DocumentEditSource: React.FC<Props> = ({id}) => {
   const history = useHistory();
 
-  const {document} = useDocument(id);
+  const {document, saveDocument} = useDocument(id);
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const [editorValue, setEditorValue] = useState<string>(
       new XMLSerializer().serializeToString(document));
   const previewElementRef = useRef<HTMLDivElement>(null);
   const [lineNumberMap, setLineNumberMap] = useState<LineNumberElementId[]>([]);
   const {annotatedDocument} = useLineNumberAnnotations(editorValue);
-
-  const [errorMessage, setErrorMessage] = useState<string>('');
+  const {validationErrorMessage} = useValidation(editorValue);
 
   useEffect(() => {
     setEditorValue(new XMLSerializer().serializeToString(document));
   }, [document]);
+
+  useEffect(() => {
+    setErrorMessage(validationErrorMessage);
+  }, [validationErrorMessage]);
 
   useEffect(() => {
     if (annotatedDocument) {
@@ -109,15 +112,8 @@ const DocumentEditSource: React.FC<Props> = ({id}) => {
     }
   };
 
-  function validateDocument(data: string): Promise<AxiosResponse> {
-    return axios.post('/api/validate', data, {
-      headers: {'Content-Type': 'text/xml'}
-    });
-  }
-
   function saveAndClose() {
-    validateDocument(editorValue).then(() => {
-      // updateDocument(new DOMParser().parseFromString(editorData, 'text/xml'));
+    saveDocument(editorValue).then(() => {
       history.push(`/documents/${id}/edit`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
@@ -126,26 +122,34 @@ const DocumentEditSource: React.FC<Props> = ({id}) => {
 
   return (
       <main>
-        <Toolbar>
+        <Toolbar style={{zIndex: 5}}>
           <Text>
             <Link to={"/documents"}>Etusivu</Link> / <Link
               to={`/documents/${id}`}>{title}</Link> / <Link
               to={`/documents/${id}/edit`}>Muokkaa</Link> / XML
           </Text>
-          <Button
-              icon={"save"}
-              onClick={saveAndClose}>
-            Tallenna
-          </Button>
+          <div>
+            <Button.secondaryNoborder
+                style={{marginRight: tokens.spacing.s, background: "none"}}
+                icon={"close"}
+                onClick={() => history.push(`/documents/${id}`)}>
+              Sulje
+            </Button.secondaryNoborder>
+            <Button
+                icon={"save"}
+                disabled={!!validationErrorMessage}
+                onClick={saveAndClose}>
+              Tallenna
+            </Button>
+          </div>
+          {errorMessage &&
+          <ErrorPanel>
+            XML dokumentissa on virhe:<br/>
+            {errorMessage ? errorMessage : ''}<br/>
+          </ErrorPanel>}
         </Toolbar>
 
-        {errorMessage &&
-        <ErrorPanel>
-          XML dokumentissa on virhe:<br/>
-          {errorMessage ? errorMessage : ''}<br/>
-        </ErrorPanel>}
-
-        <Row style={{height: "95vh"}}>
+        <Content style={{height: "95vh"}}>
           <Source>
             <AceEditor
                 mode="xml"
@@ -162,7 +166,7 @@ const DocumentEditSource: React.FC<Props> = ({id}) => {
           <Preview ref={previewElementRef}>
             <DocumentElement element={parseXml(editorValue).documentElement}/>
           </Preview>
-        </Row>
+        </Content>
 
       </main>
   );

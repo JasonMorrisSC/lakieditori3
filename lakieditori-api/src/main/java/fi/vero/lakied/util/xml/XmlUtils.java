@@ -45,7 +45,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
+import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
+import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public final class XmlUtils {
@@ -120,6 +122,16 @@ public final class XmlUtils {
       throws SAXException, ParserConfigurationException, IOException {
     DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
     factory.setNamespaceAware(true);
+    return factory.newDocumentBuilder().parse(xml);
+  }
+
+  public static Document parse(InputStream xml, Schema schema)
+      throws SAXException, ParserConfigurationException, IOException {
+    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+    factory.setNamespaceAware(true);
+    factory.setValidating(true);
+    factory.setSchema(schema);
+    factory.setIgnoringElementContentWhitespace(true);
     return factory.newDocumentBuilder().parse(xml);
   }
 
