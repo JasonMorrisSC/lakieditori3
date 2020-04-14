@@ -1,5 +1,6 @@
 package fi.vero.lakied.web;
 
+import com.google.common.base.CharMatcher;
 import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.exception.InternalServerErrorException;
 import fi.vero.lakied.util.xml.LineCountingDocumentHandler;
@@ -65,6 +66,8 @@ public class DocumentUtilsController {
     XmlUtils.deleteMatching(document, "//text()[normalize-space(.) = '']");
     XmlUtils.updateMatching(document, "//text()",
         n -> n.setTextContent(n.getTextContent().trim()));
+    XmlUtils.updateMatching(document, "//text()",
+        n -> n.setTextContent(CharMatcher.whitespace().collapseFrom(n.getTextContent(), ' ')));
     return XmlUtils.prettyPrint(document);
   }
 
