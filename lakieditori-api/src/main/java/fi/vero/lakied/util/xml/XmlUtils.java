@@ -17,6 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.xml.XMLConstants;
@@ -45,9 +46,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
-import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
-import org.xml.sax.SAXParseException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public final class XmlUtils {
@@ -185,6 +184,16 @@ public final class XmlUtils {
     } catch (TransformerException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  public static void deleteMatching(Node context, String xPathExpression) {
+    queryNodes(context, xPathExpression)
+        .forEach(node -> node.getParentNode().removeChild(node));
+  }
+
+  public static void updateMatching(Node context, String xPathExpression, Consumer<Node> consumer) {
+    queryNodes(context, xPathExpression)
+        .forEach(consumer);
   }
 
   public static Node queryNode(Node context, String xPathExpression) {

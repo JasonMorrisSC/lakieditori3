@@ -2,7 +2,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {Button, Text} from "suomifi-ui-components";
 import styled from '@emotion/styled'
 import {Link, useHistory} from "react-router-dom";
-import {parseXml, queryElements, queryFirstText} from "../../../utils/xmlUtils";
+import {parseXml, queryElements, queryFirstText, toString} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {ErrorPanel, Toolbar} from "../DocumentStyles";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
@@ -14,6 +14,7 @@ import 'ace-builds/webpack-resolver'
 import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-eclipse";
 import {useValidation} from "./useValidation";
+import {useFormat} from "./useFormat";
 
 const Content = styled.div`
   display: flex;
@@ -58,9 +59,10 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
   const [lineNumberMap, setLineNumberMap] = useState<LineNumberElementId[]>([]);
   const {annotatedDocument} = useLineNumberAnnotations(editorValue);
   const {validationErrorMessage} = useValidation(editorValue);
+  const {formatXml} = useFormat();
 
   useEffect(() => {
-    setEditorValue(new XMLSerializer().serializeToString(document));
+    formatXml(document).then(result => setEditorValue(toString(result)))
   }, [document]);
 
   useEffect(() => {

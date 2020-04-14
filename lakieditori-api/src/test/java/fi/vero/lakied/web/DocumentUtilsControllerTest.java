@@ -9,7 +9,7 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-class DocumentValidateControllerTest extends BaseApiIntegrationTest {
+class DocumentUtilsControllerTest extends BaseApiIntegrationTest {
 
   @Test
   void shouldValidateExampleXmlDocuments() {
