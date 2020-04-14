@@ -62,8 +62,7 @@ const LinkModal = ({modalIsOpen, closeModal, selection}: Props) => {
           flexDirection: "column",
           height: "80%",
           marginLeft: "auto",
-          marginRight: "auto",
-          right: "-820px",
+          marginRight: "0",
           maxWidth: 400,
           padding: `${tokens.spacing.l}`,
         }
