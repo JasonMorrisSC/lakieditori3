@@ -3,11 +3,12 @@ import axios, {AxiosRequestConfig} from "axios";
 import {AuthenticationContext} from "../../App";
 import {parseXml, toString} from "../../utils/xmlUtils";
 
+const getConfig: AxiosRequestConfig = {responseType: 'document'};
+const putConfig: AxiosRequestConfig = {headers: {'Content-Type': 'text/xml'}};
+
 export function useDocument(id: string) {
   const [user] = useContext(AuthenticationContext);
   const [document, setDocument] = useState<Document>(parseXml("<document/>"));
-  const getConfig: AxiosRequestConfig = {responseType: 'document'};
-  const putConfig: AxiosRequestConfig = {headers: {'Content-Type': 'text/xml'}};
 
   useEffect(() => {
     axios

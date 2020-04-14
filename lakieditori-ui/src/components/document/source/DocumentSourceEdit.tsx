@@ -63,7 +63,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
 
   useEffect(() => {
     formatXml(document).then(result => setEditorValue(toString(result)))
-  }, [document]);
+  }, [document, formatXml]);
 
   useEffect(() => {
     setErrorMessage(validationErrorMessage);
