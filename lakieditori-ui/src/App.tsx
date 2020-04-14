@@ -3,7 +3,6 @@ import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import Header from "./components/header/Header";
-import UserList from "./components/users/UserList";
 import {NULL_USER, User} from "./utils/User";
 import {Container} from "./components/common/StyledComponents";
 import DocumentRoutes from "./components/document/DocumentRoutes";
@@ -67,9 +66,6 @@ const App: React.FC = () => {
               </Route>
               <Route path="/documents">
                 <Redirect to={"/"}/>
-              </Route>
-              <Route path="/admin">
-                <UserList/>
               </Route>
               <Route path="/">
                 <Home/>
