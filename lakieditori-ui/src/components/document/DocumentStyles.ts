@@ -11,7 +11,6 @@ export const Toolbar = styled.div`
   padding: ${tokens.spacing.s} 0;
   position: sticky;
   top: 0;
-  z-index: 3;
   min-height: 40px;
 `;
 

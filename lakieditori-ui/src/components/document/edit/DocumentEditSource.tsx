@@ -3,18 +3,18 @@ import {Button, Text} from "suomifi-ui-components";
 import styled from '@emotion/styled'
 import {Link, useHistory} from "react-router-dom";
 import axios, {AxiosResponse} from "axios";
-import {UnControlled as CodeMirror} from 'react-codemirror2';
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/theme/eclipse.css";
-import "codemirror/mode/xml/xml";
 import {parseXml, queryElements, queryFirstText} from "../../../utils/xmlUtils";
-import "./DocumentEditSource.css";
 import {useDocument} from "../useDocument";
 import {ErrorPanel, Toolbar} from "../DocumentStyles";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
 import DocumentElement from "../view/elements/DocumentElement";
 import {useLineNumberAnnotations} from "./useLineNumberAnnotations";
+import AceEditor from "react-ace";
+import 'ace-builds'
+import 'ace-builds/webpack-resolver'
+import "ace-builds/src-noconflict/mode-xml";
+import "ace-builds/src-noconflict/theme-eclipse";
+
 
 const Row = styled.div`
   display: flex;
@@ -52,12 +52,17 @@ const DocumentEditSource: React.FC<Props> = ({id}) => {
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
 
-  const [editorValue, setEditorValue] = useState<string>(new XMLSerializer().serializeToString(document));
+  const [editorValue, setEditorValue] = useState<string>(
+      new XMLSerializer().serializeToString(document));
   const previewElementRef = useRef<HTMLDivElement>(null);
   const [lineNumberMap, setLineNumberMap] = useState<LineNumberElementId[]>([]);
   const {annotatedDocument} = useLineNumberAnnotations(editorValue);
 
   const [errorMessage, setErrorMessage] = useState<string>('');
+
+  useEffect(() => {
+    setEditorValue(new XMLSerializer().serializeToString(document));
+  }, [document]);
 
   useEffect(() => {
     if (annotatedDocument) {
@@ -85,8 +90,6 @@ const DocumentEditSource: React.FC<Props> = ({id}) => {
   }, [annotatedDocument]);
 
   const scrollPreviewToLine = (lineNumber: number) => {
-    console.log("scroll to ", lineNumber);
-
     let elementId;
 
     for (let i = 0; i < lineNumberMap.length - 1; i++) {
@@ -144,20 +147,16 @@ const DocumentEditSource: React.FC<Props> = ({id}) => {
 
         <Row style={{height: "95vh"}}>
           <Source>
-            <CodeMirror
-                value={new XMLSerializer().serializeToString(document)}
-                options={{
-                  mode: 'xml',
-                  theme: 'eclipse',
-                  lineNumbers: true,
-                  lineWrapping: true
-                }}
-                autoCursor={false}
-                onChange={(editor, data, value) => {
-                  setEditorValue(value);
-                  scrollPreviewToLine(data.from.line);
-                }}
-                onCursor={((editor, data) => scrollPreviewToLine(data.line))}
+            <AceEditor
+                mode="xml"
+                theme="eclipse"
+                width={"100%"}
+                height={"100%"}
+                wrapEnabled={true}
+                fontSize={tokens.values.typography.bodyTextSmall.fontSize.value}
+                value={editorValue}
+                onChange={(value) => setEditorValue(value)}
+                onCursorChange={(value) => scrollPreviewToLine(value.cursor.row)}
             />
           </Source>
           <Preview ref={previewElementRef}>

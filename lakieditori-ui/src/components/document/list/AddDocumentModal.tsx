@@ -32,9 +32,6 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModa
 
   return (
       <Modal isOpen={isModalOpen} contentLabel="Lisää uusi dokumentti" style={{
-        overlay:{
-          zIndex: 3,
-        },
         content: {
           height: "60%",
           marginLeft: "auto",
