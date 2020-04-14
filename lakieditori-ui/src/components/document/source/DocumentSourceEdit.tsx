@@ -125,8 +125,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
         <Toolbar style={{zIndex: 5}}>
           <Text>
             <Link to={"/documents"}>Etusivu</Link> / <Link
-              to={`/documents/${id}`}>{title}</Link> / <Link
-              to={`/documents/${id}/edit`}>Muokkaa</Link> / XML
+              to={`/documents/${id}`}>{title}</Link> / XML
           </Text>
           <div>
             <Button.secondaryNoborder

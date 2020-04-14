@@ -1,184 +1,65 @@
 /** @jsx jsx */
-import {css, jsx} from '@emotion/core'
+import {jsx} from '@emotion/core'
 import React from "react";
-import {Button, Dropdown, Heading, suomifiDesignTokens as sdt, Text} from "suomifi-ui-components";
 import "codemirror/lib/codemirror.css";
 import "codemirror/theme/material.css";
 import "codemirror/theme/eclipse.css";
 import "codemirror/mode/xml/xml";
-import {
-  cloneDocument,
-  countNodes,
-  ensureElementAndUpdate,
-  queryElements,
-  queryFirstElement,
-  queryFirstNode,
-  queryFirstText,
-  queryNodes,
-  updateElement
-} from "../../../utils/xmlUtils";
-import LayoutWithRightBar from "../../common/LayoutWithRightBar";
-import ChapterEdit from "./ChapterEdit";
-import TableOfContents from "../../common/TableOfContents";
-import {inputStyle} from "../../common/inputStyle";
-import RichTextEditor from "./richtext/RichTextEditor";
-import {useHistory} from "react-router-dom";
-import {buildNavigationTree} from "../../common/TableOfContentsUtils";
-import ConceptList from "../../common/ConceptList";
-import {DocumentState, documentStateLabelFi, parseDocumentState} from "../DocumentTypes";
+import {queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
+import {FlexRowPlain} from "../../common/StyledComponents";
+import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
+import Concepts from "../view/Concepts";
+import TableOfContents from "../view/TableOfContents";
+import DocumentElementEdit from "./elements/DocumentElementEdit";
+import DocumentEditToolbar from "./DocumentEditToolbar";
 
 interface Props {
   id: string
 }
 
 const DocumentEdit: React.FC<Props> = ({id}) => {
-  const history = useHistory();
+  const {document, setDocument, saveDocument} = useDocument(id);
 
-  const {document, setDocument} = useDocument(id);
-  const currentElement = document.documentElement;
-  const currentPath = "/document";
-
-  const number = queryFirstText(currentElement, "@number");
-  const state = parseDocumentState(queryFirstText(currentElement, "@state"));
-  const title = queryFirstElement(currentElement, "title");
-  const titleText = title?.textContent || '';
-  const note = queryFirstElement(currentElement, "note");
-  const intro = queryFirstElement(currentElement, "intro");
-  const linkUrls = queryNodes(currentElement, '//a/@href').map(n => n.textContent || "");
-
-  function updateDocumentState(newValue: string) {
-    setDocument((prevDocument) => {
-      const newDocument = cloneDocument(prevDocument);
-      newDocument.documentElement.setAttribute('state', newValue);
-      return newDocument;
-    });
-  }
-
-  function updateTitle(newValue: string) {
-    setDocument((prevDocument) => {
-      // title element is expected to be in the document
-      return updateElement(cloneDocument(prevDocument), currentPath + "/title",
-          (el) => el.innerHTML = newValue);
-    });
-  }
-
-  function updateNote(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "note", ["intro", "chapter", "section"], (el) => el.innerHTML = newValue);
-    });
-  }
-
-  function updateIntro(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "intro", ["chapter", "section"], (el) => el.innerHTML = newValue);
-    });
-  }
-
-  function appendNewChapter() {
-    setDocument((prevDocument) => {
-      const newDocument = cloneDocument(prevDocument);
-      const chapterCount = countNodes(newDocument, currentPath + '/chapter');
-
-      const chapterElement = newDocument.createElement("chapter");
-      chapterElement.setAttribute('number', (chapterCount + 1) + "");
-      chapterElement.appendChild(newDocument.createElement("title"));
-
-      queryFirstNode(newDocument, currentPath)?.appendChild(chapterElement);
-      return newDocument;
-    });
-  }
-
-  const topBar =
-      <div style={{
-        display: "flex",
-        justifyContent: "space-between",
-        alignItems: "flex-end"
-      }}>
-        <Text style={{maxWidth: "600px"}}>
-          {titleText} / Muokkaa
-        </Text>
-        <div>
-          <Button.secondary
-              icon={"close"}
-              onClick={() => history.push(`/documents/${id}`)}>
-            Sulje
-          </Button.secondary>
-        </div>
-      </div>;
-
-  const toc = <div style={{margin: `${sdt.spacing.xl} ${sdt.spacing.m}`}}>
-    <TableOfContents title={titleText} items={buildNavigationTree(currentElement)}/>
-    <hr/>
-    <ConceptList urls={linkUrls}/>
-  </div>;
+  const element = document.documentElement;
+  const title = queryFirstText(element, "title");
 
   return (
-      <LayoutWithRightBar topContent={topBar} rhsContent={toc}>
-        <article style={{margin: sdt.spacing.xl}}>
-          <Heading.h1hero>
-            <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
-              <small style={{color: sdt.colors.accentBase}}>{number}</small>
-              <Dropdown name={"Tila: " + documentStateLabelFi(state)} changeNameToSelection={false}
-                        css={css`button { margin: 0; }`}>
-                <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
-                  {documentStateLabelFi(DocumentState.UNSTABLE)}
-                </Dropdown.item>
-                <Dropdown.item onSelect={() => updateDocumentState('DRAFT')}>
-                  {documentStateLabelFi(DocumentState.DRAFT)}
-                </Dropdown.item>
-                <Dropdown.item onSelect={() => updateDocumentState('RECOMMENDATION')}>
-                  {documentStateLabelFi(DocumentState.RECOMMENDATION)}
-                </Dropdown.item>
-                <Dropdown.item onSelect={() => updateDocumentState('DEPRECATED')}>
-                  {documentStateLabelFi(DocumentState.DEPRECATED)}
-                </Dropdown.item>
-              </Dropdown>
-            </div>
-            <br/>
-            <RichTextEditor
-                value={title}
-                placeholder="Otsikko (pakollinen)"
-                onChange={updateTitle}
-                style={{
-                  ...inputStyle,
-                  fontSize: sdt.values.typography.heading1Hero.fontSize.value,
-                  fontWeight: sdt.values.typography.heading1Hero.fontWeight,
-                }}/>
-          </Heading.h1hero>
+      <main>
+        <DocumentEditToolbar id={id} title={title} saveDocument={() => saveDocument(document)}/>
 
-          <RichTextEditor
-              value={note}
-              placeholder="Huomautus"
-              onChange={updateNote}
-              style={inputStyle}/>
+        <FlexRowPlain style={{
+          backgroundColor: tokens.colors.whiteBase,
+          border: `1px solid ${tokens.colors.depthLight13}`,
+        }}>
 
-          <RichTextEditor
-              value={intro}
-              placeholder="Johtolause"
-              onChange={updateIntro}
-              style={{
-                ...inputStyle,
-                fontSize: sdt.values.typography.leadText.fontSize.value,
-                fontWeight: sdt.values.typography.leadText.fontWeight,
-              }}/>
+          <div style={{
+            flex: 3,
+            background: tokens.colors.highlightLight53,
+            padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
+          }}>
+            <TableOfContents document={document}/>
+          </div>
 
-          {queryElements(currentElement, 'chapter').map((chapter, i) => {
-            return <div key={i} id={`chapter-${chapter.getAttribute('number')}`}>
-              <ChapterEdit document={document}
-                           currentElement={chapter}
-                           currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
-                           updateDocument={setDocument}/>
-            </div>
-          })}
+          <div style={{
+            flex: 7,
+            padding: tokens.spacing.xl
+          }}>
+            <DocumentElementEdit document={document} setDocument={setDocument}
+                                 currentPath={"/document"} currentElement={element}/>
+          </div>
 
-          <Button.secondaryNoborder icon="plus" onClick={appendNewChapter}>
-            Lisää uusi luku
-          </Button.secondaryNoborder>
-        </article>
-      </LayoutWithRightBar>
+
+          <div style={{
+            flex: 2,
+            borderLeft: `1px solid ${tokens.colors.depthLight26}`,
+            padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
+          }}>
+            <Concepts document={document}/>
+          </div>
+
+        </FlexRowPlain>
+      </main>
   );
 };
 

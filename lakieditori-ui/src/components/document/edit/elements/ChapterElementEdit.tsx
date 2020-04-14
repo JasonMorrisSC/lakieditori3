@@ -8,33 +8,33 @@ import {
   queryFirstNode,
   queryFirstText,
   updateElement
-} from "../../../utils/xmlUtils";
-import {XmlEditorProperties} from "./XmlEditorProperties";
-import SectionEdit from "./SectionEdit";
-import {inputStyle} from "../../common/inputStyle";
-import RichTextEditor from "./richtext/RichTextEditor";
+} from "../../../../utils/xmlUtils";
+import {ElementEditProps} from "./ElementEditProps";
+import SectionElementEdit from "./SectionElementEdit";
+import {inputStyle} from "../../../common/inputStyle";
+import RichTextEditor from "../richtext/RichTextEditor";
 
-const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
 
   function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value;
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath,
           (el) => el.setAttribute('number', newValue));
     });
   }
 
   function updateTitle(newValue: string) {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
           (el) => el.innerHTML = newValue);
     });
   }
 
   function appendNewSection() {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const sectionCount = countNodes(newDocument, currentPath + '/section');
 
@@ -77,10 +77,10 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
 
         {queryElements(currentElement, 'section').map((section, i) => {
           return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>
-            <SectionEdit document={document}
-                         currentElement={section}
-                         currentPath={currentPath + "/section[" + (i + 1) + "]"}
-                         updateDocument={updateDocument}/>
+            <SectionElementEdit document={document}
+                                currentElement={section}
+                                currentPath={currentPath + "/section[" + (i + 1) + "]"}
+                                setDocument={setDocument}/>
           </div>
         })}
 
@@ -94,4 +94,4 @@ const ChapterEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
   );
 };
 
-export default ChapterEdit;
+export default ChapterElementEdit;

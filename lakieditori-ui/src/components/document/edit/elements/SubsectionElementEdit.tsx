@@ -5,17 +5,17 @@ import {
   ensureElementAndUpdate,
   queryFirstElement,
   queryFirstText
-} from "../../../utils/xmlUtils";
-import {XmlEditorProperties} from "./XmlEditorProperties";
-import RichTextEditor from "./richtext/RichTextEditor";
-import {inputStyle} from "../../common/inputStyle";
+} from "../../../../utils/xmlUtils";
+import {ElementEditProps} from "./ElementEditProps";
+import RichTextEditor from "../richtext/RichTextEditor";
+import {inputStyle} from "../../../common/inputStyle";
 
-const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
 
   function updateContent(newValue: string) {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "content", ["subsection"], (el) => el.innerHTML = newValue);
     });
@@ -42,4 +42,4 @@ const SubsectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement
   );
 };
 
-export default SubsectionEdit;
+export default SubsectionElementEdit;

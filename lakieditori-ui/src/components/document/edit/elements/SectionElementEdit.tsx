@@ -8,33 +8,33 @@ import {
   queryFirstNode,
   queryFirstText,
   updateElement
-} from "../../../utils/xmlUtils";
-import {XmlEditorProperties} from "./XmlEditorProperties";
-import SubsectionEdit from "./SubsectionEdit";
-import {inputStyle} from "../../common/inputStyle";
-import RichTextEditor from "./richtext/RichTextEditor";
+} from "../../../../utils/xmlUtils";
+import {ElementEditProps} from "./ElementEditProps";
+import SubsectionElementEdit from "./SubsectionElementEdit";
+import {inputStyle} from "../../../common/inputStyle";
+import RichTextEditor from "../richtext/RichTextEditor";
 
-const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
 
   function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
     const newValue = e.currentTarget.value;
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath,
           (el) => el.setAttribute('number', newValue));
     });
   }
 
   function updateTitle(newValue: string) {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
           (el) => el.innerHTML = newValue);
     });
   }
 
   function appendNewSubsection() {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const subsectionCount = countNodes(newDocument, currentPath + '/subsection');
 
@@ -76,11 +76,11 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
         </Heading.h3>
 
         {queryElements(currentElement, 'subsection').map((subsection, i) => {
-          return <SubsectionEdit key={i}
-                                 document={document}
-                                 currentElement={subsection}
-                                 currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
-                                 updateDocument={updateDocument}/>
+          return <SubsectionElementEdit key={i}
+                                        document={document}
+                                        currentElement={subsection}
+                                        currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
+                                        setDocument={setDocument}/>
         })}
 
         <Button.secondaryNoborder
@@ -96,4 +96,4 @@ const SectionEdit: React.FC<XmlEditorProperties> = ({document, currentElement, c
   );
 };
 
-export default SectionEdit;
+export default SectionElementEdit;
