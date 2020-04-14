@@ -13,7 +13,8 @@ export const HeaderContainer = styled(Container)`
   align-items: center;
   justify-content: space-between;
   font-weight: ${tokens.values.typography.bodySemiBold.fontWeight};
-  padding: ${tokens.spacing.s};
+  padding-top: ${tokens.spacing.s};
+  padding-bottom: ${tokens.spacing.s};
 `;
 
 export const AppName = styled.span`
