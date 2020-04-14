@@ -17,10 +17,10 @@ const DocumentList: React.FC = () => {
   const {documents, saveDocument, removeDocument} = useDocuments();
   const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
 
-  const titleComparator = (a: Element, b: Element): number => {
-    const aName = queryFirstText(a, 'title').trim() || '';
-    const bName = queryFirstText(b, 'title').trim() || '';
-    return aName < bName ? -1 : (aName > bName ? 1 : 0);
+  const documentComparator = (a: Element, b: Element): number => {
+    const aTimestamp = queryFirstText(a, '@lastModifiedDate').trim() || '';
+    const bTimestamp = queryFirstText(b, '@lastModifiedDate').trim() || '';
+    return aTimestamp > bTimestamp ? -1 : (aTimestamp < bTimestamp ? 1 : 0);
   };
 
   const renderDocumentRow = (e: Element, i: number) => {
@@ -76,7 +76,7 @@ const DocumentList: React.FC = () => {
             </thead>
             <tbody>
             {queryElements(documents.documentElement, 'document')
-            .sort(titleComparator)
+            .sort(documentComparator)
             .map(renderDocumentRow)}
             </tbody>
           </Table>
