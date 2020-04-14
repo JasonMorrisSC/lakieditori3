@@ -44,7 +44,7 @@ interface LineNumberElementId {
   elementId: string,
 }
 
-const DocumentEditSource: React.FC<Props> = ({id}) => {
+const DocumentSourceEdit: React.FC<Props> = ({id}) => {
   const history = useHistory();
 
   const {document, saveDocument} = useDocument(id);
@@ -172,4 +172,4 @@ const DocumentEditSource: React.FC<Props> = ({id}) => {
   );
 };
 
-export default DocumentEditSource;
+export default DocumentSourceEdit;

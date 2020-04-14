@@ -2,7 +2,7 @@ import React from "react";
 import {Route, Switch, useParams, useRouteMatch} from "react-router-dom";
 import DocumentView from "./view/DocumentView";
 import DocumentInfo from "./info/DocumentInfo";
-import DocumentEditSource from "./edit/DocumentEditSource";
+import DocumentSourceEdit from "./source/DocumentSourceEdit";
 
 const DocumentRoutes: React.FC = () => {
   const match = useRouteMatch();
@@ -11,7 +11,7 @@ const DocumentRoutes: React.FC = () => {
   return (
       <Switch>
         <Route path={`${match.path}/source`}>
-          {documentId && <DocumentEditSource id={documentId}/>}
+          {documentId && <DocumentSourceEdit id={documentId}/>}
         </Route>
         <Route path={`${match.path}/info`}>
           {documentId && <DocumentInfo id={documentId}/>}
