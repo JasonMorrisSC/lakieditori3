@@ -1,9 +1,7 @@
-import React, {useContext} from "react";
+import React, {useState} from "react";
 import {Link, useHistory} from "react-router-dom";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {AuthenticationContext} from "../../../App";
-import {NULL_USER} from "../../../utils/User";
-import {Toolbar} from "../DocumentStyles";
+import {ErrorPanel, Toolbar} from "../DocumentStyles";
 
 interface Props {
   id: string,
@@ -13,14 +11,21 @@ interface Props {
 
 const DocumentEditToolbar: React.FC<Props> = ({id, title, saveDocument}) => {
   const history = useHistory();
-  const [user] = useContext(AuthenticationContext);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  function saveAndClose() {
+    saveDocument().then(() => {
+      history.push(`/documents/${id}`);
+    }).catch((error) => {
+      setErrorMessage(error.response.data.message);
+    });
+  }
 
   return (
       <Toolbar>
         <div>
           <Link to={"/"}>Etusivu</Link> / <Link to={`/documents/${id}`}>{title}</Link> / Muokkaa
         </div>
-        {user !== NULL_USER &&
         <div>
           <Button.secondaryNoborder
               icon={"close"}
@@ -30,10 +35,15 @@ const DocumentEditToolbar: React.FC<Props> = ({id, title, saveDocument}) => {
           </Button.secondaryNoborder>
           <Button
               icon={"save"}
-              onClick={() => saveDocument().then(() => history.push(`/documents/${id}`))}>
+              onClick={() => saveAndClose()}>
             Tallenna
           </Button>
-        </div>}
+        </div>
+        {errorMessage &&
+        <ErrorPanel>
+          XML dokumentissa on virhe:<br/>
+          {errorMessage ? errorMessage : ''}<br/>
+        </ErrorPanel>}
       </Toolbar>
   );
 };

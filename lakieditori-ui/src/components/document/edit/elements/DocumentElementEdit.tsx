@@ -40,13 +40,6 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
     });
   }
 
-  function updateNote(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "note", ["intro", "chapter", "section"], (el) => el.innerHTML = newValue);
-    });
-  }
-
   function updateIntro(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
@@ -100,12 +93,6 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
                 fontWeight: sdt.values.typography.heading1Hero.fontWeight,
               }}/>
         </Heading.h1hero>
-
-        <RichTextEditor
-            value={note}
-            placeholder="Huomautus"
-            onChange={updateNote}
-            style={inputStyle}/>
 
         <RichTextEditor
             value={intro}
