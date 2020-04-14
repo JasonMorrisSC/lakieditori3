@@ -16,7 +16,7 @@ interface AddDocumentModalProps {
 const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModalOpen, saveDocument}) => {
   const history = useHistory();
   const [newDocumentNumber, setNewDocumentNumber] = useState<string>(`${currentYear()}/???`);
-  const [newDocumentTitle, setNewDocumentTitle] = useState<string>("Uusi lakiluonnos");
+  const [newDocumentTitle, setNewDocumentTitle] = useState<string>("Nimetön dokumentti");
 
   function addNewDocument() {
     let newDocument = parseXml('<document><title/></document>');
