@@ -18,7 +18,6 @@ import {
   updateElement
 } from "../../../utils/xmlUtils";
 import LayoutWithRightBar from "../../common/LayoutWithRightBar";
-import {XmlEditorProperties} from "./XmlEditorProperties";
 import ChapterEdit from "./ChapterEdit";
 import TableOfContents from "../../common/TableOfContents";
 import {inputStyle} from "../../common/inputStyle";
@@ -26,14 +25,22 @@ import RichTextEditor from "./richtext/RichTextEditor";
 import {useHistory} from "react-router-dom";
 import {buildNavigationTree} from "../../common/TableOfContentsUtils";
 import ConceptList from "../../common/ConceptList";
-import {DocumentState, parseDocumentState} from "../DocumentTypes";
+import {DocumentState, documentStateLabelFi, parseDocumentState} from "../DocumentTypes";
+import {useDocument} from "../useDocument";
 
-const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, currentPath, updateDocument}) => {
+interface Props {
+  id: string
+}
+
+const DocumentEdit: React.FC<Props> = ({id}) => {
   const history = useHistory();
 
-  const id = queryFirstText(currentElement, "@id");
+  const {document, setDocument} = useDocument(id);
+  const currentElement = document.documentElement;
+  const currentPath = "/document";
+
   const number = queryFirstText(currentElement, "@number");
-  const state = queryFirstText(currentElement, "@state");
+  const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
   const titleText = title?.textContent || '';
   const note = queryFirstElement(currentElement, "note");
@@ -41,7 +48,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
   const linkUrls = queryNodes(currentElement, '//a/@href').map(n => n.textContent || "");
 
   function updateDocumentState(newValue: string) {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       newDocument.documentElement.setAttribute('state', newValue);
       return newDocument;
@@ -49,7 +56,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
   }
 
   function updateTitle(newValue: string) {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       // title element is expected to be in the document
       return updateElement(cloneDocument(prevDocument), currentPath + "/title",
           (el) => el.innerHTML = newValue);
@@ -57,21 +64,21 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
   }
 
   function updateNote(newValue: string) {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "note", ["intro", "chapter", "section"], (el) => el.innerHTML = newValue);
     });
   }
 
   function updateIntro(newValue: string) {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "intro", ["chapter", "section"], (el) => el.innerHTML = newValue);
     });
   }
 
   function appendNewChapter() {
-    updateDocument((prevDocument) => {
+    setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const chapterCount = countNodes(newDocument, currentPath + '/chapter');
 
@@ -120,19 +127,19 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
           <Heading.h1hero>
             <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
               <small style={{color: sdt.colors.accentBase}}>{number}</small>
-              <Dropdown name={"Tila: " + parseDocumentState(state)} changeNameToSelection={false}
+              <Dropdown name={"Tila: " + documentStateLabelFi(state)} changeNameToSelection={false}
                         css={css`button { margin: 0; }`}>
                 <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
-                  {DocumentState.UNSTABLE}
+                  {documentStateLabelFi(DocumentState.UNSTABLE)}
                 </Dropdown.item>
                 <Dropdown.item onSelect={() => updateDocumentState('DRAFT')}>
-                  {DocumentState.DRAFT}
+                  {documentStateLabelFi(DocumentState.DRAFT)}
                 </Dropdown.item>
                 <Dropdown.item onSelect={() => updateDocumentState('RECOMMENDATION')}>
-                  {DocumentState.RECOMMENDATION}
+                  {documentStateLabelFi(DocumentState.RECOMMENDATION)}
                 </Dropdown.item>
                 <Dropdown.item onSelect={() => updateDocumentState('DEPRECATED')}>
-                  {DocumentState.DEPRECATED}
+                  {documentStateLabelFi(DocumentState.DEPRECATED)}
                 </Dropdown.item>
               </Dropdown>
             </div>
@@ -169,7 +176,7 @@ const DocumentEdit: React.FC<XmlEditorProperties> = ({document, currentElement, 
               <ChapterEdit document={document}
                            currentElement={chapter}
                            currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
-                           updateDocument={updateDocument}/>
+                           updateDocument={setDocument}/>
             </div>
           })}
 

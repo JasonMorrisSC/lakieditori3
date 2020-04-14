@@ -16,7 +16,7 @@ export function documentStateLabelFi(state: DocumentState): string {
     case DocumentState.RECOMMENDATION:
       return "Suositus";
     case DocumentState.DEPRECATED:
-      return "Suositus";
+      return "Poistettu";
     case DocumentState.UNSTABLE:
     default:
       return "Kesken";
