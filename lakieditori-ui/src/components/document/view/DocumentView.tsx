@@ -8,11 +8,11 @@ import {useDocument} from "../useDocument";
 import DocumentViewToolbar from "./DocumentViewToolbar";
 import DocumentElement from "./elements/DocumentElement";
 
-interface DocumentViewProps {
+interface Props {
   id: string
 }
 
-const DocumentView: React.FC<DocumentViewProps> = ({id}) => {
+const DocumentView: React.FC<Props> = ({id}) => {
   const {document} = useDocument(id);
 
   const element = document.documentElement;

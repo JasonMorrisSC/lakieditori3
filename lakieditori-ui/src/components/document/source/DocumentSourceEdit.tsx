@@ -35,13 +35,13 @@ const Preview = styled.div`
   padding: ${tokens.spacing.l};
 `;
 
-interface Props {
-  id: string;
-}
-
 interface LineNumberElementId {
   lineNumber: number,
   elementId: string,
+}
+
+interface Props {
+  id: string;
 }
 
 const DocumentSourceEdit: React.FC<Props> = ({id}) => {
