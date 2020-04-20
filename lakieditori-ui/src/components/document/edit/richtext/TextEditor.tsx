@@ -1,5 +1,5 @@
 import React, {CSSProperties, useCallback, useEffect, useMemo, useState} from "react";
-import {createEditor, Node as SlateNode, NodeEntry} from 'slate'
+import {createEditor, Location, Node as SlateNode, NodeEntry} from 'slate'
 import {
   Editable,
   ReactEditor,
@@ -14,20 +14,25 @@ import {deserialize, highlightMatches, serialize, toggleFormat} from "./slateUti
 import {useTextConcepts} from "./useTextConcepts";
 import TextEditorToolbar from "./TextEditorToolbar";
 import TextEditorHoveringToolbar from "./TextEditorHoveringToolbar";
+import LinkModal from "./LinkModal";
 
 interface Props {
   value: Element | null,
   placeholder?: string,
   onChange?: (newValue: string) => void,
   style?: CSSProperties,
-  showToolbar?: boolean,
 }
 
-const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style, showToolbar = true}) => {
+const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
   const [initialized, setInitialized] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
+
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
   const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
+
+  const [isLinkModalOpen, setLinkModalOpen] = useState(false);
+  const [linkModalSelection, setLinkModalSelection] = useState<Location>([0]);
+
   const {concepts} = useTextConcepts(editorValue.map(n => SlateNode.string(n)).join('\n'), focused);
 
   // Sets real initial editor value from properties after it is available
@@ -58,10 +63,19 @@ const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder,
             editor={editor}
             value={editorValue}
             onChange={nodes => setEditorValue(nodes)}>
-          <TextEditorHoveringToolbar words={concepts}/>
+          <TextEditorHoveringToolbar
+              words={concepts}
+              linkSelection={(location) => {
+                setLinkModalSelection(location);
+                setLinkModalOpen(true);
+              }}/>
 
           <div style={{border: `1px solid ${tokens.colors.depthLight13}`, borderRadius: "2px"}}>
-            <TextEditorToolbar label={placeholder || ''} expand={focused && showToolbar}/>
+            <TextEditorToolbar label={placeholder || ''} expanded={focused}
+                               linkSelection={(location) => {
+                                 setLinkModalSelection(location);
+                                 setLinkModalOpen(true);
+                               }}/>
 
             <Editable
                 renderElement={props => <EditorElement {...props} />}
@@ -90,6 +104,11 @@ const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder,
                 }}
             />
           </div>
+
+          <LinkModal
+              isOpen={isLinkModalOpen}
+              close={() => setLinkModalOpen(false)}
+              selection={linkModalSelection}/>
         </Slate>
       </div>
   );

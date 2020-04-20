@@ -1,5 +1,5 @@
 import React, {ReactNode, useEffect, useRef} from "react";
-import {Editor, Transforms} from 'slate'
+import {Editor, Location, Transforms} from 'slate'
 import {ReactEditor, useSlate} from 'slate-react'
 import {css} from "emotion";
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
@@ -24,10 +24,11 @@ export const ToolbarIconButton = styled(ToolbarButton)`
 `;
 
 interface Props {
-  words: Map<string, Concept>
+  words: Map<string, Concept>,
+  linkSelection: (location: Location) => void,
 }
 
-const TextEditorHoveringToolbar: React.FC<Props> = ({words}) => {
+const TextEditorHoveringToolbar: React.FC<Props> = ({words, linkSelection}) => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useSlate();
   const selection = selectionOrWord(editor) || [0];
@@ -110,7 +111,10 @@ const TextEditorHoveringToolbar: React.FC<Props> = ({words}) => {
           }}>
             <span className={"material-icons"}>format_italic</span>
           </ToolbarIconButton>
-          <ToolbarIconButton>
+          <ToolbarIconButton onMouseDown={(e) => {
+            e.preventDefault();
+            linkSelection(selection);
+          }}>
             <span className={"material-icons"}>link</span>
           </ToolbarIconButton>
         </div>

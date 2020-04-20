@@ -1,4 +1,4 @@
-import React, {useContext} from "react";
+import React, {useContext, useState} from "react";
 import {Link} from "react-router-dom";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {Table} from "../../common/StyledComponents";
@@ -14,7 +14,7 @@ import {toFiDateTimeStringInUtc} from "../../../utils/dateUtils";
 const DocumentList: React.FC = () => {
   const [user] = useContext(AuthenticationContext);
   const {documents, saveDocument, removeDocument} = useDocuments();
-  const [isModalOpen, setModalOpen] = React.useState<boolean>(false);
+  const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const documentComparator = (a: Element, b: Element): number => {
     const aTimestamp = queryFirstText(a, '@lastModifiedDate').trim() || '';

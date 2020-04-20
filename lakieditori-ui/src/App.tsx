@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction} from "react";
+import React, {Dispatch, SetStateAction, useState} from "react";
 import {BrowserRouter as Router, Redirect, Route, Switch} from "react-router-dom";
 import {css, Global} from '@emotion/core'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
@@ -14,7 +14,7 @@ const App: React.FC = () => {
   const bodyText = tokens.values.typography.bodyText;
 
   return (
-      <AuthenticationContext.Provider value={React.useState<User>(NULL_USER)}>
+      <AuthenticationContext.Provider value={useState<User>(NULL_USER)}>
         <Global styles={css`
             body {
               background-color: ${tokens.colors.depthLight30};

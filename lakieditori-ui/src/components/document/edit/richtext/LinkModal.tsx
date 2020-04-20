@@ -42,9 +42,9 @@ interface Props {
 const LinkModal = ({isOpen, close, selection}: Props) => {
   const editor = useSlate();
 
-  const [linkText, setLinkText] = React.useState<string>('');
-  const [linkUrl, setLinkUrl] = React.useState<string>('');
-  const [tab, setTab] = React.useState<Tab>(Tab.CONCEPT);
+  const [linkText, setLinkText] = useState<string>('');
+  const [linkUrl, setLinkUrl] = useState<string>('');
+  const [tab, setTab] = useState<Tab>(Tab.CONCEPT);
 
   useEffect(() => {
     // when modal is opened, read selected text and possible existing link URL
