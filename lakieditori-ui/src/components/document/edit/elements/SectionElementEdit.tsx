@@ -11,8 +11,8 @@ import {
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
 import SubsectionElementEdit from "./SubsectionElementEdit";
-import {inputStyle} from "../../../common/inputStyle";
 import TextEditor from "../richtext/TextEditor";
+import {Input} from "../../../common/InputStyles";
 
 const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -50,10 +50,9 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   return (
       <div className="section" style={{marginTop: sdt.spacing.l}}>
         <Heading.h3>
-          <input type="text" value={number}
+          <Input type="text" value={number}
                  onChange={updateNumber}
                  style={{
-                   ...inputStyle,
                    color: sdt.colors.highlightBase,
                    fontSize: sdt.values.typography.heading3.fontSize.value,
                    fontWeight: sdt.values.typography.heading3.fontWeight,
@@ -70,7 +69,6 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
               placeholder={`Pykälän ${number} otsikko`}
               onChange={updateTitle}
               style={{
-                ...inputStyle,
                 fontSize: sdt.values.typography.heading3.fontSize.value,
                 fontWeight: sdt.values.typography.heading3.fontWeight,
               }}/>

@@ -11,7 +11,6 @@ import {
   updateElement
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
-import {inputStyle} from "../../../common/inputStyle";
 import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import {css} from "@emotion/core";
@@ -87,7 +86,6 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               placeholder="Otsikko"
               onChange={updateTitle}
               style={{
-                ...inputStyle,
                 fontSize: sdt.values.typography.heading1Hero.fontSize.value,
                 fontWeight: sdt.values.typography.heading1Hero.fontWeight,
               }}/>
@@ -98,7 +96,6 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
             placeholder="Johtolause"
             onChange={updateIntro}
             style={{
-              ...inputStyle,
               fontSize: sdt.values.typography.leadText.fontSize.value,
               fontWeight: sdt.values.typography.leadText.fontWeight,
             }}/>

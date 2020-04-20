@@ -11,8 +11,8 @@ import {
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
 import SectionElementEdit from "./SectionElementEdit";
-import {inputStyle} from "../../../common/inputStyle";
 import TextEditor from "../richtext/TextEditor";
+import {Input} from "../../../common/InputStyles";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
@@ -50,10 +50,9 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   return (
       <div className="chapter" style={{margin: `${sdt.spacing.xl} 0`}}>
         <Heading.h2>
-          <input type="text" value={number}
+          <Input type="text" value={number}
                  onChange={updateNumber}
                  style={{
-                   ...inputStyle,
                    color: sdt.colors.highlightBase,
                    fontSize: sdt.values.typography.heading2.fontSize.value,
                    fontWeight: sdt.values.typography.heading2.fontWeight,
@@ -70,7 +69,6 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
               placeholder={`Luvun ${number} otsikko`}
               onChange={updateTitle}
               style={{
-                ...inputStyle,
                 fontSize: sdt.values.typography.heading2.fontSize.value,
                 fontWeight: sdt.values.typography.heading2.fontWeight,
               }}/>

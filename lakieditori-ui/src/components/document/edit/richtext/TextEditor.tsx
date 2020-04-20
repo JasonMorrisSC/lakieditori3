@@ -58,7 +58,7 @@ const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder,
   }, [focused, concepts]);
 
   return (
-      <div style={{...style, border: 0, padding: 0}}>
+      <div style={{margin: `${tokens.spacing.xxs} 0`, ...style}}>
         <Slate
             editor={editor}
             value={editorValue}

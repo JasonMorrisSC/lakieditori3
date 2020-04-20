@@ -1,6 +1,18 @@
 // @ts-ignore
 import React, {CSSProperties, SyntheticEvent, useEffect, useRef} from "react";
-import {inputStyle} from "./inputStyle";
+import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
+
+const inputStyle: CSSProperties = {
+  border: `1px solid ${sdt.colors.depthLight13}`,
+  borderRadius: "2px",
+  boxSizing: 'border-box',
+  fontFamily: sdt.values.typography.bodyText.fontFamily,
+  fontSize: sdt.values.typography.bodyText.fontSize.value,
+  fontWeight: sdt.values.typography.bodyText.fontWeight,
+  margin: `${sdt.spacing.xxs} 0`,
+  padding: sdt.spacing.s,
+  width: '100%',
+};
 
 const TextArea: React.FC<Props> = (
     {

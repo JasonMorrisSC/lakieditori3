@@ -1,5 +1,4 @@
 import React from "react";
-import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {
   cloneDocument,
   ensureElementAndUpdate,
@@ -8,7 +7,6 @@ import {
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
-import {inputStyle} from "../../../common/inputStyle";
 
 const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -26,11 +24,7 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
         <TextEditor
             value={content}
             placeholder={`Momentti ${number}`}
-            onChange={updateContent}
-            style={{
-              ...inputStyle,
-              color: sdt.colors.blackBase
-            }}/>
+            onChange={updateContent}/>
         {/*
         <ul style={{padding: 0}}>
           {queryElements(document, currentElement, 'paragraph').map((paragraph, i) => {
