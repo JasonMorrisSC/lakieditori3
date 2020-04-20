@@ -12,7 +12,7 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import SectionElementEdit from "./SectionElementEdit";
 import {inputStyle} from "../../../common/inputStyle";
-import RichTextEditor from "../richtext/RichTextEditor";
+import TextEditor from "../richtext/TextEditor";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
@@ -58,13 +58,14 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                    fontSize: sdt.values.typography.heading2.fontSize.value,
                    fontWeight: sdt.values.typography.heading2.fontWeight,
                    marginRight: sdt.spacing.xs,
+                   marginBottom: 0,
                    width: `${(number.length + 1) * 18}px`
                  }}/>
           <span style={{color: sdt.colors.highlightBase}}>
             luku
           </span>
 
-          <RichTextEditor
+          <TextEditor
               value={title}
               placeholder={`Luvun ${number} otsikko`}
               onChange={updateTitle}

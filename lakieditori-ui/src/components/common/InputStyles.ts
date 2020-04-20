@@ -1,8 +1,7 @@
 import styled from '@emotion/styled'
-import {css} from "@emotion/core";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 
-export const inputCss = css`
+export const Input = styled.input`
   border: 1px solid ${tokens.colors.depthLight13};
   border-radius: 2px;
   box-sizing: border-box;
@@ -16,12 +15,7 @@ export const inputCss = css`
   width: 100%;
 `;
 
-export const Input = styled.input`
-  ${inputCss}
-`;
-
-export const InputNumber = styled.input`
-  ${inputCss}
+export const InputNumber = styled(Input)`
   width: 3em;
   text-align: right;
   border: 1px solid ${tokens.colors.depthLight26};
@@ -42,14 +36,23 @@ export const InputRadio = styled.input`
 
 InputRadio.defaultProps = {type: 'radio'};
 
-export const TextArea = styled.textarea`
-  ${inputCss}
+export const ButtonInverted = styled(Button)`
+  background: none;
+  color: ${tokens.colors.whiteBase} !important;
+  border: 1px solid ${tokens.colors.whiteBase} !important;
+  & > svg {
+    fill: ${tokens.colors.whiteBase};
+  }
 `;
 
-export const ButtonLink = styled.button`
+interface ButtonLinkProps {
+  active?: boolean
+}
+
+export const ButtonLink = styled.button<ButtonLinkProps>`
   background: none;
   border: none;
-  color: ${tokens.colors.highlightBase};
+  color: ${(props: ButtonLinkProps) => props.active ? tokens.colors.blackBase : tokens.colors.highlightBase};
   cursor: pointer;
   font-family: ${tokens.values.typography.bodyText.fontFamily};
   font-size: ${tokens.values.typography.bodyText.fontSize.value}${tokens.values.typography.bodyText.fontSize.unit};
@@ -58,32 +61,11 @@ export const ButtonLink = styled.button`
   padding: 0;
 `;
 
-export const ButtonLinkSmall = styled.button`
-  background: none;
-  border: none;
-  color: ${tokens.colors.highlightBase};
-  cursor: pointer;
+export const ButtonLinkSmall = styled(ButtonLink)`
   font-family: ${tokens.values.typography.bodyTextSmall.fontFamily};
   font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
   font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
   line-height: ${tokens.values.typography.bodyTextSmall.lineHeight.value};
-  padding: 0;
-`;
-
-export const ButtonSecondaryDark = styled(Button.secondary)`
-  color: ${tokens.colors.blackBase} !important;
-  border: 1px solid ${tokens.colors.depthLight13} !important;
-  & > svg {
-    fill: ${tokens.colors.depthDark27};
-  }
-`;
-
-export const ButtonSecondaryDarkNoBorder = styled(Button.secondaryNoborder)`
-  color: ${tokens.colors.blackBase} !important;
-  background: none !important;
-  & > svg {
-    fill: ${tokens.colors.depthDark27};
-  }
 `;
 
 export const ButtonIconOnly = styled(Button.secondaryNoborder)`

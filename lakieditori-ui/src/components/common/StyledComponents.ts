@@ -1,19 +1,5 @@
 import styled from '@emotion/styled'
-import {css} from "@emotion/core";
 import {Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-
-export const horizontalLabeledInputCss = css`
-  display: flex;
-  align-items: center;
-  & > label {
-    flex: 1;
-    line-height: 1;
-    margin-right: ${tokens.spacing.m};
-  }
-  & > input {
-    flex: 6;
-  }
-`;
 
 export const Container = styled.div`
   margin: 0 auto;
@@ -105,6 +91,14 @@ export const FlexColTight = styled.div`
   flex-direction: column;
   & > * + * {
     margin-top: ${tokens.spacing.m};  
+  };
+`;
+
+export const FlexColExtraTight = styled.div`
+  display: flex;
+  flex-direction: column;
+  & > * + * {
+    margin-top: ${tokens.spacing.xs};  
   };
 `;
 

@@ -12,7 +12,7 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import SubsectionElementEdit from "./SubsectionElementEdit";
 import {inputStyle} from "../../../common/inputStyle";
-import RichTextEditor from "../richtext/RichTextEditor";
+import TextEditor from "../richtext/TextEditor";
 
 const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -58,13 +58,14 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                    fontSize: sdt.values.typography.heading3.fontSize.value,
                    fontWeight: sdt.values.typography.heading3.fontWeight,
                    marginRight: sdt.spacing.xs,
+                   marginBottom: 0,
                    width: `${(number.length + 1) * 16}px`
                  }}/>
           <span style={{color: sdt.colors.highlightBase}}>
             §
           </span>
 
-          <RichTextEditor
+          <TextEditor
               value={title}
               placeholder={`Pykälän ${number} otsikko`}
               onChange={updateTitle}

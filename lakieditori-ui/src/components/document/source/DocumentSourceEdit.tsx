@@ -31,7 +31,7 @@ const Source = styled.div`
 const Preview = styled.div`
   background-color: ${tokens.colors.highlightLight53};
   border-left: 1px solid ${tokens.colors.depthLight13};
-  flex: 3;
+  flex: 4;
   overflow: scroll;
   padding: ${tokens.spacing.l};
 `;
@@ -62,7 +62,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
 
   useEffect(() => {
     setEditorValue(toString(formattedDocument ? formattedDocument : document));
-  }, [formattedDocument]);
+  }, [document, formattedDocument]);
 
   useEffect(() => {
     setErrorMessage(validationErrorMessage);

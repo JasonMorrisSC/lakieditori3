@@ -12,7 +12,7 @@ import {
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
 import {inputStyle} from "../../../common/inputStyle";
-import RichTextEditor from "../richtext/RichTextEditor";
+import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import {css} from "@emotion/core";
 import ChapterElementEdit from "./ChapterElementEdit";
@@ -82,9 +82,9 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
             </Dropdown>
           </div>
           <br/>
-          <RichTextEditor
+          <TextEditor
               value={title}
-              placeholder="Otsikko (pakollinen)"
+              placeholder="Otsikko"
               onChange={updateTitle}
               style={{
                 ...inputStyle,
@@ -93,7 +93,7 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               }}/>
         </Heading.h1hero>
 
-        <RichTextEditor
+        <TextEditor
             value={intro}
             placeholder="Johtolause"
             onChange={updateIntro}

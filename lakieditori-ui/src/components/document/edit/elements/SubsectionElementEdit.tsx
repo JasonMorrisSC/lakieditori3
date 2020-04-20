@@ -7,7 +7,7 @@ import {
   queryFirstText
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
-import RichTextEditor from "../richtext/RichTextEditor";
+import TextEditor from "../richtext/TextEditor";
 import {inputStyle} from "../../../common/inputStyle";
 
 const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
@@ -23,9 +23,9 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
 
   return (
       <div className="subsection">
-        <RichTextEditor
+        <TextEditor
             value={content}
-            placeholder={`Momentin ${number} pakollinen tekstisisältö`}
+            placeholder={`Momentti ${number}`}
             onChange={updateContent}
             style={{
               ...inputStyle,

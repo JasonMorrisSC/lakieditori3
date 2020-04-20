@@ -1,4 +1,4 @@
-import {Editor, Node as SlateNode, Range, Text, Transforms} from "slate";
+import {Editor, Location, Node as SlateNode, NodeEntry, Range, Text, Transforms} from "slate";
 import {jsx} from "slate-hyperscript";
 import escapeHtml from "escape-html";
 
@@ -72,12 +72,12 @@ export function isFormatActive(editor: Editor, format: string) {
   return !!match;
 }
 
-export function toggleFormat(editor: Editor, format: string) {
+export function toggleFormat(editor: Editor, format: string, at?: Location) {
   const isActive = isFormatActive(editor, format);
   Transforms.setNodes(
       editor,
       {[format]: isActive ? null : true},
-      {match: Text.isText, split: true}
+      {at, match: Text.isText, split: true}
   )
 }
 
@@ -117,4 +117,46 @@ export function wrapLink(editor: Editor, url: string, text?: string) {
 
 export function unwrapLink(editor: Editor) {
   Transforms.unwrapNodes(editor, {match: n => n.type === 'link'});
+}
+
+export function selectionOrEnd(editor: Editor): Location {
+  if (editor.selection) {
+    return editor.selection
+  } else if (editor.children.length > 0) {
+    return Editor.end(editor, [])
+  } else {
+    return [0];
+  }
+}
+
+export function selectionOrWord(editor: Editor): null | Range {
+  const {selection} = editor;
+  return selection && Range.isCollapsed(selection) ? {
+    anchor: Editor.before(editor, selection, {unit: "word"}) || selection.anchor,
+    focus: Editor.after(editor, selection, {unit: "word"}) || selection.focus
+  } : selection;
+}
+
+export function highlightMatches(predicate: (word: string) => boolean, [node, path]: NodeEntry): Range[] {
+  const ranges: Range[] = [];
+
+  if (Text.isText(node)) {
+    const {text} = node;
+
+    const words = text.split(/[\s.,!?(){}#]/);
+    let offset = 0;
+
+    words.forEach((word, i) => {
+      if (predicate(word)) {
+        ranges.push({
+          anchor: {path, offset: offset + word.length},
+          focus: {path, offset},
+          highlight: true
+        })
+      }
+      offset = offset + word.length + 1;
+    })
+  }
+
+  return ranges;
 }

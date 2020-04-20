@@ -18,8 +18,8 @@ const LoginModal: React.FC<LoginModalProps> = ({isOpen, setOpen, login}) => {
       <Modal isOpen={isOpen} contentLabel="Kirjaudu" style={{
         content: {
           height: "60%",
-          marginLeft: "auto",
           marginRight: "auto",
+          marginLeft: "auto",
           maxWidth: 800,
           padding: tokens.spacing.l,
         }
