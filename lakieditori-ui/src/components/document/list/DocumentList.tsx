@@ -34,7 +34,9 @@ const DocumentList: React.FC = () => {
           <td style={{color: tokens.colors.highlightBase}}>
             <Link to={`/documents/${id}`}>{number}</Link>
           </td>
-          <td>{title}</td>
+          <td>
+            <Link to={`/documents/${id}`}>{title}</Link>
+          </td>
           <td>{state}</td>
           <td>{lastModifiedDate}</td>
           {user !== NULL_USER &&
