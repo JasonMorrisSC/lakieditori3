@@ -5,7 +5,9 @@ import static java.util.stream.StreamSupport.stream;
 
 import java.util.Iterator;
 import java.util.Spliterator;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public final class StreamUtils {
@@ -61,6 +63,14 @@ public final class StreamUtils {
 
     R apply(T t, U u, Integer index);
 
+  }
+
+  public static <E> Stream<Tuple2<E, Integer>> mapWithIndex(Stream<E> stream) {
+    return zipFull(stream, IntStream.of(0).boxed(), Tuple::of);
+  }
+
+  public static <E> void forEachWithIndex(Stream<E> stream, BiConsumer<E, Integer> consumer) {
+    zipFull(stream, IntStream.of(0).boxed(), Tuple::of).forEach(t -> consumer.accept(t._1, t._2));
   }
 
 }

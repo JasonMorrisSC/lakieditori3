@@ -43,6 +43,7 @@ import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
@@ -186,6 +187,21 @@ public final class XmlUtils {
     }
   }
 
+  public static String print(Document doc, Source xslt) {
+    ByteArrayOutputStream out = new ByteArrayOutputStream();
+    print(doc, out, xslt);
+    return new String(out.toByteArray(), StandardCharsets.UTF_8);
+  }
+
+  public static void print(Document doc, OutputStream out, Source xslt) {
+    try {
+      Transformer transformer = TransformerFactory.newInstance().newTransformer(xslt);
+      transformer.transform(new DOMSource(doc), new StreamResult(out));
+    } catch (TransformerException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public static void deleteMatching(Node context, String xPathExpression) {
     queryNodes(context, xPathExpression)
         .forEach(node -> node.getParentNode().removeChild(node));
@@ -247,6 +263,112 @@ public final class XmlUtils {
         return endOfData();
       }
     });
+  }
+
+  public static Stream<Node> asStream(NamedNodeMap attrs) {
+    return Streams.stream(new AbstractIterator<Node>() {
+      int i = 0;
+
+      @Override
+      protected Node computeNext() {
+        if (i < attrs.getLength()) {
+          return attrs.item(i++);
+        }
+        return endOfData();
+      }
+    });
+  }
+
+  public static Document removeBlankNodes(Document document) {
+    Document copy = XmlDocumentBuilder
+        .builder()
+        .pushExternal(document)
+        .build();
+
+    copy.normalizeDocument();
+    XmlUtils.deleteMatching(copy, "//text()[normalize-space(.) = '']");
+
+    return copy;
+  }
+
+  public static Document format(Document document) {
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder();
+    formatDocumentElement(document.getDocumentElement(), builder);
+    return builder.build();
+  }
+
+  private static void formatDocumentElement(Element element, XmlDocumentBuilder builder) {
+    builder.pushElement(element.getTagName());
+    builder.attributes(element.getAttributes());
+    builder.appendText("\n");
+
+    asStream(element.getChildNodes())
+        .forEach(child -> formatNode("  ", child, builder));
+
+    builder.pop();
+  }
+
+  private static void formatNode(String indent, Node node, XmlDocumentBuilder builder) {
+    if (isElementNode(node) && !hasMixedContent(node) && !hasTextOnlyContent(node)) {
+      formatElement(indent, (Element) node, builder);
+    } else {
+      indentExternal(indent, node, builder);
+    }
+  }
+
+  private static void formatElement(String indent, Element element, XmlDocumentBuilder builder) {
+    builder.appendText(indent);
+    builder.pushElement(element.getTagName());
+    builder.attributes(element.getAttributes());
+    builder.appendText("\n");
+
+    asStream(element.getChildNodes())
+        .forEach(child -> formatNode(indent + "  ", child, builder));
+
+    builder.appendText(indent);
+    builder.pop();
+
+    builder.appendText("\n");
+  }
+
+  private static void indentExternal(String indent, Node node, XmlDocumentBuilder builder) {
+    builder.appendText(indent);
+    builder.appendExternal(node);
+    builder.appendText("\n");
+  }
+
+  public static boolean hasTextOnlyContent(Node node) {
+    NodeList children = node.getChildNodes();
+
+    long textNodes = XmlUtils.asStream(children)
+        .filter(XmlUtils::isTextNode)
+        .filter(n -> !isBlankTextNode(n))
+        .count();
+
+    long elementNodes = XmlUtils.asStream(children)
+        .filter(XmlUtils::isElementNode)
+        .count();
+
+    return textNodes > 0 && elementNodes == 0;
+  }
+
+  public static boolean hasMixedContent(Node node) {
+    NodeList children = node.getChildNodes();
+
+    long textNodes = XmlUtils.asStream(children)
+        .filter(XmlUtils::isTextNode)
+        .filter(n -> !isBlankTextNode(n))
+        .count();
+
+    long elementNodes = XmlUtils.asStream(children)
+        .filter(XmlUtils::isElementNode)
+        .count();
+
+    return textNodes > 0 && elementNodes > 0;
+  }
+
+  public static boolean isBlankTextNode(Node node) {
+    return node.getNodeType() == Node.TEXT_NODE && node.getTextContent().matches("\\s+");
   }
 
   public static boolean isDocumentNode(Node node) {

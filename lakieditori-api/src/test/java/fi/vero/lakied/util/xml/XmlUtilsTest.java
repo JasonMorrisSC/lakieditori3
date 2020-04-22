@@ -69,4 +69,51 @@ class XmlUtilsTest {
     assertFalse(XmlUtils.queryBoolean(document, "/hello/@foo = \"123\""));
   }
 
+  @Test
+  void shouldFormat() {
+    Document document = XmlUtils
+        .parseUnchecked("<root><greetings>Hello!</greetings><greetings>Hola!</greetings></root>");
+
+    assertEquals(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<root>\n"
+            + "  <greetings>Hello!</greetings>\n"
+            + "  <greetings>Hola!</greetings>\n"
+            + "</root>",
+        XmlUtils.print(XmlUtils.format(document)));
+  }
+
+  @Test
+  void shouldKeepFormatting() {
+    String formattedXml = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+        + "<root>\n"
+        + "  <greetings>\n"
+        + "    Hello!\n"
+        + "  </greetings>\n"
+        + "  <greetings>\n"
+        + "    Hola!\n"
+        + "  </greetings>\n"
+        + "</root>";
+
+    Document document = XmlUtils.parseUnchecked(formattedXml);
+
+    assertEquals(formattedXml,
+        XmlUtils.print(
+            XmlUtils.format(
+                XmlUtils.removeBlankNodes(document))));
+  }
+
+  @Test
+  void shouldFormatMixed() {
+    Document document = XmlUtils
+        .parseUnchecked("<root><greetings>Hello <b>world</b>!</greetings></root>");
+
+    assertEquals(
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            + "<root>\n"
+            + "  <greetings>Hello <b>world</b>!</greetings>\n"
+            + "</root>",
+        XmlUtils.print(XmlUtils.format(document)));
+  }
+
 }

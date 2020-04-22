@@ -1,8 +1,10 @@
 package fi.vero.lakied.util.xml;
 
 import java.util.stream.Stream;
+import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 public class XmlDocumentBuilder {
@@ -19,6 +21,10 @@ public class XmlDocumentBuilder {
     return new XmlDocumentBuilder();
   }
 
+  public Node currentNode() {
+    return currentNode;
+  }
+
   public XmlDocumentBuilder pushElement(String name) {
     currentNode = currentNode.appendChild(document.createElement(name));
     return this;
@@ -33,6 +39,10 @@ public class XmlDocumentBuilder {
     return this;
   }
 
+  public XmlDocumentBuilder appendExternal(Node... nodes) {
+    return appendExternal(Stream.of(nodes));
+  }
+
   public XmlDocumentBuilder appendExternal(Stream<Node> nodes) {
     nodes.forEach(node -> currentNode.appendChild(document.importNode(node, true)));
     return this;
@@ -45,6 +55,13 @@ public class XmlDocumentBuilder {
 
   public XmlDocumentBuilder attribute(String name, String value) {
     ((Element) currentNode).setAttribute(name, value);
+    return this;
+  }
+
+  public XmlDocumentBuilder attributes(NamedNodeMap attrs) {
+    XmlUtils.asStream(attrs)
+        .map(n -> (Attr) n)
+        .forEach(a -> attribute(a.getName(), a.getValue()));
     return this;
   }
 
