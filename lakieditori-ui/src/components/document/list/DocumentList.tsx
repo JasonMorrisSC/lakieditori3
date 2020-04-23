@@ -5,7 +5,7 @@ import {Table} from "../../common/StyledComponents";
 import {documentStateLabelFi, parseDocumentState} from "../DocumentTypes";
 import {AuthenticationContext} from "../../../App";
 import {NULL_USER} from "../../../utils/User";
-import {ButtonIconOnly} from "../../common/InputStyles";
+import {ButtonIconOnly} from "../../common/StyledInputComponents";
 import {useDocuments} from "./useDocuments";
 import AddDocumentModal from "./AddDocumentModal";
 import {queryElements, queryFirstText} from "../../../utils/xmlUtils";

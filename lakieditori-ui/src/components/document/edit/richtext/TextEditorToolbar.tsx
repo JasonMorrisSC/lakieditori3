@@ -3,7 +3,7 @@ import {Location} from 'slate'
 import {useSlate} from 'slate-react'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {isLinkActive, isMarkActive, selectionOrEnd, toggleMark} from "./slateUtils";
-import {ButtonLinkSmall} from "../../../common/InputStyles";
+import {ButtonLinkSmall} from "../../../common/StyledInputComponents";
 import styled from "@emotion/styled";
 
 const StyledToolbar = styled.div`

@@ -6,16 +6,16 @@ import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {Concept} from "./useTextConcepts";
 import {insertLink, selectionOrWord, toggleFormat} from "./slateUtils";
 import styled from "@emotion/styled";
-import {ButtonInverted} from "../../../common/InputStyles";
+import {ButtonInverted} from "../../../common/StyledInputComponents";
 import {createPortal} from "react-dom";
 
-export const ToolbarButton = styled(ButtonInverted)`
+const ToolbarButton = styled(ButtonInverted)`
   border: none !important;
   min-height: 0;
   padding: ${tokens.spacing.xs} ${tokens.spacing.m};
 `;
 
-export const ToolbarIconButton = styled(ToolbarButton)`
+const ToolbarIconButton = styled(ToolbarButton)`
   padding: ${tokens.spacing.xs} ${tokens.spacing.s};
   & > .material-icons {
     font-size: ${tokens.values.typography.bodyText.fontSize.value}${tokens.values.typography.bodyText.fontSize.unit};

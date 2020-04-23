@@ -4,7 +4,7 @@ import Modal from "react-modal";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {parseXml, updateElement} from "../../../utils/xmlUtils";
 import {FlexColTight} from "../../common/StyledComponents";
-import {Input} from "../../common/InputStyles";
+import {Input} from "../../common/StyledInputComponents";
 import {currentYear} from "../../../utils/dateUtils";
 
 interface AddDocumentModalProps {

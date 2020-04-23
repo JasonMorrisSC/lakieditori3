@@ -1,12 +1,12 @@
 package fi.vero.lakied.service.concept;
 
-import com.google.common.cache.LoadingCache;
 import com.google.gson.JsonObject;
 import com.jayway.jsonpath.Configuration;
 import com.jayway.jsonpath.DocumentContext;
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.Option;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
+import java.util.Map;
 import java.util.function.Function;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,9 +16,9 @@ public class ConceptJsonToXml implements Function<JsonObject, Document> {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private final LoadingCache<String, JsonObject> terminologiesByUri;
+  private final Map<String, Document> terminologiesByUri;
 
-  public ConceptJsonToXml(LoadingCache<String, JsonObject> terminologiesByUri) {
+  public ConceptJsonToXml(Map<String, Document> terminologiesByUri) {
     this.terminologiesByUri = terminologiesByUri;
   }
 
@@ -43,22 +43,7 @@ public class ConceptJsonToXml implements Function<JsonObject, Document> {
         .pop();
 
     String terminologyUri = conceptJsonContext.read("$.container");
-
-    builder.pushElement("terminology")
-        .attribute("uri", terminologyUri);
-
-    DocumentContext terminologyJsonContext = JsonPath.parse(
-        terminologiesByUri.getUnchecked(terminologyUri).toString(),
-        Configuration.defaultConfiguration().addOptions(Option.SUPPRESS_EXCEPTIONS));
-
-    builder
-        .pushElement("label")
-        .attribute("xml:lang", "fi")
-        .text(terminologyJsonContext.read("$.prefLabel.fi"))
-        .pop();
-
-    // close terminology tag
-    builder.pop();
+    builder.appendExternal(terminologiesByUri.get(terminologyUri).getDocumentElement());
 
     return builder.build();
   }

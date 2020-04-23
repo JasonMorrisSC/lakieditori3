@@ -1,7 +1,8 @@
 import styled from '@emotion/styled'
+import {css} from "@emotion/core";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 
-export const Input = styled.input`
+export const inputCss = css`
   border: 1px solid ${tokens.colors.depthLight13};
   border-radius: 2px;
   box-sizing: border-box;
@@ -11,8 +12,23 @@ export const Input = styled.input`
   line-height: ${tokens.values.typography.bodyText.lineHeight.value};
   margin: ${tokens.spacing.xxs} 0;
   padding: ${tokens.spacing.s};
-  max-width: 100%;
   width: 100%;
+`;
+
+export const Input = styled.input`
+  ${inputCss}
+`;
+
+export const InputSmall = styled.input`
+  ${inputCss}
+  font-family: ${tokens.values.typography.bodyTextSmall.fontFamily};
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
+  font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
+  line-height: 1;
+`;
+
+export const TextArea = styled.textarea`
+  ${inputCss}
 `;
 
 export const InputNumber = styled(Input)`
@@ -35,6 +51,14 @@ export const InputRadio = styled.input`
 `;
 
 InputRadio.defaultProps = {type: 'radio'};
+
+export const Select = styled.select`
+  ${inputCss}
+  display: block;
+  background: ${tokens.colors.whiteBase};
+  -moz-appearance: none;
+  -webkit-appearance: none;
+`;
 
 export const ButtonInverted = styled(Button)`
   background: none;

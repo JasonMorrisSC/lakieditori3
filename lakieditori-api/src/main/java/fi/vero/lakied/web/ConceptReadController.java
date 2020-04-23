@@ -2,6 +2,7 @@ package fi.vero.lakied.web;
 
 import fi.vero.lakied.service.concept.ConceptCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
+import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
@@ -14,23 +15,37 @@ import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/concepts")
+@RequestMapping("/api")
 public class ConceptReadController {
 
+  private final ReadRepository<String, Document> terminologyReadRepository;
   private final ReadRepository<String, Document> conceptReadRepository;
 
   @Autowired
-  public ConceptReadController(ReadRepository<String, Document> conceptReadRepository) {
+  public ConceptReadController(
+      ReadRepository<String, Document> terminologyReadRepository,
+      ReadRepository<String, Document> conceptReadRepository) {
+    this.terminologyReadRepository = terminologyReadRepository;
     this.conceptReadRepository = conceptReadRepository;
   }
 
-  @GetXmlMapping(params = "uri")
+  @GetXmlMapping(path = "/terminologies")
+  public Document terminologies(@AuthenticationPrincipal User user) {
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("terminologies");
+
+    terminologyReadRepository.forEachEntry(Criteria.matchAll(), user,
+        (id, terminology) -> builder.pushExternal(terminology.getDocumentElement()).pop());
+
+    return builder.build();
+  }
+
+  @GetXmlMapping(path = "/concepts", params = "uri")
   public Document byUri(@RequestParam("uri") String uri, @AuthenticationPrincipal User user) {
     return conceptReadRepository.value(ConceptCriteria.byUri(uri), user)
         .orElseThrow(NotFoundException::new);
   }
 
-  @GetXmlMapping(params = "query")
+  @GetXmlMapping(path = "/concepts", params = "query")
   public Document query(@RequestParam("query") String query, @AuthenticationPrincipal User user) {
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("concepts");
 

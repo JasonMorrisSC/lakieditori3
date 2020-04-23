@@ -6,12 +6,19 @@ import {Editor, Location, Transforms} from "slate"
 import {useSlate} from "slate-react"
 import Modal from "react-modal";
 import {queryElements, queryFirstText} from "../../../../utils/xmlUtils";
-import {FlexColExtraTight, TableSmall} from "../../../common/StyledComponents";
-import {ButtonLink, Input} from "../../../common/InputStyles";
+import {FlexColExtraTight, FlexColTight, TableSmall} from "../../../common/StyledComponents";
+import {
+  ButtonLink,
+  Input,
+  InputSmall,
+  Select,
+  TextArea
+} from "../../../common/StyledInputComponents";
 import {Button, Heading, Icon, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {insertLink, unwrapLink} from "./slateUtils";
 import {useLemma} from "./useLemma";
 import {useConcepts} from "./useConcepts";
+import {useTerminologies} from "./useTerminologies";
 
 const LabeledInput = styled.div`
   display: flex;
@@ -24,12 +31,21 @@ const LabeledInput = styled.div`
     margin-right: ${tokens.spacing.m};
   }
   & > input {
-    flex: 5;
+    flex: 3;
   }
 `;
 
-enum Tab {
-  CONCEPT,
+const InputIcon = styled(Icon)`
+  top: 50%;
+  position: absolute;
+  right: ${tokens.spacing.m};
+  margin-top: -0.5em;
+  pointer-events: none;
+`;
+
+enum LinkView {
+  CONCEPT_LIST,
+  CONCEPT_SUGGEST,
   WEB,
 }
 
@@ -44,7 +60,7 @@ const LinkModal = ({isOpen, close, selection}: Props) => {
 
   const [linkText, setLinkText] = useState<string>('');
   const [linkUrl, setLinkUrl] = useState<string>('');
-  const [tab, setTab] = useState<Tab>(Tab.CONCEPT);
+  const [linkView, setLinkView] = useState<LinkView>(LinkView.CONCEPT_LIST);
 
   useEffect(() => {
     // when modal is opened, read selected text and possible existing link URL
@@ -73,7 +89,7 @@ const LinkModal = ({isOpen, close, selection}: Props) => {
   function closeModal() {
     setLinkText('');
     setLinkUrl('');
-    setTab(Tab.CONCEPT);
+    setLinkView(LinkView.CONCEPT_LIST);
     close();
   }
 
@@ -88,49 +104,67 @@ const LinkModal = ({isOpen, close, selection}: Props) => {
         }
       }}>
         <FlexColExtraTight style={{height: "100%"}}>
-          <Heading.h1>
-            Lisää linkki
-          </Heading.h1>
+          <div style={{
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "space-between",
+          }}>
+            <Heading.h1>
+              Lisää linkki
+            </Heading.h1>
 
-          <div>
-            <ButtonLink onClick={() => setTab(Tab.CONCEPT)} active={tab === Tab.CONCEPT}>
-              Käsitelinkki
-            </ButtonLink>
+            <div>
+              <ButtonLink
+                  onClick={() => setLinkView(LinkView.CONCEPT_LIST)}
+                  active={linkView === LinkView.CONCEPT_LIST}>
+                Käsitelinkki
+              </ButtonLink>
 
-            &nbsp;<span style={{color: tokens.colors.depthBase}}>|</span>&nbsp;
+              &nbsp;<span style={{color: tokens.colors.depthBase}}>|</span>&nbsp;
 
-            <ButtonLink onClick={() => setTab(Tab.WEB)} active={tab === Tab.WEB}>
-              Web-linkki
-            </ButtonLink>
+              <ButtonLink
+                  onClick={() => setLinkView(LinkView.WEB)}
+                  active={linkView === LinkView.WEB}>
+                Web-linkki
+              </ButtonLink>
+            </div>
           </div>
 
           <hr/>
 
           <div style={{flex: "1", overflowY: "scroll"}}>
-            {tab === Tab.CONCEPT
-                ? <ConceptLink
-                    linkUrl={linkUrl} setLinkUrl={setLinkUrl}
-                    linkText={linkText} setLinkText={setLinkText}/>
-                : <WebLink
-                    linkUrl={linkUrl} setLinkUrl={setLinkUrl}
-                    linkText={linkText} setLinkText={setLinkText}/>}
+            {linkView === LinkView.CONCEPT_LIST &&
+            <ConceptLink
+                linkUrl={linkUrl} setLinkUrl={setLinkUrl}
+                linkText={linkText} setLinkText={setLinkText}
+                suggest={() => setLinkView(LinkView.CONCEPT_SUGGEST)}/>}
+            {linkView === LinkView.CONCEPT_SUGGEST &&
+            <ConceptSuggestModal
+                linkUrl={linkUrl} setLinkUrl={setLinkUrl}
+                linkText={linkText} setLinkText={setLinkText}
+                isOpen={linkView === LinkView.CONCEPT_SUGGEST}
+                close={() => setLinkView(LinkView.CONCEPT_LIST)}/>}
+            {linkView === LinkView.WEB &&
+            <WebLink
+                linkUrl={linkUrl} setLinkUrl={setLinkUrl}
+                linkText={linkText} setLinkText={setLinkText}/>}
           </div>
 
           <div>
             <LabeledInput>
               <label htmlFor="url">
-                Linkin osoite (URL)
+                Linkin osoite
               </label>
-              <Input name="url" value={linkUrl}
-                     onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
+              <InputSmall name="url" value={linkUrl}
+                          onChange={(e) => setLinkUrl(e.currentTarget.value)}/>
             </LabeledInput>
 
             <LabeledInput>
               <label htmlFor="text">
                 Linkin teksti
               </label>
-              <Input name="text" value={linkText}
-                     onChange={(e) => setLinkText(e.currentTarget.value)}/>
+              <InputSmall name="text" value={linkText}
+                          onChange={(e) => setLinkText(e.currentTarget.value)}/>
             </LabeledInput>
 
             <hr style={{margin: `${tokens.spacing.s} 0`}}/>
@@ -173,7 +207,11 @@ const WebLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
   );
 };
 
-const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, setLinkText}) => {
+interface ConceptLinkProps extends LinkViewProps {
+  suggest: () => void
+}
+
+const ConceptLink: React.FC<ConceptLinkProps> = ({linkUrl, setLinkUrl, linkText, setLinkText, suggest}) => {
   const [query, setQuery] = useState('');
   const {concepts} = useConcepts(query);
   const {lemma} = useLemma(linkText);
@@ -184,54 +222,72 @@ const ConceptLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl, linkText, se
 
   return (
       <div>
-        <div style={{position: "relative"}}>
-          <Input placeholder={"Etsi käsitettä"} value={query}
-                 onChange={(e) => setQuery(e.currentTarget.value)}/>
-          <Icon icon={"search"}
-                style={{
-                  top: "50%",
-                  position: "absolute",
-                  right: tokens.spacing.m,
-                  marginTop: "-0.5em"
-                }}/>
+        <div style={{
+          display: "flex",
+          alignItems: "flex-end",
+          marginBottom: tokens.spacing.s
+        }}>
+          <label style={{width: "100%", marginRight: tokens.spacing.m}}>
+            Etsi käsitettä
+            <div style={{position: "relative"}}>
+              <Input value={query} onChange={(e) => setQuery(e.currentTarget.value)}/>
+              <InputIcon icon={"search"}/>
+            </div>
+          </label>
+          <Button.tertiary onClick={() => suggest()} style={{padding: tokens.spacing.s}}>
+            Uusi käsite-ehdotus...
+          </Button.tertiary>
         </div>
 
-        <TableSmall style={{marginTop: tokens.spacing.s}}>
-          <thead>
-          <tr>
-            <th>Käsitteet ({concepts.documentElement.childNodes.length})</th>
-          </tr>
-          </thead>
-          <tbody>
-          {queryElements(concepts.documentElement, "/concepts/concept").map((e, i) => {
-            const uri = queryFirstText(e, "@uri");
-            const label = queryFirstText(e, "label");
-
-            return <tr key={i} onClick={() => {
-              setLinkUrl(uri);
-              setLinkText(!linkText ? label : linkText);
-            }} style={{
-              background: uri === linkUrl
-                  ? tokens.colors.highlightLight50
-                  : tokens.colors.whiteBase
-            }}>
-              <td>
-                <ConceptInfo concept={e} expanded={uri === linkUrl}/>
-              </td>
-            </tr>;
-          })}
-          </tbody>
-        </TableSmall>
+        <ConceptTable
+            concepts={concepts}
+            linkUrl={linkUrl} setLinkUrl={setLinkUrl}
+            linkText={linkText} setLinkText={setLinkText}/>
       </div>
   );
 };
 
-interface ConceptInfoProps {
+interface ConceptTableProps extends LinkViewProps {
+  concepts: Document,
+}
+
+const ConceptTable: React.FC<ConceptTableProps> = ({concepts, linkUrl, setLinkUrl, linkText, setLinkText}) => {
+  return (
+      <TableSmall>
+        <thead>
+        <tr>
+          <th>Hakutulokset ({concepts.documentElement.childNodes.length})</th>
+        </tr>
+        </thead>
+        <tbody>
+        {queryElements(concepts.documentElement, "/concepts/concept").map((e, i) => {
+          const uri = queryFirstText(e, "@uri");
+          const label = queryFirstText(e, "label");
+
+          return <tr key={i} onClick={() => {
+            setLinkUrl(uri);
+            setLinkText(!linkText ? label : linkText);
+          }} style={{
+            background: uri === linkUrl
+                ? tokens.colors.highlightLight50
+                : tokens.colors.whiteBase
+          }}>
+            <td>
+              <ConceptRow concept={e} expanded={uri === linkUrl}/>
+            </td>
+          </tr>;
+        })}
+        </tbody>
+      </TableSmall>
+  );
+};
+
+interface ConceptRowProps {
   concept: Element
   expanded: boolean,
 }
 
-const ConceptInfo: React.FC<ConceptInfoProps> = ({concept, expanded}) => {
+const ConceptRow: React.FC<ConceptRowProps> = ({concept, expanded}) => {
   const uri = queryFirstText(concept, "@uri");
   const label = queryFirstText(concept, "label");
   const definition = queryFirstText(concept, "definition");
@@ -261,7 +317,94 @@ const ConceptInfo: React.FC<ConceptInfoProps> = ({concept, expanded}) => {
         </div>}
       </div>
   );
+};
+
+interface ConceptSuggestModalProps extends LinkViewProps {
+  isOpen: boolean,
+  close: () => void,
 }
+
+const ConceptSuggestModal: React.FC<ConceptSuggestModalProps> = ({linkUrl, setLinkUrl, linkText, setLinkText, isOpen, close}) => {
+  const {terminologies, suggestConcept} = useTerminologies();
+  const [terminology, setTerminology] = useState("http://uri.suomi.fi/terminology/jhs/");
+  const [label, setLabel] = useState(linkText);
+  const [definition, setDefinition] = useState("");
+
+  const labelComparator = (a: Element, b: Element): number => {
+    const aLabel = queryFirstText(a, 'label');
+    const bLabel = queryFirstText(b, 'label');
+    return aLabel > bLabel ? 1 : (aLabel < bLabel ? -1 : 0);
+  };
+
+  return (
+      <Modal isOpen={isOpen} contentLabel="Tee käsite-ehdotus" style={{
+        overlay: {
+          // ConceptSuggest can be triggered only from
+          // link modal so no need for another overlay
+          background: "none",
+        },
+        content: {
+          height: "80%",
+          marginRight: "0",
+          marginLeft: "auto",
+          maxWidth: 400,
+          padding: tokens.spacing.l,
+        }
+      }}>
+        <FlexColTight style={{height: "100%"}}>
+          <Heading.h1>Tee käsite-ehdotus</Heading.h1>
+
+          <label>
+            Sanasto
+            <div style={{position: "relative", width: "100%"}}>
+              <Select value={terminology} onChange={(e) => setTerminology(e.currentTarget.value)}>
+                {queryElements(terminologies.documentElement, 'terminology')
+                .sort(labelComparator)
+                .map((t, i) => (
+                    <option key={i} value={queryFirstText(t, '@uri')}>
+                      {queryFirstText(t, 'label')}
+                    </option>
+                ))}
+              </Select>
+              <InputIcon icon={"arrowheadDown"}/>
+            </div>
+          </label>
+
+          <label>
+            Nimike
+            <Input value={label} onChange={(e) => setLabel(e.currentTarget.value)}/>
+          </label>
+
+          <label>
+            Määritelmä
+            <TextArea value={definition} onChange={(e) => setDefinition(e.currentTarget.value)}/>
+          </label>
+
+          <div style={{marginTop: "auto"}}>
+            <Button icon={"mailSend"}
+                    onClick={() => {
+                      suggestConcept(terminology, label, definition).then((res) => {
+                        setLinkUrl(res.data.documentElement.getAttribute("uri"));
+                        setLinkText(label);
+                        close();
+                      });
+                    }}
+                    style={{
+                      marginRight: tokens.spacing.s,
+                      background: tokens.colors.successBase,
+                    }}>
+              Lähetä ehdotus
+            </Button>
+            <Button.secondaryNoborder
+                icon={"close"}
+                onClick={() => close()}>
+              Peruuta
+            </Button.secondaryNoborder>
+          </div>
+        </FlexColTight>
+      </Modal>
+  );
+};
 
 
 export default LinkModal;

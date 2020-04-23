@@ -3,7 +3,7 @@ import {Button} from 'suomifi-ui-components';
 import {NULL_USER} from "../../utils/User";
 import {useAuthentication} from "./useAuthentication";
 import LoginModal from "./LoginModal";
-import {ButtonLinkSmall} from "../common/InputStyles";
+import {ButtonLinkSmall} from "../common/StyledInputComponents";
 
 const Login: React.FC = () => {
   const {user, login, logout} = useAuthentication();

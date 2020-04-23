@@ -51,31 +51,59 @@ public interface Criteria<K, V> extends BiPredicate<K, V> {
   }
 
   static <K, V> SqlCriteria<K, V> matchAll() {
-    return new SqlCriteria<K, V>() {
-      @Override
-      public String sql() {
-        return "1 = 1";
-      }
-
-      @Override
-      public boolean test(K k, V v) {
-        return true;
-      }
-    };
+    return new MatchAll<>();
   }
 
   static <K, V> SqlCriteria<K, V> matchNone() {
-    return new SqlCriteria<K, V>() {
-      @Override
-      public String sql() {
-        return "1 = 0";
-      }
+    return new MatchNone<>();
+  }
 
-      @Override
-      public boolean test(K k, V v) {
-        return false;
-      }
-    };
+  final class MatchAll<K, V> implements SqlCriteria<K, V> {
+
+    @Override
+    public String sql() {
+      return "1 = 1";
+    }
+
+    @Override
+    public boolean test(K k, V v) {
+      return true;
+    }
+
+    @Override
+    public int hashCode() {
+      return MatchAll.class.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      return that instanceof MatchAll;
+    }
+
+  }
+
+  final class MatchNone<K, V> implements SqlCriteria<K, V> {
+
+    @Override
+    public String sql() {
+      return "1 = 0";
+    }
+
+    @Override
+    public boolean test(K k, V v) {
+      return false;
+    }
+
+    @Override
+    public int hashCode() {
+      return MatchNone.class.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object that) {
+      return that instanceof MatchNone;
+    }
+
   }
 
 }
