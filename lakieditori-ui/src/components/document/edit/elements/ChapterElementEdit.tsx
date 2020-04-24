@@ -74,7 +74,9 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                    }}/>
             <span style={{color: sdt.colors.highlightBase}}>luku</span>
             <div style={{marginLeft: "auto"}}>
-              <ButtonIconOnly iconRight={"remove"} onClick={() => removeChapter()}/>
+              <Button.secondaryNoborder icon={"remove"} onClick={() => removeChapter()}>
+                Poista
+              </Button.secondaryNoborder>
             </div>
           </div>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {ReactNode} from "react";
 import {Location} from 'slate'
 import {useSlate} from 'slate-react'
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
@@ -20,7 +20,7 @@ const StyledToolbar = styled.div`
   };
 `;
 
-const ToolbarButton = styled(ButtonLinkSmall)`
+export const ToolbarButton = styled(ButtonLinkSmall)`
   color: ${tokens.colors.depthDark27};
   line-height: 1;
   margin: 0 ${tokens.spacing.xxs};
@@ -34,9 +34,10 @@ interface Props {
   label: string,
   expanded: boolean,
   linkSelection: (location: Location) => void,
+  customTools?: ReactNode,
 }
 
-const TextEditorToolbar: React.FC<Props> = ({label, expanded, linkSelection}) => {
+const TextEditorToolbar: React.FC<Props> = ({label, expanded, linkSelection, customTools}) => {
   return (
       <StyledToolbar>
         <label>{label}</label>
@@ -44,6 +45,9 @@ const TextEditorToolbar: React.FC<Props> = ({label, expanded, linkSelection}) =>
           <FormatButton format="bold" icon="format_bold"/>
           <FormatButton format="italic" icon="format_italic"/>
           <LinkButton linkSelection={linkSelection}/>
+        </div>
+        <div style={{marginLeft: "auto"}}>
+          {customTools}
         </div>
       </StyledToolbar>
   )

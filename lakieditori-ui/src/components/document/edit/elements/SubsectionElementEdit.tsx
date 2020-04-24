@@ -3,10 +3,12 @@ import {
   cloneDocument,
   ensureElementAndUpdate,
   queryFirstElement,
+  queryFirstNode,
   queryFirstText
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
+import {ToolbarButton} from "../richtext/TextEditorToolbar";
 
 const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -19,12 +21,28 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
     });
   }
 
+  function removeSubsection() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+      const newCurrentElement = queryFirstNode(newDocument, currentPath);
+      newCurrentElement?.parentNode?.removeChild(newCurrentElement);
+      return newDocument;
+    });
+  }
+
+  const removeButton = (
+      <ToolbarButton onMouseDown={removeSubsection}>
+        <span className={"material-icons"}>close</span>
+      </ToolbarButton>
+  );
+
   return (
       <div className="subsection">
         <TextEditor
             value={content}
             placeholder={`Momentti ${number}`}
-            onChange={updateContent}/>
+            onChange={updateContent}
+            customTools={removeButton}/>
         {/*
         <ul style={{padding: 0}}>
           {queryElements(document, currentElement, 'paragraph').map((paragraph, i) => {

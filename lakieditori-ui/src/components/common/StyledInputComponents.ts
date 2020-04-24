@@ -100,3 +100,11 @@ export const ButtonIconOnly = styled(Button.secondaryNoborder)`
     padding: ${tokens.spacing.s};
   };
 `;
+
+export const ButtonSecondaryDarkNoBorder = styled(Button.secondaryNoborder)`
+  color: ${tokens.colors.blackBase} !important;
+  background: none !important;
+  & > svg {
+    fill: ${tokens.colors.depthDark27};
+  }
+`;

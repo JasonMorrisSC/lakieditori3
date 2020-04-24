@@ -1,4 +1,4 @@
-import React, {CSSProperties, useCallback, useEffect, useMemo, useState} from "react";
+import React, {CSSProperties, ReactNode, useCallback, useEffect, useMemo, useState} from "react";
 import {createEditor, Location, Node as SlateNode, NodeEntry} from 'slate'
 import {
   Editable,
@@ -21,9 +21,10 @@ interface Props {
   placeholder?: string,
   onChange?: (newValue: string) => void,
   style?: CSSProperties,
+  customTools?: ReactNode,
 }
 
-const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
+const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style, customTools}) => {
   const [focused, setFocused] = useState<boolean>(false);
 
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
@@ -73,7 +74,8 @@ const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder,
                                linkSelection={(location) => {
                                  setLinkModalSelection(location);
                                  setLinkModalOpen(true);
-                               }}/>
+                               }}
+                               customTools={customTools}/>
 
             <Editable
                 renderElement={props => <EditorElement {...props} />}
