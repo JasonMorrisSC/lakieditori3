@@ -24,7 +24,6 @@ interface Props {
 }
 
 const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style}) => {
-  const [initialized, setInitialized] = useState<boolean>(false);
   const [focused, setFocused] = useState<boolean>(false);
 
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
@@ -37,14 +36,13 @@ const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder,
 
   // Sets real initial editor value from properties after it is available
   useEffect(() => {
-    if (value && !initialized) {
+    if (value) {
       let initialValue = deserialize(value);
       if (initialValue && initialValue.length > 0) {
         setEditorValue([{children: initialValue}]);
       }
-      setInitialized(true);
     }
-  }, [value, initialized]);
+  }, [value]);
 
   // Removes 'onChange' when editor is unmounted to avoid errors when this component is unmounted.
   useEffect(() => {

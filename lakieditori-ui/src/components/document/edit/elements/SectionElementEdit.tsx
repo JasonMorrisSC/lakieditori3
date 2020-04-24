@@ -12,7 +12,7 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import SubsectionElementEdit from "./SubsectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
-import {Input} from "../../../common/StyledInputComponents";
+import {ButtonIconOnly, Input} from "../../../common/StyledInputComponents";
 
 const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -47,22 +47,36 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
     });
   }
 
+  function removeSection() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+      const newCurrentElement = queryFirstNode(newDocument, currentPath);
+      newCurrentElement?.parentNode?.removeChild(newCurrentElement);
+      return newDocument;
+    });
+  }
+
   return (
       <div className="section" style={{marginTop: sdt.spacing.l}}>
         <Heading.h3>
-          <Input type="text" value={number}
-                 onChange={updateNumber}
-                 style={{
-                   color: sdt.colors.highlightBase,
-                   fontSize: sdt.values.typography.heading3.fontSize.value,
-                   fontWeight: sdt.values.typography.heading3.fontWeight,
-                   marginRight: sdt.spacing.xs,
-                   marginBottom: 0,
-                   width: `${(number.length + 1) * 16}px`
-                 }}/>
-          <span style={{color: sdt.colors.highlightBase}}>
+          <div style={{display: "flex", alignItems: "center"}}>
+            <Input type="text" value={number}
+                   onChange={updateNumber}
+                   style={{
+                     color: sdt.colors.highlightBase,
+                     fontSize: sdt.values.typography.heading3.fontSize.value,
+                     fontWeight: sdt.values.typography.heading3.fontWeight,
+                     marginRight: sdt.spacing.xs,
+                     marginBottom: 0,
+                     width: `${(number.length + 1) * 16}px`
+                   }}/>
+            <span style={{color: sdt.colors.highlightBase}}>
             §
           </span>
+            <div style={{marginLeft: "auto"}}>
+              <ButtonIconOnly iconRight={"remove"} onClick={() => removeSection()}/>
+            </div>
+          </div>
 
           <TextEditor
               value={title}

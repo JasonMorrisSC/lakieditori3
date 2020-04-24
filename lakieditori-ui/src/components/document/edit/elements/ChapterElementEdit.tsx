@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import {jsx} from '@emotion/core'
 import React, {SyntheticEvent} from "react";
 import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {
@@ -12,7 +14,7 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import SectionElementEdit from "./SectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
-import {Input} from "../../../common/StyledInputComponents";
+import {ButtonIconOnly, Input} from "../../../common/StyledInputComponents";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
@@ -47,22 +49,34 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
     });
   }
 
+  function removeChapter() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+      const newCurrentElement = queryFirstNode(newDocument, currentPath);
+      newCurrentElement?.parentNode?.removeChild(newCurrentElement);
+      return newDocument;
+    });
+  }
+
   return (
       <div className="chapter" style={{margin: `${sdt.spacing.xl} 0`}}>
         <Heading.h2>
-          <Input type="text" value={number}
-                 onChange={updateNumber}
-                 style={{
-                   color: sdt.colors.highlightBase,
-                   fontSize: sdt.values.typography.heading2.fontSize.value,
-                   fontWeight: sdt.values.typography.heading2.fontWeight,
-                   marginRight: sdt.spacing.xs,
-                   marginBottom: 0,
-                   width: `${(number.length + 1) * 18}px`
-                 }}/>
-          <span style={{color: sdt.colors.highlightBase}}>
-            luku
-          </span>
+          <div style={{display: "flex", alignItems: "center"}}>
+            <Input type="text" value={number}
+                   onChange={updateNumber}
+                   style={{
+                     color: sdt.colors.highlightBase,
+                     fontSize: sdt.values.typography.heading2.fontSize.value,
+                     fontWeight: sdt.values.typography.heading2.fontWeight,
+                     marginRight: sdt.spacing.xs,
+                     marginBottom: 0,
+                     width: `${(number.length + 1) * 18}px`
+                   }}/>
+            <span style={{color: sdt.colors.highlightBase}}>luku</span>
+            <div style={{marginLeft: "auto"}}>
+              <ButtonIconOnly iconRight={"remove"} onClick={() => removeChapter()}/>
+            </div>
+          </div>
 
           <TextEditor
               value={title}

@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import {css, jsx} from '@emotion/core'
 import React from "react";
 import {Button, Dropdown, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {
@@ -13,7 +15,6 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
-import {css} from "@emotion/core";
 import ChapterElementEdit from "./ChapterElementEdit";
 
 const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
