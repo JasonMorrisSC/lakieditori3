@@ -50,8 +50,13 @@ export function serialize(node: SlateNode): string {
 }
 
 export function isMarkActive(editor: Editor, format: string) {
-  const marks = Editor.marks(editor);
-  return marks ? marks[format] === true : false;
+  try {
+    const marks = Editor.marks(editor);
+    return marks ? marks[format] === true : false;
+  } catch (e) {
+    // Editor.marks(editor) throws exceptions sometimes for some reason after editor focus is lost
+    console.warn(e);
+  }
 }
 
 export function toggleMark(editor: Editor, format: string) {

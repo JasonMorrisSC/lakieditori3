@@ -31,7 +31,6 @@ interface Props {
 const TextEditorHoveringToolbar: React.FC<Props> = ({words, linkSelection}) => {
   const ref = useRef<HTMLDivElement>(null);
   const editor = useSlate();
-  const selection = selectionOrWord(editor) || [0];
 
   useEffect(() => {
     const el = ref.current;
@@ -62,15 +61,6 @@ const TextEditorHoveringToolbar: React.FC<Props> = ({words, linkSelection}) => {
     }
   });
 
-  const doInsertLink = () => {
-    if (selection && words.has(Editor.string(editor, selection))) {
-      const concept = words.get(Editor.string(editor, selection));
-      if (concept) {
-        Transforms.select(editor, selection);
-        insertLink(editor, concept.uri, Editor.string(editor, selection));
-      }
-    }
-  };
 
   return (
       <Portal>
@@ -89,37 +79,58 @@ const TextEditorHoveringToolbar: React.FC<Props> = ({words, linkSelection}) => {
           line-height: 1;
           transition: opacity 0.75s;
         `}>
-          <ToolbarButton icon={"plus"} onMouseDown={(e) => {
-            e.preventDefault();
-            doInsertLink();
-          }}>
-            Lisää käsitelinkki:&nbsp;
-            <em>{selection && words.get(Editor.string(editor, selection))?.label}</em>
-          </ToolbarButton>
-
-          &nbsp;|&nbsp;
-
-          <ToolbarIconButton onMouseDown={(e) => {
-            e.preventDefault();
-            toggleFormat(editor, "bold", selection);
-          }}>
-            <span className={"material-icons"}>format_bold</span>
-          </ToolbarIconButton>
-          <ToolbarIconButton onMouseDown={(e) => {
-            e.preventDefault();
-            toggleFormat(editor, "italic", selection);
-          }}>
-            <span className={"material-icons"}>format_italic</span>
-          </ToolbarIconButton>
-          <ToolbarIconButton onMouseDown={(e) => {
-            e.preventDefault();
-            linkSelection(selection);
-          }}>
-            <span className={"material-icons"}>link</span>
-          </ToolbarIconButton>
+          <Toolbar words={words} linkSelection={linkSelection}/>
         </div>
       </Portal>
   )
+};
+
+const Toolbar: React.FC<Props> = ({words, linkSelection}) => {
+  const editor = useSlate();
+  const selection = selectionOrWord(editor) || [0];
+
+  const doInsertLink = () => {
+    if (selection && words.has(Editor.string(editor, selection))) {
+      const concept = words.get(Editor.string(editor, selection));
+      if (concept) {
+        Transforms.select(editor, selection);
+        insertLink(editor, concept.uri, Editor.string(editor, selection));
+      }
+    }
+  };
+
+  return (
+      <div>
+        <ToolbarButton icon={"plus"} onMouseDown={(e) => {
+          e.preventDefault();
+          doInsertLink();
+        }}>
+          Lisää käsitelinkki:&nbsp;
+          <em>{selection && words.get(Editor.string(editor, selection))?.label}</em>
+        </ToolbarButton>
+
+        &nbsp;|&nbsp;
+
+        <ToolbarIconButton onMouseDown={(e) => {
+          e.preventDefault();
+          toggleFormat(editor, "bold", selection);
+        }}>
+          <span className={"material-icons"}>format_bold</span>
+        </ToolbarIconButton>
+        <ToolbarIconButton onMouseDown={(e) => {
+          e.preventDefault();
+          toggleFormat(editor, "italic", selection);
+        }}>
+          <span className={"material-icons"}>format_italic</span>
+        </ToolbarIconButton>
+        <ToolbarIconButton onMouseDown={(e) => {
+          e.preventDefault();
+          linkSelection(selection);
+        }}>
+          <span className={"material-icons"}>link</span>
+        </ToolbarIconButton>
+      </div>
+  );
 };
 
 interface PortalProps {

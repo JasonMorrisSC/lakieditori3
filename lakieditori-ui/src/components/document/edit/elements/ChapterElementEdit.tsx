@@ -14,7 +14,7 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import SectionElementEdit from "./SectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
-import {ButtonIconOnly, Input} from "../../../common/StyledInputComponents";
+import {Input} from "../../../common/StyledInputComponents";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
