@@ -36,22 +36,39 @@ public class JdbcUserWriteRepository implements WriteRepository<UUID, User> {
 
   @Override
   public void update(UUID id, User value, User user) {
-    jdbc.update(
-        "update users "
-            + "set username = ?, "
-            + "    password = ?, "
-            + "    first_name = ?, "
-            + "    last_name = ?, "
-            + "    superuser = ?, "
-            + "    enabled = ? "
-            + "where id = ?",
-        value.getUsername(),
-        value.getPassword(),
-        value.getFirstName().orElse(null),
-        value.getLastName().orElse(null),
-        value.isSuperuser(),
-        value.isEnabled(),
-        id);
+    if (value.getPassword().isEmpty()) {
+      jdbc.update(
+          "update users "
+              + "set username = ?, "
+              + "    first_name = ?, "
+              + "    last_name = ?, "
+              + "    superuser = ?, "
+              + "    enabled = ? "
+              + "where id = ?",
+          value.getUsername(),
+          value.getFirstName().orElse(null),
+          value.getLastName().orElse(null),
+          value.isSuperuser(),
+          value.isEnabled(),
+          id);
+    } else {
+      jdbc.update(
+          "update users "
+              + "set username = ?, "
+              + "    password = ?, "
+              + "    first_name = ?, "
+              + "    last_name = ?, "
+              + "    superuser = ?, "
+              + "    enabled = ? "
+              + "where id = ?",
+          value.getUsername(),
+          value.getPassword(),
+          value.getFirstName().orElse(null),
+          value.getLastName().orElse(null),
+          value.isSuperuser(),
+          value.isEnabled(),
+          id);
+    }
   }
 
   @Override

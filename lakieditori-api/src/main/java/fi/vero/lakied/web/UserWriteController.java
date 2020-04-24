@@ -1,6 +1,7 @@
 package fi.vero.lakied.web;
 
 import fi.vero.lakied.util.common.WriteRepository;
+import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.PutXmlMapping;
@@ -39,6 +40,11 @@ public class UserWriteController {
       @RequestBody Document user,
       @AuthenticationPrincipal User principal,
       HttpServletResponse response) {
+
+    if (user.getDocumentElement().getAttribute("password").isEmpty()) {
+      throw new BadRequestException("Password can't be empty");
+    }
+
     UUID id = UUID.randomUUID();
 
     userWriteRepository.insert(id,

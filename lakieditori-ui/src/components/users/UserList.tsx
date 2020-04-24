@@ -1,12 +1,25 @@
 import React, {useState} from "react";
 import {Button, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {Table} from "../common/StyledComponents";
-import {queryElements, queryFirstText} from "../../utils/xmlUtils";
+import {parseXml, queryElements, queryFirstText, toString} from "../../utils/xmlUtils";
 import {useUsers} from "./useUsers";
-import AddUserModal from "./AddUserModal";
+import EditUserModal from "./EditUserModal";
+import {ButtonIconOnly} from "../common/StyledInputComponents";
 
 const UserList: React.FC = () => {
+  const createNewPerson = () => parseXml(
+      "<user>" +
+      "  <username/>" +
+      "  <password/>" +
+      "  <firstName/>" +
+      "  <lastName/>" +
+      "  <properties>" +
+      "    <property key='SANASTOT_SUOMI_FI_API_TOKEN'/>" +
+      "  </properties>" +
+      "</user>");
+
   const {users, saveUser} = useUsers();
+  const [modalUser, setModalUser] = useState<Document>(createNewPerson());
   const [isModalOpen, setModalOpen] = useState(false);
 
   const usernameComparator = (a: Element, b: Element): number => {
@@ -22,6 +35,12 @@ const UserList: React.FC = () => {
     return (
         <tr key={i}>
           <td>{username} {superuser ? '(pääkäyttäjä)' : ''}</td>
+          <td className={"right"}>
+            <ButtonIconOnly icon={"edit"} onClick={() => {
+              setModalUser(parseXml(toString(user)));
+              setModalOpen(true);
+            }}/>
+          </td>
         </tr>
     );
   };
@@ -46,10 +65,21 @@ const UserList: React.FC = () => {
           </tbody>
         </Table>
 
-        <AddUserModal
-            isModalOpen={isModalOpen}
-            setModalOpen={setModalOpen}
-            saveUser={saveUser}/>
+        <EditUserModal
+            isOpen={isModalOpen}
+            user={modalUser}
+            setUser={setModalUser}
+            onClickSave={() => {
+              saveUser(modalUser).then(() => {
+                setModalOpen(false);
+                setModalUser(createNewPerson());
+              })
+            }}
+            onClickCancel={() => {
+              setModalOpen(false);
+              setModalUser(createNewPerson());
+            }}
+        />
       </div>
   );
 };

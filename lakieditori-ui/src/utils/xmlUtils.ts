@@ -6,7 +6,7 @@ export function parseXml(xmlString: string): Document {
   return new DOMParser().parseFromString(xmlString, "text/xml");
 }
 
-export function toString(xmlDocument: Document): string {
+export function toString(xmlDocument: Node): string {
   return new XMLSerializer().serializeToString(xmlDocument);
 }
 

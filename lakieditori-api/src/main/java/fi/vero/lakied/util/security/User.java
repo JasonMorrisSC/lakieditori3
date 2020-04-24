@@ -1,9 +1,13 @@
 package fi.vero.lakied.util.security;
 
+import static fi.vero.lakied.util.common.BooleanUtils.parseWithDefaultTrue;
+import static fi.vero.lakied.util.xml.XmlUtils.queryNodes;
+import static fi.vero.lakied.util.xml.XmlUtils.queryText;
+import static java.lang.Boolean.parseBoolean;
+
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import fi.vero.lakied.util.common.BooleanUtils;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.Collection;
@@ -83,7 +87,7 @@ public final class User implements UserDetails {
 
   public static User fromDocument(Document document, PasswordEncoder passwordEncoder) {
     return fromDocument(
-        UUID.fromString(XmlUtils.queryText(document, "/user/@id")),
+        UUID.fromString(queryText(document, "/user/@id")),
         document,
         passwordEncoder);
   }
@@ -91,18 +95,17 @@ public final class User implements UserDetails {
   public static User fromDocument(UUID id, Document document, PasswordEncoder passwordEncoder) {
     return User.builder()
         .id(id)
-        .username(XmlUtils.queryText(document, "/user/username"))
-        .password(passwordEncoder.encode(XmlUtils.queryText(document, "/user/password")))
-        .firstName(XmlUtils.queryText(document, "/user/firstName"))
-        .lastName(XmlUtils.queryText(document, "/user/lastName"))
-        .superuser(Boolean.parseBoolean(XmlUtils.queryText(document, "/user/superuser")))
-        .enabled(BooleanUtils.parseWithDefaultTrue(XmlUtils.queryText(document, "/user/enabled")))
-        .properties(XmlUtils.queryNodes(document, "/user/properties/property")
+        .username(queryText(document, "/user/username"))
+        .password(queryText(document, "/user/password").isEmpty()
+            ? "" : passwordEncoder.encode(queryText(document, "/user/password")))
+        .firstName(queryText(document, "/user/firstName"))
+        .lastName(queryText(document, "/user/lastName"))
+        .superuser(parseBoolean(queryText(document, "/user/superuser")))
+        .enabled(parseWithDefaultTrue(queryText(document, "/user/enabled")))
+        .properties(queryNodes(document, "/user/properties/property")
             .filter(XmlUtils::isElementNode)
             .map(node -> (Element) node)
-            .collect(Collectors.toMap(
-                e -> e.getAttribute("key"),
-                Node::getTextContent)))
+            .collect(Collectors.toMap(e -> e.getAttribute("key"), Node::getTextContent)))
         .build();
   }
 
