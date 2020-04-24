@@ -18,21 +18,17 @@ export function useUsers() {
   const insertUser = (user: Document) => {
     return axios.post('/api/users', toString(user), {
       headers: {'Content-Type': 'text/xml'}
-    }).then(() => {
-      return axios.get('/api/users', {responseType: 'document'})
-    }).then(res => {
-      setUsers(res.data);
-    });
+    })
+    .then(() => axios.get('/api/users', {responseType: 'document'}))
+    .then(res => setUsers(res.data));
   }
 
   const updateUser = (user: Document) => {
     return axios.put('/api/users/' + user.documentElement.getAttribute("id"), toString(user), {
       headers: {'Content-Type': 'text/xml'}
-    }).then(() => {
-      return axios.get('/api/users', {responseType: 'document'})
-    }).then(res => {
-      setUsers(res.data);
-    });
+    })
+    .then(() => axios.get('/api/users', {responseType: 'document'}))
+    .then(res => setUsers(res.data));
   }
 
   const saveUser = (user: Document) => {
