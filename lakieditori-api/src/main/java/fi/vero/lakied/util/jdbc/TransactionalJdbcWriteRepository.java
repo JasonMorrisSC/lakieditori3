@@ -1,7 +1,7 @@
 package fi.vero.lakied.util.jdbc;
 
-import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.common.WriteRepository;
+import fi.vero.lakied.util.security.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -11,12 +11,12 @@ import org.springframework.transaction.interceptor.DefaultTransactionAttribute;
 
 public class TransactionalJdbcWriteRepository<K, V> implements WriteRepository<K, V> {
 
-  private Logger log = LoggerFactory.getLogger(getClass());
+  private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private WriteRepository<K, V> delegate;
+  private final WriteRepository<K, V> delegate;
 
-  private PlatformTransactionManager manager;
-  private TransactionDefinition definition;
+  private final PlatformTransactionManager manager;
+  private final TransactionDefinition definition;
 
   public TransactionalJdbcWriteRepository(WriteRepository<K, V> delegate,
       PlatformTransactionManager manager) {

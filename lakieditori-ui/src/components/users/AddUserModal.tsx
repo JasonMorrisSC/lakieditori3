@@ -16,20 +16,33 @@ const AddUserModal: React.FC<UserModalProps> = ({isModalOpen, setModalOpen, save
   const [newUserPassword, setNewUserPassword] = useState<string>('');
   const [newUserFirstName, setNewUserFirstName] = useState<string>('');
   const [newUserLastName, setNewUserLastName] = useState<string>('');
+  const [newUserSuomiFiApiKey, setNewUserSuomiFiApiKey] = useState<string>('');
 
   function addNewUser() {
-    let newUser = parseXml('<user><username/><password/><firstName/><lastName/></user>');
+    let newUser = parseXml(
+        "<user>" +
+        "  <username/>" +
+        "  <password/>" +
+        "  <firstName/>" +
+        "  <lastName/>" +
+        "  <properties>" +
+        "    <property key='SANASTOT_SUOMI_FI_API_TOKEN'/>" +
+        "  </properties>" +
+        "</user>");
 
     updateElement(newUser, "/user/username", (e) => e.textContent = newUserUsername);
     updateElement(newUser, "/user/password", (e) => e.textContent = newUserPassword);
     updateElement(newUser, "/user/firstName", (e) => e.textContent = newUserFirstName);
     updateElement(newUser, "/user/lastName", (e) => e.textContent = newUserLastName);
+    updateElement(newUser, "/user/properties/property[@key='SANASTOT_SUOMI_FI_API_TOKEN']",
+        (e) => e.textContent = newUserSuomiFiApiKey);
 
     saveUser(newUser).then(() => {
       setNewUserFirstName('');
       setNewUserLastName('');
       setNewUserUsername('');
       setNewUserPassword('');
+      setNewUserSuomiFiApiKey('');
       setModalOpen(false);
     });
   }
@@ -37,7 +50,7 @@ const AddUserModal: React.FC<UserModalProps> = ({isModalOpen, setModalOpen, save
   return (
       <Modal isOpen={isModalOpen} contentLabel="Lisää uusi käyttäjä" style={{
         content: {
-          height: "60%",
+          height: "80%",
           marginLeft: "auto",
           marginRight: "auto",
           maxWidth: 800,
@@ -73,6 +86,12 @@ const AddUserModal: React.FC<UserModalProps> = ({isModalOpen, setModalOpen, save
             Salasana
             <Input type="password" value={newUserPassword}
                    onChange={(e) => setNewUserPassword(e.currentTarget.value)}/>
+          </label>
+
+          <label>
+            sanasot.suomi.fi API-avain
+            <Input value={newUserSuomiFiApiKey}
+                   onChange={(e) => setNewUserSuomiFiApiKey(e.currentTarget.value)}/>
           </label>
 
           <div style={{marginTop: "auto"}}>

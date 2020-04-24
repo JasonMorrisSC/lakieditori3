@@ -46,6 +46,18 @@ class XmlUtilsTest {
   }
 
   @Test
+  void shouldReturnEmptyStreamIfNotFoundWithXPath() {
+    Document document = XmlUtils.parseUnchecked(
+        "<example>"
+            + "<node>foo</node>"
+            + "<node>bar</node>"
+            + "<node>baz</node>"
+            + "</example>");
+
+    assertFalse(XmlUtils.queryNodes(document, "/path/not/found").findFirst().isPresent());
+  }
+
+  @Test
   void shouldQueryText() {
     Document document = XmlUtils.parseUnchecked("<hello id=\"123\">World!</hello>");
 

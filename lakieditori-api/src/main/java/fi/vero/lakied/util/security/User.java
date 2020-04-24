@@ -2,18 +2,23 @@ package fi.vero.lakied.util.security;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import fi.vero.lakied.util.common.BooleanUtils;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 public final class User implements UserDetails {
 
@@ -28,6 +33,8 @@ public final class User implements UserDetails {
   private final boolean superuser;
   private final boolean enabled;
 
+  private final ImmutableMap<String, String> properties;
+
   private User(
       UUID id,
       String username,
@@ -35,7 +42,8 @@ public final class User implements UserDetails {
       String firstName,
       String lastName,
       boolean superuser,
-      boolean enabled) {
+      boolean enabled,
+      Map<String, String> properties) {
     this.id = Objects.requireNonNull(id);
     this.username = Objects.requireNonNull(username);
     this.password = Objects.requireNonNull(password);
@@ -43,18 +51,34 @@ public final class User implements UserDetails {
     this.lastName = lastName;
     this.enabled = enabled;
     this.superuser = superuser;
+    this.properties = properties != null
+        ? ImmutableMap.copyOf(properties)
+        : ImmutableMap.of();
   }
 
   public static IdBuilder builder() {
     return new IdBuilder();
   }
 
+  public static UserBuilder builderFrom(User user) {
+    return builder()
+        .id(user.id)
+        .username(user.username)
+        .password(user.password)
+        .firstName(user.firstName)
+        .lastName(user.lastName)
+        .enabled(user.enabled)
+        .superuser(user.superuser)
+        .properties(user.properties);
+  }
+
   public static User superuser(String username, String password) {
-    return new User(UUID.randomUUID(), username, password, null, null, true, true);
+    return new User(UUID.randomUUID(), username, password, null, null, true, true,
+        ImmutableMap.of());
   }
 
   public static User superuser(String username) {
-    return new User(UUID.randomUUID(), username, "", null, null, true, true);
+    return new User(UUID.randomUUID(), username, "", null, null, true, true, ImmutableMap.of());
   }
 
   public static User fromDocument(Document document, PasswordEncoder passwordEncoder) {
@@ -73,6 +97,12 @@ public final class User implements UserDetails {
         .lastName(XmlUtils.queryText(document, "/user/lastName"))
         .superuser(Boolean.parseBoolean(XmlUtils.queryText(document, "/user/superuser")))
         .enabled(BooleanUtils.parseWithDefaultTrue(XmlUtils.queryText(document, "/user/enabled")))
+        .properties(XmlUtils.queryNodes(document, "/user/properties/property")
+            .filter(XmlUtils::isElementNode)
+            .map(node -> (Element) node)
+            .collect(Collectors.toMap(
+                e -> e.getAttribute("key"),
+                Node::getTextContent)))
         .build();
   }
 
@@ -96,6 +126,10 @@ public final class User implements UserDetails {
 
   public Optional<String> getLastName() {
     return Optional.ofNullable(lastName);
+  }
+
+  public ImmutableMap<String, String> getProperties() {
+    return properties;
   }
 
   @Override
@@ -141,12 +175,22 @@ public final class User implements UserDetails {
       builder.pushElement("password").text(password).pop();
     }
 
-    return builder
+    builder
         .pushElement("firstName").text(firstName).pop()
         .pushElement("lastName").text(lastName).pop()
         .pushElement("superuser").text(String.valueOf(isSuperuser())).pop()
-        .pushElement("enabled").text(String.valueOf(isEnabled())).pop()
-        .build();
+        .pushElement("enabled").text(String.valueOf(isEnabled())).pop();
+
+    builder.pushElement("properties");
+    properties.forEach((key, value) -> {
+      builder.pushElement("property");
+      builder.attribute("key", key);
+      builder.text(value);
+      builder.pop();
+    });
+    builder.pop();
+
+    return builder.build();
   }
 
   public static final class IdBuilder {
@@ -204,6 +248,8 @@ public final class User implements UserDetails {
     private boolean superuser;
     private boolean enabled;
 
+    private Map<String, String> properties;
+
     UserBuilder(UUID id, String username, String password) {
       this.id = id;
       this.username = username;
@@ -230,13 +276,19 @@ public final class User implements UserDetails {
       return this;
     }
 
+    public UserBuilder properties(Map<String, String> properties) {
+      this.properties = properties;
+      return this;
+    }
+
     public User build() {
       return new User(
           id,
           username, password, firstName,
           lastName,
           superuser,
-          enabled);
+          enabled,
+          properties);
     }
 
   }
@@ -256,12 +308,14 @@ public final class User implements UserDetails {
         Objects.equals(firstName, user.firstName) &&
         Objects.equals(lastName, user.lastName) &&
         Objects.equals(username, user.username) &&
-        Objects.equals(password, user.password);
+        Objects.equals(password, user.password) &&
+        Objects.equals(properties, user.properties);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, firstName, lastName, username, password, superuser, enabled);
+    return Objects
+        .hash(id, firstName, lastName, username, password, superuser, enabled, properties);
   }
 
   @Override
@@ -273,6 +327,7 @@ public final class User implements UserDetails {
         .add("lastName", lastName)
         .add("superuser", superuser)
         .add("enabled", enabled)
+        .add("properties", properties)
         .toString();
   }
 }

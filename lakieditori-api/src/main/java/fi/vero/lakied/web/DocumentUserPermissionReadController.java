@@ -25,7 +25,7 @@ import org.w3c.dom.Document;
 @RequestMapping("/api/documents/{documentId}/permissions")
 public class DocumentUserPermissionReadController {
 
-  private ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository;
+  private final ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository;
 
   @Autowired
   public DocumentUserPermissionReadController(

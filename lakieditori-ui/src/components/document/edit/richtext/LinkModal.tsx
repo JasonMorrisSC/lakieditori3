@@ -19,6 +19,7 @@ import {insertLink, unwrapLink} from "./slateUtils";
 import {useLemma} from "./useLemma";
 import {useConcepts} from "./useConcepts";
 import {useTerminologies} from "./useTerminologies";
+import {ErrorPanel} from "../../DocumentStyles";
 
 const LabeledInput = styled.div`
   display: flex;
@@ -329,6 +330,7 @@ const ConceptSuggestModal: React.FC<ConceptSuggestModalProps> = ({linkUrl, setLi
   const [terminology, setTerminology] = useState("http://uri.suomi.fi/terminology/jhs/");
   const [label, setLabel] = useState(linkText);
   const [definition, setDefinition] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const labelComparator = (a: Element, b: Element): number => {
     const aLabel = queryFirstText(a, 'label');
@@ -353,6 +355,12 @@ const ConceptSuggestModal: React.FC<ConceptSuggestModalProps> = ({linkUrl, setLi
       }}>
         <FlexColTight style={{height: "100%"}}>
           <Heading.h1>Tee käsite-ehdotus</Heading.h1>
+
+          {errorMessage &&
+          <ErrorPanel>
+            Virhe lähetyksessä:<br/>
+            {errorMessage ? errorMessage : ''}<br/>
+          </ErrorPanel>}
 
           <label>
             Sanasto
@@ -387,6 +395,8 @@ const ConceptSuggestModal: React.FC<ConceptSuggestModalProps> = ({linkUrl, setLi
                         setLinkUrl(res.data.documentElement.getAttribute("uri"));
                         setLinkText(label);
                         close();
+                      }).catch((error) => {
+                        setErrorMessage(error.response.data.message);
                       });
                     }}
                     style={{
