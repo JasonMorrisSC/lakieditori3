@@ -40,12 +40,14 @@ interface Props {
 const TextEditorToolbar: React.FC<Props> = ({label, expanded, linkSelection, customTools}) => {
   return (
       <StyledToolbar>
-        <label>{label}</label>
-        <div style={{display: expanded ? 'block' : 'none'}}>
+        {label &&
+        <label>{label}</label>}
+        {expanded &&
+        <div>
           <FormatButton format="bold" icon="format_bold"/>
           <FormatButton format="italic" icon="format_italic"/>
           <LinkButton linkSelection={linkSelection}/>
-        </div>
+        </div>}
         <div style={{marginLeft: "auto"}}>
           {customTools}
         </div>

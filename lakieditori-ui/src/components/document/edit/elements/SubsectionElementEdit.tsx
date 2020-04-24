@@ -39,9 +39,9 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
   return (
       <div className="subsection">
         <TextEditor
+            label={`Momentti ${number}`}
             value={content}
-            placeholder={`Momentti ${number}`}
-            onChange={updateContent}
+            setValue={updateContent}
             customTools={removeButton}/>
         {/*
         <ul style={{padding: 0}}>

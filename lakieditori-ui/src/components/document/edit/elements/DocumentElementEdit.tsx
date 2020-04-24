@@ -83,9 +83,9 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
           </div>
           <br/>
           <TextEditor
+              label="Otsikko"
               value={title}
-              placeholder="Otsikko"
-              onChange={updateTitle}
+              setValue={updateTitle}
               style={{
                 fontSize: sdt.values.typography.heading1Hero.fontSize.value,
                 fontWeight: sdt.values.typography.heading1Hero.fontWeight,
@@ -93,9 +93,9 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
         </Heading.h1hero>
 
         <TextEditor
+            label="Johtolause"
             value={intro}
-            placeholder="Johtolause"
-            onChange={updateIntro}
+            setValue={updateIntro}
             style={{
               fontSize: sdt.values.typography.leadText.fontSize.value,
               fontWeight: sdt.values.typography.leadText.fontWeight,

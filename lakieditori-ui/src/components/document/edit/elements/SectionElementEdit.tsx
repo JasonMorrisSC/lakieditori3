@@ -81,9 +81,9 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
 
           <TextEditor
+              label={`Pykälän ${number} otsikko`}
               value={title}
-              placeholder={`Pykälän ${number} otsikko`}
-              onChange={updateTitle}
+              setValue={updateTitle}
               style={{
                 fontSize: sdt.values.typography.heading3.fontSize.value,
                 fontWeight: sdt.values.typography.heading3.fontWeight,

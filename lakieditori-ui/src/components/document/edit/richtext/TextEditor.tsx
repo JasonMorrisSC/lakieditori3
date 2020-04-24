@@ -1,5 +1,5 @@
 import React, {CSSProperties, ReactNode, useCallback, useEffect, useMemo, useState} from "react";
-import {createEditor, Location, Node as SlateNode, NodeEntry} from 'slate'
+import {createEditor, Location, Node as SlateNode, NodeEntry, Transforms} from 'slate'
 import {
   Editable,
   ReactEditor,
@@ -18,13 +18,13 @@ import LinkModal from "./LinkModal";
 
 interface Props {
   value: Element | null,
-  placeholder?: string,
-  onChange?: (newValue: string) => void,
+  setValue: (xmlValue: string) => void,
+  label?: string,
   style?: CSSProperties,
   customTools?: ReactNode,
 }
 
-const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder, style, customTools}) => {
+const TextEditor: React.FC<Props> = ({value, setValue, label, style, customTools}) => {
   const [focused, setFocused] = useState<boolean>(false);
 
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
@@ -70,7 +70,7 @@ const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder,
               }}/>
 
           <div style={{border: `1px solid ${tokens.colors.depthLight13}`, borderRadius: "2px"}}>
-            <TextEditorToolbar label={placeholder || ''} expanded={focused}
+            <TextEditorToolbar label={label || ''} expanded={focused}
                                linkSelection={(location) => {
                                  setLinkModalSelection(location);
                                  setLinkModalOpen(true);
@@ -91,7 +91,8 @@ const TextEditor: React.FC<Props> = ({value, onChange = () => null, placeholder,
                   setFocused(true);
                 }}
                 onBlur={() => {
-                  onChange(serialize({children: editorValue}));
+                  Transforms.select(editor, [0]);
+                  setValue(serialize({children: editorValue}));
                   setFocused(false);
                 }}
                 onDOMBeforeInput={event => {

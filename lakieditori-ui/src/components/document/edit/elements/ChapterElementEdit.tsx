@@ -81,9 +81,9 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
 
           <TextEditor
+              label={`Luvun ${number} otsikko`}
               value={title}
-              placeholder={`Luvun ${number} otsikko`}
-              onChange={updateTitle}
+              setValue={updateTitle}
               style={{
                 fontSize: sdt.values.typography.heading2.fontSize.value,
                 fontWeight: sdt.values.typography.heading2.fontWeight,
