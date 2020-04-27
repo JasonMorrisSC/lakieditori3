@@ -1,26 +1,26 @@
 import React, {ReactNode} from "react";
 import {Location} from 'slate'
 import {useSlate} from 'slate-react'
-import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {isLinkActive, isMarkActive, selectionOrEnd, toggleMark} from "./slateUtils";
 import {ButtonLinkSmall} from "../../../common/StyledInputComponents";
 import styled from "@emotion/styled";
 
-const StyledToolbar = styled.div`
+export const StyledToolbar = styled.div`
   display: flex;
   align-items: center;
   font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
   font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
   line-height: 1;
   padding: ${tokens.spacing.s};
-  & label {
+  & > label {
     margin: 1px ${tokens.spacing.m} 1px 0;
     color: ${tokens.colors.depthDark27};
     font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
   };
 `;
 
-export const ToolbarButton = styled(ButtonLinkSmall)`
+const StyledToolbarIconButton = styled(ButtonLinkSmall)`
   color: ${tokens.colors.depthDark27};
   line-height: 1;
   margin: 0 ${tokens.spacing.xxs};
@@ -28,6 +28,28 @@ export const ToolbarButton = styled(ButtonLinkSmall)`
     font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
     vertical-align: middle;
   }
+`;
+
+export const StyledToolbarButton = styled(Button.secondaryNoborder)`
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
+  font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
+  color: ${tokens.colors.blackLighten42} !important;
+  background: none !important;
+  margin-right: ${tokens.spacing.xs};
+  min-height: 0;
+  padding: ${tokens.spacing.xs};
+  &:hover {
+    color: ${tokens.colors.depthDark27} !important; 
+  };
+  &:hover > svg {
+    fill: ${tokens.colors.depthDark27} !important; 
+  };
+  & > svg {
+    fill: ${tokens.colors.blackLighten42} !important;
+    height: 0.7em !important;
+    width: 0.7em !important;
+    margin-right: ${tokens.spacing.xs} !important;
+  };
 `;
 
 interface Props {
@@ -65,12 +87,12 @@ const FormatButton: React.FC<FormatButtonProps> = ({format, icon}) => {
   const active = isMarkActive(editor, format);
 
   return (
-      <ToolbarButton onMouseDown={event => {
+      <StyledToolbarIconButton onMouseDown={event => {
         event.preventDefault();
         toggleMark(editor, format);
       }} style={{color: active ? tokens.colors.blackBase : ''}}>
         <span className={"material-icons"}>{icon}</span>
-      </ToolbarButton>
+      </StyledToolbarIconButton>
   );
 };
 
@@ -83,14 +105,14 @@ const LinkButton: React.FC<LinkButtonProps> = ({linkSelection}) => {
   const active = isLinkActive(editor);
 
   return (
-      <ToolbarButton
+      <StyledToolbarIconButton
           style={{color: active ? tokens.colors.blackBase : ''}}
           onMouseDown={(e) => {
             e.preventDefault();
             linkSelection(selectionOrEnd(editor));
           }}>
         <span className={"material-icons"}>link</span>
-      </ToolbarButton>
+      </StyledToolbarIconButton>
   )
 };
 

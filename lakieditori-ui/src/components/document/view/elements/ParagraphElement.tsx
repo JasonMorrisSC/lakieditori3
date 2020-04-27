@@ -12,7 +12,7 @@ const ParagraphElement: React.FC<ElementViewProps> = ({element}) => {
   const content = queryFirstElement(element, "content");
 
   return (
-      <li className="subsection" style={{color: sdt.colors.highlightLight45}}>
+      <li className="paragraph" style={{color: sdt.colors.highlightLight45}}>
         <p style={{color: sdt.colors.blackBase}}>
           <SanitizedHtml element={content}/>
         </p>

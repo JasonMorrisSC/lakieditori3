@@ -1,4 +1,4 @@
-import React, {SyntheticEvent} from "react";
+import React from "react";
 import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {
   cloneDocument,
@@ -18,19 +18,14 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   const number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
 
-  function updateNumber(e: SyntheticEvent<HTMLInputElement>) {
-    const newValue = e.currentTarget.value;
-    setDocument((prevDocument) => {
-      return updateElement(cloneDocument(prevDocument), currentPath,
-          (el) => el.setAttribute('number', newValue));
-    });
+  function updateNumber(newValue: string) {
+    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath,
+        (el) => el.setAttribute('number', newValue)));
   }
 
   function updateTitle(newValue: string) {
-    setDocument((prevDocument) => {
-      return updateElement(cloneDocument(prevDocument), currentPath + "/title",
-          (el) => el.innerHTML = newValue);
-    });
+    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/title",
+        (el) => el.innerHTML = newValue));
   }
 
   function appendNewSubsection() {
@@ -61,7 +56,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
         <Heading.h3>
           <div style={{display: "flex", alignItems: "center"}}>
             <Input type="text" value={number}
-                   onChange={updateNumber}
+                   onChange={(e) => updateNumber(e.currentTarget.value)}
                    style={{
                      color: sdt.colors.highlightBase,
                      fontSize: sdt.values.typography.heading3.fontSize.value,
