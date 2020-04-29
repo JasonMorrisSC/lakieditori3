@@ -31,9 +31,8 @@ const Source = styled.div`
 const Preview = styled.div`
   background-color: ${tokens.colors.highlightLight53};
   border-left: 1px solid ${tokens.colors.depthLight13};
-  flex: 4;
+  flex: 5;
   overflow: scroll;
-  padding: ${tokens.spacing.l};
 `;
 
 interface LineNumberElementId {
@@ -165,7 +164,9 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
             />
           </Source>
           <Preview ref={previewElementRef}>
-            <DocumentElement element={parseXml(editorValue).documentElement}/>
+            <div style={{padding: tokens.spacing.l}}>
+              <DocumentElement element={parseXml(editorValue).documentElement}/>
+            </div>
           </Preview>
         </Content>
 
