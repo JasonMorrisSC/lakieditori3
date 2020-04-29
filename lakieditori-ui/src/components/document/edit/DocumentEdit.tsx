@@ -9,10 +9,11 @@ import {queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
-import Concepts from "../view/Concepts";
 import TableOfContents from "../view/TableOfContents";
 import DocumentElementEdit from "./elements/DocumentElementEdit";
 import DocumentEditToolbar from "./DocumentEditToolbar";
+import {useDocumentConcepts} from "../view/useDocumentConcept";
+import Concepts from "../view/Concepts";
 
 interface Props {
   id: string
@@ -20,6 +21,7 @@ interface Props {
 
 const DocumentEdit: React.FC<Props> = ({id}) => {
   const {document, setDocument, saveDocument} = useDocument(id);
+  const {concepts} = useDocumentConcepts(document);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
@@ -34,7 +36,7 @@ const DocumentEdit: React.FC<Props> = ({id}) => {
         }}>
 
           <div style={{
-            flex: 3,
+            flex: 2,
             background: tokens.colors.highlightLight53,
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
@@ -42,13 +44,12 @@ const DocumentEdit: React.FC<Props> = ({id}) => {
           </div>
 
           <div style={{
-            flex: 7,
+            flex: 8,
             padding: tokens.spacing.xl
           }}>
             <DocumentElementEdit document={document} setDocument={setDocument}
                                  currentPath={"/document"} currentElement={element}/>
           </div>
-
 
           <div style={{
             flex: 2,

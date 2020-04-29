@@ -28,7 +28,7 @@ const DocumentView: React.FC<Props> = ({id}) => {
         }}>
 
           <div style={{
-            flex: 3,
+            flex: 2,
             background: tokens.colors.highlightLight53,
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
@@ -36,7 +36,7 @@ const DocumentView: React.FC<Props> = ({id}) => {
           </div>
 
           <div style={{
-            flex: 7,
+            flex: 8,
             padding: tokens.spacing.xl
           }}>
             <DocumentElement element={element}/>

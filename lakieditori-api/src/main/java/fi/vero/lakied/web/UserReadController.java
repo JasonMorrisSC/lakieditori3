@@ -2,13 +2,11 @@ package fi.vero.lakied.web;
 
 import fi.vero.lakied.service.user.UserCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import java.util.UUID;
-import java.util.stream.Stream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -32,13 +30,9 @@ public class UserReadController {
   public Document get(
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User principal) {
-    try (Stream<Tuple2<UUID, User>> entries = userReadRepository
-        .entries(UserCriteria.byId(id), principal)) {
-      return entries
-          .map(entry -> entry._2.toDocument())
-          .findFirst()
-          .orElseThrow(NotFoundException::new);
-    }
+    return userReadRepository.value(UserCriteria.byId(id), principal)
+        .map(User::toDocument)
+        .orElseThrow(NotFoundException::new);
   }
 
   @GetXmlMapping

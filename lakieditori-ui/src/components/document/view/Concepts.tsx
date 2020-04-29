@@ -1,54 +1,47 @@
-import React, {useEffect, useState} from "react";
-import axios from "axios";
-import {suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
-import {queryFirstText, queryNodes} from "../../../utils/xmlUtils";
-import {ElementViewProps} from "./elements/ElementViewProps";
+import React, {useState} from "react";
+import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {queryFirstText} from "../../../utils/xmlUtils";
+import {ElementViewProps} from "../view/elements/ElementViewProps";
+import styled from "@emotion/styled";
+import {useDocumentConcepts} from "./useDocumentConcept";
+
+export const ConceptLabelButton = styled(Button.secondaryNoborder)`
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
+  font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
+  color: ${tokens.colors.blackBase} !important;
+  background: none !important;
+  min-height: 0;
+  padding: ${tokens.spacing.xs} 0;
+  & > svg {
+    height: 0.7em !important;
+    width: 0.7em !important;
+  };
+`;
 
 interface Props {
   document: Document
 }
 
 const Concepts: React.FC<Props> = ({document}) => {
-  const urls = queryNodes(document.documentElement, "//a/@href")
-  .map(href => href.textContent || "")
-  .filter(uri => uri.startsWith("http://uri.suomi.fi"));
-
-  const [concepts, setConcepts] = useState<Element[]>([]);
-
-  useEffect(() => {
-    const conceptExists = (concepts: Element[], uri: string) => {
-      return concepts.filter(concept => concept.getAttribute('uri') === uri).length > 0;
-    };
-
-    urls.forEach(url => {
-      axios.get('/api/concepts?uri=' + url, {
-        responseType: 'document'
-      }).then(res => {
-        const concept = res.data.documentElement;
-        const conceptUri = concept.getAttribute('uri');
-        setConcepts(prevConcepts => conceptExists(prevConcepts, conceptUri)
-            ? prevConcepts
-            : prevConcepts.concat(concept));
-      });
-    });
-  }, [urls]);
+  const {concepts} = useDocumentConcepts(document);
 
   return (
       <div>
-        <div style={{padding: `${tokens.spacing.xs} 0`}}>
-          <Text.bold>{concepts.length > 0 ? 'Käsitteet' : ''}</Text.bold>
+        <div style={{
+          fontWeight: tokens.values.typography.bodySemiBold.fontWeight,
+          padding: `${tokens.spacing.xs} 0`
+        }}>
+          {concepts.length > 0 ? 'Käsitteet' : ''}
         </div>
 
-        {concepts.map((concept, i) => {
-          return <div key={i}>
-            <Concept element={concept}/>
-          </div>
-        })}
+        {concepts.map((concept, i) => <Concept key={i} element={concept}/>)}
       </div>
   );
 };
 
 const Concept: React.FC<ElementViewProps> = ({element}) => {
+  const [isExpanded, setExpanded] = useState<boolean>(false);
+
   const uri = element.getAttribute("uri") || '';
   const label = queryFirstText(element, "label");
   const definition = queryFirstText(element, "definition");
@@ -57,26 +50,28 @@ const Concept: React.FC<ElementViewProps> = ({element}) => {
   return (
       <div style={{
         fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-        padding: `${tokens.spacing.s} 0`,
+        color: tokens.colors.blackBase,
+        margin: `${tokens.spacing.s} 0`,
       }}>
-        {label}
-        <div style={{color: tokens.colors.depthDark27}}>
-          {definition}
-        </div>
-        <a href={uri} target={"_blank"} style={{
-          alignItems: "center",
-          color: tokens.colors.accentSecondary,
-          display: "inline-flex",
-          verticalAlign: "middle",
-        }}>
-          <span>{terminologyLabel}&nbsp;</span>
-          <span className={"material-icons"} style={{
-            fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-            marginBottom: -1,
-          }}>
-            launch
-          </span>
-        </a>
+        <ConceptLabelButton
+            icon={isExpanded ? "expandableMinus" : "expandablePlus"}
+            onClick={() => setExpanded(!isExpanded)}>
+          {label}
+        </ConceptLabelButton>
+        {isExpanded &&
+        <div>
+          <div style={{color: tokens.colors.depthDark27, margin: `${tokens.spacing.xs} 0`}}>
+            {definition}
+          </div>
+          <a href={uri} target={"_blank"}>
+            {terminologyLabel}&nbsp;
+            <span className={"material-icons"} style={{
+              fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+              marginTop: -2,
+              verticalAlign: "middle",
+            }}>launch</span>
+          </a>
+        </div>}
       </div>
   );
 };

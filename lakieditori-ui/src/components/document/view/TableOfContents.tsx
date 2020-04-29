@@ -7,6 +7,7 @@ import {queryElements, queryFirstText} from "../../../utils/xmlUtils";
 const NavLink = styled(Link)`
   align-items: center;
   color: ${tokens.colors.highlightBase};
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
   display: flex;
   padding: ${tokens.spacing.xs} 0;
   text-decoration: none;
