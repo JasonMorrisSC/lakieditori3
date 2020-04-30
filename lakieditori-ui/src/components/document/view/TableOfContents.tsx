@@ -25,8 +25,21 @@ interface Props {
 
 const TableOfContents: React.FC<Props> = ({document}) => {
   const chapters = queryElements(document.documentElement, "chapter");
+  const sections = queryElements(document.documentElement, "section");
 
-  const renderSectionLink = (chapterNumber: string, section: Element, key: number) => {
+  const renderSectionLink = (section: Element, key: number) => {
+    const number = queryFirstText(section, "@number");
+    const title = queryFirstText(section, "title");
+    return (
+        <li key={key}>
+          <NavLink to={`#section-${number}`}>
+            {number} § - {title}
+          </NavLink>
+        </li>
+    );
+  };
+
+  const renderChapterSectionLink = (chapterNumber: string, section: Element, key: number) => {
     const number = queryFirstText(section, "@number");
     const title = queryFirstText(section, "title");
     return (
@@ -42,14 +55,13 @@ const TableOfContents: React.FC<Props> = ({document}) => {
     const number = queryFirstText(chapter, "@number");
     const title = queryFirstText(chapter, "title");
     const sections = queryElements(chapter, "section");
-
     return (
         <li key={key}>
           <NavLink to={`#chapter-${number}`}>
             {number} luku - {title}
           </NavLink>
           <ul style={{listStyle: "none"}}>
-            {sections.map((section, i) => renderSectionLink(number, section, i))}
+            {sections.map((section, i) => renderChapterSectionLink(number, section, i))}
           </ul>
         </li>
     );
@@ -63,6 +75,9 @@ const TableOfContents: React.FC<Props> = ({document}) => {
 
         <ul style={{listStyle: 'none'}}>
           {chapters.map(renderChapterLink)}
+        </ul>
+        <ul style={{listStyle: 'none'}}>
+          {sections.map(renderSectionLink)}
         </ul>
       </nav>
   );

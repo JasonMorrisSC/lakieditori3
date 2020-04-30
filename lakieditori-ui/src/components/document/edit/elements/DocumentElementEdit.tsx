@@ -16,6 +16,7 @@ import {ElementEditProps} from "./ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import ChapterElementEdit from "./ChapterElementEdit";
+import SectionElementEdit from "./SectionElementEdit";
 
 const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -106,6 +107,15 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
             <ChapterElementEdit document={document}
                                 currentElement={chapter}
                                 currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
+                                setDocument={setDocument}/>
+          </div>
+        })}
+
+        {queryElements(currentElement, 'section').map((section, i) => {
+          return <div key={i} id={`section-${section.getAttribute('number')}`}>
+            <SectionElementEdit document={document}
+                                currentElement={section}
+                                currentPath={currentPath + "/section[" + (i + 1) + "]"}
                                 setDocument={setDocument}/>
           </div>
         })}

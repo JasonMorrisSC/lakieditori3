@@ -12,7 +12,6 @@ import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
 import TableOfContents from "../view/TableOfContents";
 import DocumentElementEdit from "./elements/DocumentElementEdit";
 import DocumentEditToolbar from "./DocumentEditToolbar";
-import {useDocumentConcepts} from "../view/useDocumentConcept";
 import Concepts from "../view/Concepts";
 
 interface Props {
@@ -21,7 +20,6 @@ interface Props {
 
 const DocumentEdit: React.FC<Props> = ({id}) => {
   const {document, setDocument, saveDocument} = useDocument(id);
-  const {concepts} = useDocumentConcepts(document);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
