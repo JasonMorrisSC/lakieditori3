@@ -9,7 +9,7 @@ export interface Concept {
 
 export function useTextConcepts(text: string, extract: boolean) {
   const [concepts, setConcepts] = useState<Map<string, Concept>>(new Map());
-  const [wordIsConceptCache, setWordIsConceptCache] = useState<Map<string, null | Concept>>(new Map());
+  const [conceptCache, setConceptCache] = useState<Map<string, null | Concept>>(new Map());
 
   useEffect(() => {
     if (!extract) {
@@ -36,12 +36,12 @@ export function useTextConcepts(text: string, extract: boolean) {
       });
     };
 
-    const hasConceptMatchCached = (word: string): Promise<null | Concept> => {
-      if (wordIsConceptCache.has(word)) {
-        return Promise.resolve(wordIsConceptCache.get(word) || null);
+    const hasCachedConceptMatch = (word: string): Promise<null | Concept> => {
+      if (conceptCache.has(word)) {
+        return Promise.resolve(conceptCache.get(word) || null);
       } else {
         return hasConceptMatch(word).then(match => {
-          setWordIsConceptCache(prevCache => new Map(prevCache).set(word, match));
+          setConceptCache(prevCache => new Map(prevCache).set(word, match));
           return match;
         });
       }
@@ -49,7 +49,7 @@ export function useTextConcepts(text: string, extract: boolean) {
 
     const timer = setTimeout(() => {
       words.forEach(word => {
-        hasConceptMatchCached(word).then(match => {
+        hasCachedConceptMatch(word).then(match => {
           if (match) {
             setConcepts(prevConcepts => new Map(prevConcepts).set(word, match));
           }
@@ -58,7 +58,7 @@ export function useTextConcepts(text: string, extract: boolean) {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [text, extract, wordIsConceptCache]);
+  }, [text, extract, conceptCache]);
 
   return {concepts};
 }
