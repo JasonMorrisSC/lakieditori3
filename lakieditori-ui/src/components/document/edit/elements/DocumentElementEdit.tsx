@@ -1,7 +1,7 @@
 /** @jsx jsx */
 import {css, jsx} from '@emotion/core'
 import React from "react";
-import {Button, Dropdown, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
+import {Button, Dropdown, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {
   cloneDocument,
   countNodes,
@@ -23,6 +23,9 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
   const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
   const intro = queryFirstElement(currentElement, "intro");
+
+  const chapterCount = countNodes(currentElement, "chapter");
+  const sectionCount = countNodes(currentElement, "section");
 
   function updateDocumentState(newValue: string) {
     setDocument((prevDocument) => {
@@ -50,13 +53,25 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
   function appendNewChapter() {
     setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
-      const chapterCount = countNodes(newDocument, currentPath + '/chapter');
 
       const chapterElement = newDocument.createElement("chapter");
-      chapterElement.setAttribute('number', (chapterCount + 1) + "");
+      chapterElement.setAttribute("number", (chapterCount + 1) + "");
       chapterElement.appendChild(newDocument.createElement("title"));
 
       queryFirstNode(newDocument, currentPath)?.appendChild(chapterElement);
+      return newDocument;
+    });
+  }
+
+  function appendNewSection() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+
+      const sectionElement = newDocument.createElement("section");
+      sectionElement.setAttribute("number", (sectionCount + 1) + "");
+      sectionElement.appendChild(newDocument.createElement("title"));
+
+      queryFirstNode(newDocument, currentPath)?.appendChild(sectionElement);
       return newDocument;
     });
   }
@@ -65,7 +80,7 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
       <article>
         <Heading.h1hero>
           <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
-            <small style={{color: sdt.colors.accentBase}}>{number}</small>
+            <small style={{color: tokens.colors.accentBase}}>{number}</small>
             <Dropdown name={"Tila: " + documentStateLabelFi(state)} changeNameToSelection={false}
                       css={css`button { margin: 0; }`}>
               <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
@@ -88,8 +103,8 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               value={title}
               setValue={updateTitle}
               style={{
-                fontSize: sdt.values.typography.heading1Hero.fontSize.value,
-                fontWeight: sdt.values.typography.heading1Hero.fontWeight,
+                fontSize: tokens.values.typography.heading1Hero.fontSize.value,
+                fontWeight: tokens.values.typography.heading1Hero.fontWeight,
               }}/>
         </Heading.h1hero>
 
@@ -98,8 +113,8 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
             value={intro}
             setValue={updateIntro}
             style={{
-              fontSize: sdt.values.typography.leadText.fontSize.value,
-              fontWeight: sdt.values.typography.leadText.fontWeight,
+              fontSize: tokens.values.typography.leadText.fontSize.value,
+              fontWeight: tokens.values.typography.leadText.fontWeight,
             }}/>
 
         {queryElements(currentElement, 'chapter').map((chapter, i) => {
@@ -120,9 +135,19 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
           </div>
         })}
 
-        <Button.secondaryNoborder icon="plus" onClick={appendNewChapter}>
+        {sectionCount == 0 &&
+        <Button.secondaryNoborder
+            icon="plus"
+            onClick={appendNewChapter}
+            style={{marginTop: tokens.spacing.l, marginRight: tokens.spacing.s}}>
           Lisää uusi luku
-        </Button.secondaryNoborder>
+        </Button.secondaryNoborder>}
+        {chapterCount == 0 &&
+        <Button.secondaryNoborder
+            icon="plus" onClick={appendNewSection}
+            style={{marginTop: tokens.spacing.l}}>
+          Lisää uusi pykälä
+        </Button.secondaryNoborder>}
       </article>
   );
 };
