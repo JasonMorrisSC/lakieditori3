@@ -19,14 +19,9 @@ export function useTextConcepts(text: string, extract: boolean) {
     const words: string[] = text.split(/[\s.,!?(){}#]/);
 
     const hasConceptMatch = (word: string): Promise<null | Concept> => {
-      return axios.get('/api/lemma', {
-        params: {word: word.toLowerCase(), tag: 'N'},
-        responseType: 'text'
-      }).then(res => {
-        return axios.get('/api/concepts', {
-          params: {query: res.data},
-          responseType: 'document'
-        });
+      return axios.get('/api/concepts', {
+        params: {query: word.toLowerCase(), lemmatize: 'true', tag: 'N'},
+        responseType: 'document'
       }).then(res => {
         const resultConcepts = res.data.documentElement;
         return resultConcepts.childElementCount > 0 ? {

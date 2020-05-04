@@ -16,22 +16,23 @@ import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-@Service
 public class RemoteTextAnalysisService implements TextAnalysisService {
 
-  @Value("${fi.vero.lakieditori.textAnalysisService.url:}")
-  private String remoteAnalysisServiceUrl;
-
-  @Value("${fi.vero.lakieditori.textAnalysisService.username:}")
-  private String remoteAnalysisServiceUsername;
-
-  @Value("${fi.vero.lakieditori.textAnalysisService.password:}")
-  private String remoteAnalysisServicePassword;
+  private final String remoteAnalysisServiceUrl;
+  private final String remoteAnalysisServiceUsername;
+  private final String remoteAnalysisServicePassword;
 
   private final CloseableHttpClient httpClient = HttpClientBuilder.create().build();
+
+  public RemoteTextAnalysisService(
+      String remoteAnalysisServiceUrl,
+      String remoteAnalysisServiceUsername,
+      String remoteAnalysisServicePassword) {
+    this.remoteAnalysisServiceUrl = remoteAnalysisServiceUrl;
+    this.remoteAnalysisServiceUsername = remoteAnalysisServiceUsername;
+    this.remoteAnalysisServicePassword = remoteAnalysisServicePassword;
+  }
 
   @Override
   public String lemma(String word, Set<String> tags, String lang) {
