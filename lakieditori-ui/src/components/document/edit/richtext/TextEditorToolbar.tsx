@@ -1,4 +1,4 @@
-import React, {ReactNode} from "react";
+import React, {CSSProperties, ReactNode} from "react";
 import {Location} from 'slate'
 import {useSlate} from 'slate-react'
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
@@ -60,8 +60,14 @@ interface Props {
 }
 
 const TextEditorToolbar: React.FC<Props> = ({label, expanded, linkSelection, customTools}) => {
+  const stickyIfExpanded: CSSProperties = expanded ? {
+    position: "sticky",
+    top: 56,
+    background: tokens.colors.whiteBase,
+  } : {};
+
   return (
-      <StyledToolbar>
+      <StyledToolbar style={stickyIfExpanded}>
         {label &&
         <label>{label}</label>}
         {expanded &&
