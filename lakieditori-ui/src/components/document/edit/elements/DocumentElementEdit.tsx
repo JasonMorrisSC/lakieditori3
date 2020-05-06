@@ -135,14 +135,14 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
           </div>
         })}
 
-        {sectionCount == 0 &&
+        {sectionCount === 0 &&
         <Button.secondaryNoborder
             icon="plus"
             onClick={appendNewChapter}
             style={{marginTop: tokens.spacing.l, marginRight: tokens.spacing.s}}>
           Lisää uusi luku
         </Button.secondaryNoborder>}
-        {chapterCount == 0 &&
+        {chapterCount === 0 &&
         <Button.secondaryNoborder
             icon="plus" onClick={appendNewSection}
             style={{marginTop: tokens.spacing.l}}>
