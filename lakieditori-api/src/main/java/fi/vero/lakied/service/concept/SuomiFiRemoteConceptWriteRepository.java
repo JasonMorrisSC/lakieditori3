@@ -1,22 +1,25 @@
 package fi.vero.lakied.service.concept;
 
-import static com.google.common.base.Charsets.UTF_8;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 import static org.springframework.http.HttpHeaders.CONTENT_TYPE;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.google.common.base.Charsets;
 import com.google.gson.JsonParser;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.exception.InternalServerErrorException;
 import fi.vero.lakied.util.security.User;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.function.Consumer;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.access.AccessDeniedException;
@@ -27,14 +30,8 @@ public class SuomiFiRemoteConceptWriteRepository implements
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private static final String DEFAULT_API_URL = "https://sanastot.suomi.fi/terminology-api/api/v1/integration/";
-
   private final String apiUrl;
   private final CloseableHttpClient httpClient;
-
-  public SuomiFiRemoteConceptWriteRepository() {
-    this(DEFAULT_API_URL);
-  }
 
   public SuomiFiRemoteConceptWriteRepository(String apiUrl) {
     this.apiUrl = apiUrl;
@@ -48,6 +45,8 @@ public class SuomiFiRemoteConceptWriteRepository implements
     request.addHeader(ACCEPT, APPLICATION_JSON_VALUE);
     request.addHeader(AUTHORIZATION,
         "Bearer " + user.getProperties().getOrDefault("SANASTOT_SUOMI_FI_API_TOKEN", ""));
+    request.setEntity(new StringEntity(
+        new ConceptXmlToJson().apply(value).toString(), StandardCharsets.UTF_8));
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {
       log.debug(request.toString());
@@ -58,12 +57,13 @@ public class SuomiFiRemoteConceptWriteRepository implements
 
       if (response.getStatusLine().getStatusCode() != 200 ||
           response.getEntity().getContent() == null) {
-        log.warn(response.getStatusLine().toString());
+        log.warn("{} {}", response.getStatusLine().toString(),
+            EntityUtils.toString(response.getEntity()));
         return;
       }
 
       String uri = JsonParser
-          .parseReader(new InputStreamReader(response.getEntity().getContent(), UTF_8))
+          .parseReader(new InputStreamReader(response.getEntity().getContent(), Charsets.UTF_8))
           .getAsJsonObject()
           .getAsJsonPrimitive("uri")
           .getAsString();

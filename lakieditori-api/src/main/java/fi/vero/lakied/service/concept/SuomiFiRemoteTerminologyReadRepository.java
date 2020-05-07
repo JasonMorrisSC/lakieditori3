@@ -29,14 +29,8 @@ public class SuomiFiRemoteTerminologyReadRepository implements ReadRepository<St
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private static final String DEFAULT_API_URL = "https://sanastot.suomi.fi/terminology-api/api/v1/integration/";
-
   private final String apiUrl;
   private final CloseableHttpClient httpClient;
-
-  public SuomiFiRemoteTerminologyReadRepository() {
-    this(DEFAULT_API_URL);
-  }
 
   public SuomiFiRemoteTerminologyReadRepository(String apiUrl) {
     this.apiUrl = apiUrl;
