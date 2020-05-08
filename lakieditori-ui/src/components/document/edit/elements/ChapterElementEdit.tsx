@@ -14,7 +14,7 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import SectionElementEdit from "./SectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
-import {ButtonSecondaryAlert, Input} from "../../../common/StyledInputComponents";
+import {Input} from "../../../common/StyledInputComponents";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   let number = queryFirstText(currentElement, "@number");
@@ -70,9 +70,9 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                    }}/>
             <span style={{color: sdt.colors.highlightBase}}>luku</span>
             <div style={{marginLeft: "auto"}}>
-              <ButtonSecondaryAlert icon={"close"} onClick={() => removeChapter()}>
+              <Button.secondaryNoborder icon={"close"} onClick={() => removeChapter()}>
                 Poista
-              </ButtonSecondaryAlert>
+              </Button.secondaryNoborder>
             </div>
           </div>
 

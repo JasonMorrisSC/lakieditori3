@@ -12,7 +12,7 @@ import {
 import {ElementEditProps} from "./ElementEditProps";
 import SubsectionElementEdit from "./SubsectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
-import {ButtonSecondaryAlert, Input} from "../../../common/StyledInputComponents";
+import {Input} from "../../../common/StyledInputComponents";
 
 const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -69,9 +69,9 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             §
           </span>
             <div style={{marginLeft: "auto"}}>
-              <ButtonSecondaryAlert icon={"close"} onClick={() => removeSection()}>
+              <Button.secondaryNoborder icon={"close"} onClick={() => removeSection()}>
                 Poista
-              </ButtonSecondaryAlert>
+              </Button.secondaryNoborder>
             </div>
           </div>
 

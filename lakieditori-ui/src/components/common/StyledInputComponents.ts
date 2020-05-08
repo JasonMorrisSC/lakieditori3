@@ -100,17 +100,3 @@ export const ButtonIconOnly = styled(Button.secondaryNoborder)`
     padding: ${tokens.spacing.s};
   };
 `;
-
-export const ButtonSecondaryAlert = styled(Button.secondaryNoborder)`
-  color: ${tokens.colors.blackBase} !important;
-  & > svg {
-    fill: ${tokens.colors.depthDark27};
-  }
-  &:hover {
-    color: ${tokens.colors.whiteBase} !important;
-    background: ${tokens.colors.alertBase} !important;
-  }
-  &:hover > svg {
-    fill: ${tokens.colors.whiteBase};
-  }
-`;
