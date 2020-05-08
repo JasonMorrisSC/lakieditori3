@@ -1,8 +1,15 @@
-import React from "react";
+import React, {useRef} from "react";
 import {HashLink as Link} from 'react-router-hash-link';
 import styled from '@emotion/styled'
 import {suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
 import {queryElements, queryFirstText} from "../../../utils/xmlUtils";
+
+const NavSticky = styled.nav`
+  position: sticky;
+  top: 56px;
+  height: 93vh;
+  overflow-y: scroll;
+`;
 
 const NavLink = styled(Link)`
   align-items: center;
@@ -24,6 +31,7 @@ interface Props {
 }
 
 const TableOfContents: React.FC<Props> = ({document}) => {
+  const navRef = useRef<HTMLElement>(null);
   const chapters = queryElements(document.documentElement, "chapter");
   const sections = queryElements(document.documentElement, "section");
 
@@ -68,7 +76,9 @@ const TableOfContents: React.FC<Props> = ({document}) => {
   };
 
   return (
-      <nav>
+      <NavSticky ref={navRef} tabIndex={0}
+                 onMouseEnter={() => navRef?.current?.focus()}
+                 onMouseLeave={() => navRef?.current?.blur()}>
         <div style={{padding: `${tokens.spacing.s} 0`}}>
           <Text.bold>Sisällysluettelo</Text.bold>
         </div>
@@ -79,7 +89,7 @@ const TableOfContents: React.FC<Props> = ({document}) => {
         <ul style={{listStyle: 'none'}}>
           {sections.map(renderSectionLink)}
         </ul>
-      </nav>
+      </NavSticky>
   );
 };
 
