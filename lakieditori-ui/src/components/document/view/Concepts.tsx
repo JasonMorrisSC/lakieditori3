@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {queryFirstText} from "../../../utils/xmlUtils";
+import {countNodes, queryFirstText} from "../../../utils/xmlUtils";
 import {ElementViewProps} from "../view/elements/ElementViewProps";
 import styled from "@emotion/styled";
 import {useDocumentConcepts} from "./useDocumentConcept";
@@ -34,18 +34,26 @@ const Concepts: React.FC<Props> = ({document}) => {
           {concepts.length > 0 ? 'Käsitteet' : ''}
         </div>
 
-        {concepts.map((concept, i) => <Concept key={i} element={concept}/>)}
+        {concepts.map((concept, i) => <Concept key={i} document={document} element={concept}/>)}
       </div>
   );
 };
 
-const Concept: React.FC<ElementViewProps> = ({element}) => {
+interface ConceptProps extends ElementViewProps {
+  document: Document
+}
+
+const Concept: React.FC<ConceptProps> = ({document, element}) => {
   const [isExpanded, setExpanded] = useState<boolean>(false);
 
   const uri = element.getAttribute("uri") || '';
   const label = queryFirstText(element, "label");
   const definition = queryFirstText(element, "definition");
   const terminologyLabel = queryFirstText(element, "terminology/label");
+
+  const usageCount = (uri: string): number => {
+    return countNodes(document, `//a[@href = '${uri}']`);
+  };
 
   return (
       <div style={{
@@ -56,7 +64,7 @@ const Concept: React.FC<ElementViewProps> = ({element}) => {
         <ConceptLabelButton
             icon={isExpanded ? "expandableMinus" : "expandablePlus"}
             onClick={() => setExpanded(!isExpanded)}>
-          {label}
+          {label} ({usageCount(uri)})
         </ConceptLabelButton>
         {isExpanded &&
         <div>
