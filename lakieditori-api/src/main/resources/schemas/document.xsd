@@ -52,7 +52,6 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="title" type="richTextType" maxOccurs="unbounded"/>
-        <xs:element name="note" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
         <xs:element name="intro" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
         <xs:choice>
           <xs:element name="chapter" type="chapterType" minOccurs="0" maxOccurs="unbounded">
