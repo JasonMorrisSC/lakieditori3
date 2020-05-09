@@ -64,10 +64,10 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
 
     switch (field) {
       case "uri":
-        request = new HttpGet(apiUrl + "resources?uri=" + value + "&pageSize=50");
+        request = new HttpGet(apiUrl + "integration/resources?uri=" + value + "&pageSize=50");
         break;
       case "query":
-        request = new HttpGet(apiUrl + "resources?searchTerm=" + value + "&pageSize=50");
+        request = new HttpGet(apiUrl + "integration/resources?searchTerm=" + value + "&pageSize=50");
         break;
       default:
         throw new RuntimeException("Can't find concepts by unknown field: " + field);

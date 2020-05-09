@@ -14,8 +14,8 @@ import org.w3c.dom.Document;
 @Configuration
 public class ConceptRepositoryConfiguration {
 
-  @Value("${fi.vero.lakieditori.terminologyIntegrationApiUrl:}")
-  private String terminologyIntegrationApiUrl;
+  @Value("${fi.vero.lakieditori.terminologyApiUrl:}")
+  private String terminologyApiUrl;
 
   @Bean
   public ReadRepository<String, Document> conceptReadRepository() {
@@ -23,7 +23,7 @@ public class ConceptRepositoryConfiguration {
         new CachingReadRepository<>(
             new StropWordFilteringConceptReadRepository(
                 new SuomiFiRemoteConceptReadRepository(
-                    terminologyIntegrationApiUrl,
+                    terminologyApiUrl,
                     () -> terminologyReadRepository()
                         .entries(Criteria.matchAll(), User.superuser("terminologies-loader")))));
   }
@@ -31,14 +31,14 @@ public class ConceptRepositoryConfiguration {
   @Bean
   public WriteRepository<Consumer<String>, Document> conceptWriteRepository() {
     return
-        new SuomiFiRemoteConceptWriteRepository(terminologyIntegrationApiUrl);
+        new SuomiFiRemoteConceptWriteRepository(terminologyApiUrl);
   }
 
   @Bean
   public ReadRepository<String, Document> terminologyReadRepository() {
     return
         new CachingReadRepository<>(
-            new SuomiFiRemoteTerminologyReadRepository(terminologyIntegrationApiUrl));
+            new SuomiFiRemoteTerminologyReadRepository(terminologyApiUrl));
   }
 
 }

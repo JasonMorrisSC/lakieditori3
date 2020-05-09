@@ -40,7 +40,7 @@ public class SuomiFiRemoteConceptWriteRepository implements
 
   @Override
   public void insert(Consumer<String> key, Document value, User user) {
-    HttpPost request = new HttpPost(apiUrl + "terminology/conceptSuggestion");
+    HttpPost request = new HttpPost(apiUrl + "integration/terminology/conceptSuggestion");
     request.addHeader(CONTENT_TYPE, APPLICATION_JSON_VALUE);
     request.addHeader(ACCEPT, APPLICATION_JSON_VALUE);
     request.addHeader(AUTHORIZATION,

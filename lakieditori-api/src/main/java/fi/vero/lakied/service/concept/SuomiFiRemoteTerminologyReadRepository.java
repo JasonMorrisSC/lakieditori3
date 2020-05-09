@@ -39,7 +39,7 @@ public class SuomiFiRemoteTerminologyReadRepository implements ReadRepository<St
 
   @Override
   public Stream<Tuple2<String, Document>> entries(Criteria<String, Document> criteria, User user) {
-    HttpGet request = new HttpGet(apiUrl + "containers");
+    HttpGet request = new HttpGet(apiUrl + "integration/containers");
     request.addHeader(ACCEPT, APPLICATION_JSON_VALUE);
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {

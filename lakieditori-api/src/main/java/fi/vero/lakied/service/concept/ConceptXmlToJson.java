@@ -24,8 +24,7 @@ public class ConceptXmlToJson implements Function<Document, JsonObject> {
             "value", primitive(XmlUtils.queryText(concept, "/concept/definition")),
             "lang", primitive("fi")),
         "terminologyUri", primitive(
-            XmlUtils.queryText(concept, "/concept/terminology/@uri")
-                + "terminological-vocabulary-0"));
+            XmlUtils.queryText(concept, "/concept/terminology/@uri")));
 
     log.info(object.toString());
 
