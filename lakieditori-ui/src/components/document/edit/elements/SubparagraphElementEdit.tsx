@@ -5,7 +5,8 @@ import {
   ensureElementAndUpdate,
   queryFirstElement,
   queryFirstNode,
-  queryFirstText
+  queryFirstText,
+  queryTexts
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
@@ -14,6 +15,7 @@ import {ElementEditProps} from "./ElementEditProps";
 const SubparagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
+  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {
@@ -45,6 +47,7 @@ const SubparagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocum
             label={`Alakohta ${number}`}
             value={content}
             setValue={updateContent}
+            terminologyUris={terminologyUris}
             style={{color: tokens.colors.blackBase}}
             customTools={customTools}/>
       </li>

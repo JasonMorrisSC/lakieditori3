@@ -8,6 +8,7 @@ import {useDocument} from "../useDocument";
 import DocumentInfoToolbar from "./DocumentInfoToolbar";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
 import {toFiDateTimeStringInUtc} from "../../../utils/dateUtils";
+import Terminologies from "./Terminologies";
 
 interface Props {
   id: string,
@@ -48,6 +49,12 @@ const DocumentInfo: React.FC<Props> = ({id}) => {
             </tr>
             </tbody>
           </Table>
+
+          <Heading.h2 style={{margin: `${sdt.spacing.xl} 0 ${sdt.spacing.m} 0`}}>
+            Sanastot
+          </Heading.h2>
+
+          <Terminologies id={id}/>
 
           <Heading.h2 style={{margin: `${sdt.spacing.xl} 0 ${sdt.spacing.m} 0`}}>
             Käyttöoikeudet

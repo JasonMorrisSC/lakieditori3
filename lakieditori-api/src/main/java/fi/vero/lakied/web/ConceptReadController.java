@@ -7,6 +7,7 @@ import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
+import java.util.List;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -37,12 +38,15 @@ public class ConceptReadController {
   }
 
   @GetXmlMapping(params = "query")
-  public Document query(@RequestParam("query") String query, @AuthenticationPrincipal User user) {
+  public Document query(
+      @RequestParam("query") String query,
+      @RequestParam(value = "terminologyUri", defaultValue = "#{T(java.util.Collections).emptyList()}") List<String> terminologyUris,
+      @AuthenticationPrincipal User user) {
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("concepts");
 
     if (!query.isEmpty()) {
       conceptReadRepository.forEachEntry(
-          ConceptCriteria.byQuery(query), user,
+          ConceptCriteria.byQuery(query, terminologyUris), user,
           (id, concept) -> builder.appendExternal(concept.getDocumentElement()));
     }
 
@@ -52,10 +56,11 @@ public class ConceptReadController {
   @GetXmlMapping(params = {"query", "lemmatize=true"})
   public Document queryLemmatized(
       @RequestParam("query") String query,
+      @RequestParam(value = "terminologyUri", defaultValue = "#{T(java.util.Collections).emptyList()}") List<String> terminologyUris,
       @RequestParam(name = "tag", defaultValue = "#{T(java.util.Collections).emptySet()}") Set<String> tags,
       @RequestParam(name = "lang", defaultValue = "fi") String lang,
       @AuthenticationPrincipal User user) {
-    return query(textAnalysisService.lemma(query, tags, lang), user);
+    return query(textAnalysisService.lemma(query, tags, lang), terminologyUris, user);
   }
 
 }

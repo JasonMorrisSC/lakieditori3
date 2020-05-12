@@ -1,16 +1,19 @@
 package fi.vero.lakied.service.concept;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Multimap;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.criteria.Criteria;
-import fi.vero.lakied.util.criteria.StringFieldValueCriteria;
+import fi.vero.lakied.util.criteria.StringMultimapCriteria;
+import fi.vero.lakied.util.security.User;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.stream.Stream;
 import org.w3c.dom.Document;
 
 /**
- * Returns empty stream for queries made with stop words.
+ * Returns an empty stream for queries containing stop words.
  */
 public class StropWordFilteringConceptReadRepository implements ReadRepository<String, Document> {
 
@@ -30,15 +33,14 @@ public class StropWordFilteringConceptReadRepository implements ReadRepository<S
 
   @Override
   public Stream<Tuple2<String, Document>> entries(Criteria<String, Document> criteria, User user) {
-    if (criteria instanceof StringFieldValueCriteria) {
-      StringFieldValueCriteria<String, Document> stringFieldValueCriteria =
-          (StringFieldValueCriteria<String, Document>) criteria;
+    if (criteria instanceof StringMultimapCriteria) {
+      Multimap<String, String> args =
+          ((StringMultimapCriteria<String, Document>) criteria).getMultimap();
 
-      String field = stringFieldValueCriteria.getFieldName();
-      String value = stringFieldValueCriteria.getFieldValue();
+      Collection<String> searchTerms = args.get("searchTerm");
 
-      if (field.equals("query")) {
-        if (!stopWords.contains(value)) {
+      if (!searchTerms.isEmpty()) {
+        if (Collections.disjoint(searchTerms, stopWords)) {
           return delegate.entries(criteria, user);
         } else {
           return Stream.empty();

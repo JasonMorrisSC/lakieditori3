@@ -4,6 +4,7 @@ import static com.google.common.base.Charsets.UTF_8;
 import static org.springframework.http.HttpHeaders.ACCEPT;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Streams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
@@ -13,7 +14,7 @@ import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.common.URLs;
 import fi.vero.lakied.util.criteria.Criteria;
-import fi.vero.lakied.util.criteria.StringFieldValueCriteria;
+import fi.vero.lakied.util.criteria.StringMultimapCriteria;
 import fi.vero.lakied.util.exception.InternalServerErrorException;
 import fi.vero.lakied.util.security.User;
 import java.io.IOException;
@@ -50,29 +51,15 @@ public class SuomiFiRemoteConceptReadRepository implements ReadRepository<String
 
   @Override
   public Stream<Tuple2<String, Document>> entries(Criteria<String, Document> criteria, User user) {
-    if (!(criteria instanceof StringFieldValueCriteria)) {
-      throw new RuntimeException("Can't handle criteria: " + criteria);
-    }
+    Multimap<String, String> args =
+        ((StringMultimapCriteria<String, Document>) criteria).getMultimap();
 
-    StringFieldValueCriteria<String, Document> stringFieldValueCriteria =
-        (StringFieldValueCriteria<String, Document>) criteria;
+    String queryParams = args.entries().stream()
+        .map(e -> URLs.encode(e.getKey()) + "=" + URLs.encode(e.getValue()))
+        .collect(Collectors.joining("&"));
 
-    String field = stringFieldValueCriteria.getFieldName();
-    String value = URLs.encode(stringFieldValueCriteria.getFieldValue());
-
-    HttpGet request;
-
-    switch (field) {
-      case "uri":
-        request = new HttpGet(apiUrl + "integration/resources?uri=" + value + "&pageSize=50");
-        break;
-      case "query":
-        request = new HttpGet(apiUrl + "integration/resources?searchTerm=" + value + "&pageSize=50");
-        break;
-      default:
-        throw new RuntimeException("Can't find concepts by unknown field: " + field);
-    }
-
+    HttpGet request = new HttpGet(
+        apiUrl + "integration/resources?" + queryParams);
     request.addHeader(ACCEPT, APPLICATION_JSON_VALUE);
 
     try (CloseableHttpResponse response = httpClient.execute(request)) {

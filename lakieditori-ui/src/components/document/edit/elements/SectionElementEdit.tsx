@@ -7,6 +7,7 @@ import {
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
+  queryTexts,
   updateElement
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
@@ -17,6 +18,7 @@ import {Input} from "../../../common/StyledInputComponents";
 const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
+  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
   function updateNumber(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath,
@@ -79,6 +81,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
               label={`Pykälän ${number} otsikko`}
               value={title}
               setValue={updateTitle}
+              terminologyUris={terminologyUris}
               style={{
                 fontSize: sdt.values.typography.heading3.fontSize.value,
                 fontWeight: sdt.values.typography.heading3.fontWeight,

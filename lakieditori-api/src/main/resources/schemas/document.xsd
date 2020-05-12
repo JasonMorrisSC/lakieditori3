@@ -13,7 +13,7 @@
   <xs:complexType name="formattedTextType" mixed="true">
     <xs:annotation>
       <xs:documentation>
-        This type defines type for text content that can contain formatting tags (e.g. 'em').
+        Text content that can contain formatting tags (e.g. 'em').
       </xs:documentation>
     </xs:annotation>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
@@ -24,8 +24,7 @@
   <xs:complexType name="linkType">
     <xs:annotation>
       <xs:documentation>
-        This type defines base type for links (i.e. formatted text element that requires an href
-        attribute).
+        Base type for links (i.e. formatted text element that requires an href attribute).
       </xs:documentation>
     </xs:annotation>
     <xs:complexContent>
@@ -67,6 +66,7 @@
             </xs:unique>
           </xs:element>
         </xs:choice>
+        <xs:element name="settings" type="settingsType" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>
@@ -102,7 +102,7 @@
   <xs:complexType name="chapterType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for chapter (in Finnish "luku").
+        Chapter (in Finnish "luku").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -120,7 +120,7 @@
   <xs:complexType name="sectionType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for section (in Finnish "pykälä").
+        Section (in Finnish "pykälä").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -138,7 +138,7 @@
   <xs:complexType name="subsectionType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for subsection (in Finnish "momentti").
+        Subsection (in Finnish "momentti").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -156,7 +156,7 @@
   <xs:complexType name="paragraphType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for paragraph (in Finnish "kohta").
+        Paragraph (in Finnish "kohta").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
@@ -174,13 +174,24 @@
   <xs:complexType name="subparagraphType">
     <xs:annotation>
       <xs:documentation>
-        This type defines fields for subparagraph (in Finnish "alakohta").
+        Subparagraph (in Finnish "alakohta").
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
       <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="settingsType">
+    <xs:annotation>
+      <xs:documentation>
+        Document settings
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice>
+      <xs:element name="vocabulary" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:choice>
   </xs:complexType>
 
 </xs:schema>

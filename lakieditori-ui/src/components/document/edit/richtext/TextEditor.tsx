@@ -22,9 +22,11 @@ interface Props {
   label?: string,
   style?: CSSProperties,
   customTools?: ReactNode,
+  terminologyUris?: string[],
 }
 
-const TextEditor: React.FC<Props> = ({value, setValue, label, style, customTools}) => {
+const TextEditor: React.FC<Props> = (
+    {value, setValue, label, style, customTools, terminologyUris = []}) => {
   const [focused, setFocused] = useState<boolean>(false);
 
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
@@ -33,7 +35,7 @@ const TextEditor: React.FC<Props> = ({value, setValue, label, style, customTools
   const [isLinkModalOpen, setLinkModalOpen] = useState(false);
   const [linkModalSelection, setLinkModalSelection] = useState<Location>([0]);
 
-  const {concepts} = useTextConcepts(editorValue.map(n => SlateNode.string(n)).join('\n'), focused);
+  const {concepts} = useTextConcepts(editorValue.map(n => SlateNode.string(n)).join('\n'), terminologyUris, focused);
 
   // Sets real initial editor value from properties after it is available
   useEffect(() => {
@@ -109,7 +111,8 @@ const TextEditor: React.FC<Props> = ({value, setValue, label, style, customTools
           <LinkModal
               isOpen={isLinkModalOpen}
               close={() => setLinkModalOpen(false)}
-              selection={linkModalSelection}/>
+              selection={linkModalSelection}
+              terminologyUris={terminologyUris}/>
         </Slate>
       </div>
   );

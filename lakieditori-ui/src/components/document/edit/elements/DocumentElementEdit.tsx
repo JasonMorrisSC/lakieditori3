@@ -10,6 +10,7 @@ import {
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
+  queryTexts,
   updateElement
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
@@ -23,6 +24,7 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
   const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
   const intro = queryFirstElement(currentElement, "intro");
+  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
   const chapterCount = countNodes(currentElement, "chapter");
   const sectionCount = countNodes(currentElement, "section");
@@ -102,6 +104,7 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               label="Otsikko"
               value={title}
               setValue={updateTitle}
+              terminologyUris={terminologyUris}
               style={{
                 fontSize: tokens.values.typography.heading1Hero.fontSize.value,
                 fontWeight: tokens.values.typography.heading1Hero.fontWeight,
@@ -112,6 +115,7 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
             label="Johtolause"
             value={intro}
             setValue={updateIntro}
+            terminologyUris={terminologyUris}
             style={{
               fontSize: tokens.values.typography.leadText.fontSize.value,
               fontWeight: tokens.values.typography.leadText.fontWeight,

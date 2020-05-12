@@ -108,6 +108,10 @@ export function queryElements(context: Node, xPathExpression: string): Element[]
   return nodes as Element[];
 }
 
+export function queryTexts(context: Node, xPathExpression: string): string[] {
+  return queryNodes(context, xPathExpression).map(n => n.textContent || "");
+}
+
 export function countNodes(context: Node, xPathExpression: string): number {
   return new XPathEvaluator().evaluate(
       'count(' + xPathExpression + ')', context, null, XPathResult.NUMBER_TYPE, null).numberValue

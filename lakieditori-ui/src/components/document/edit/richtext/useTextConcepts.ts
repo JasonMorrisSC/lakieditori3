@@ -7,7 +7,7 @@ export interface Concept {
   label: string,
 }
 
-export function useTextConcepts(text: string, extract: boolean) {
+export function useTextConcepts(text: string, terminologyUris: string[], extract: boolean) {
   const [concepts, setConcepts] = useState<Map<string, Concept>>(new Map());
   const [conceptCache, setConceptCache] = useState<Map<string, null | Concept>>(new Map());
 
@@ -20,7 +20,12 @@ export function useTextConcepts(text: string, extract: boolean) {
 
     const hasConceptMatch = (word: string): Promise<null | Concept> => {
       return axios.get('/api/concepts', {
-        params: {query: word.toLowerCase(), lemmatize: 'true', tag: 'N'},
+        params: {
+          query: word.toLowerCase(),
+          lemmatize: 'true',
+          tag: 'N',
+          terminologyUri: terminologyUris.join(",")
+        },
         responseType: 'document'
       }).then(res => {
         const resultConcepts = res.data.documentElement;
@@ -53,7 +58,7 @@ export function useTextConcepts(text: string, extract: boolean) {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [text, extract, conceptCache]);
+  }, [text, terminologyUris, extract, conceptCache]);
 
   return {concepts};
 }

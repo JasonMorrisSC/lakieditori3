@@ -7,7 +7,8 @@ import {
   queryElements,
   queryFirstElement,
   queryFirstNode,
-  queryFirstText
+  queryFirstText,
+  queryTexts
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
@@ -17,6 +18,7 @@ import ParagraphElementEdit from "./ParagraphElementEdit";
 const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
+  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {
@@ -69,6 +71,7 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
             label={`Momentti ${number}`}
             value={content}
             setValue={updateContent}
+            terminologyUris={terminologyUris}
             customTools={customTools}/>
 
         <ul>

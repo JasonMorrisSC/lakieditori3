@@ -8,7 +8,7 @@ import {
   queryElements,
   queryFirstElement,
   queryFirstNode,
-  queryFirstText,
+  queryFirstText, queryTexts,
   updateElement
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
@@ -17,8 +17,9 @@ import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
-  let number = queryFirstText(currentElement, "@number");
+  const number = queryFirstText(currentElement, "@number");
   const title = queryFirstElement(currentElement, "title");
+  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
   function updateNumber(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath,
@@ -80,6 +81,7 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
               label={`Luvun ${number} otsikko`}
               value={title}
               setValue={updateTitle}
+              terminologyUris={terminologyUris}
               style={{
                 fontSize: sdt.values.typography.heading2.fontSize.value,
                 fontWeight: sdt.values.typography.heading2.fontWeight,

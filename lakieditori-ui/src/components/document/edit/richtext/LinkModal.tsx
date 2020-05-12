@@ -54,9 +54,10 @@ interface Props {
   isOpen: boolean,
   close: () => void,
   selection: Location,
+  terminologyUris?: string[],
 }
 
-const LinkModal = ({isOpen, close, selection}: Props) => {
+const LinkModal = ({isOpen, close, selection, terminologyUris = []}: Props) => {
   const editor = useSlate();
 
   const [linkText, setLinkText] = useState<string>('');
@@ -138,12 +139,14 @@ const LinkModal = ({isOpen, close, selection}: Props) => {
             <ConceptLink
                 linkUrl={linkUrl} setLinkUrl={setLinkUrl}
                 linkText={linkText} setLinkText={setLinkText}
+                terminologyUris={terminologyUris}
                 suggest={() => setLinkView(LinkView.CONCEPT_SUGGEST)}/>}
             {linkView === LinkView.CONCEPT_SUGGEST &&
             <ConceptSuggestModal
                 linkUrl={linkUrl} setLinkUrl={setLinkUrl}
                 linkText={linkText} setLinkText={setLinkText}
                 isOpen={linkView === LinkView.CONCEPT_SUGGEST}
+                terminologyUris={terminologyUris}
                 close={() => setLinkView(LinkView.CONCEPT_LIST)}/>}
             {linkView === LinkView.WEB &&
             <WebLink
@@ -209,12 +212,13 @@ const WebLink: React.FC<LinkViewProps> = ({linkUrl, setLinkUrl}) => {
 };
 
 interface ConceptLinkProps extends LinkViewProps {
+  terminologyUris: string[],
   suggest: () => void
 }
 
-const ConceptLink: React.FC<ConceptLinkProps> = ({linkUrl, setLinkUrl, linkText, setLinkText, suggest}) => {
+const ConceptLink: React.FC<ConceptLinkProps> = ({linkUrl, setLinkUrl, linkText, setLinkText, terminologyUris, suggest}) => {
   const [query, setQuery] = useState('');
-  const {concepts} = useConcepts(query);
+  const {concepts} = useConcepts(query, terminologyUris);
   const {lemma} = useLemma(linkText);
 
   useEffect(() => {
@@ -323,11 +327,12 @@ const ConceptRow: React.FC<ConceptRowProps> = ({concept, expanded}) => {
 interface ConceptSuggestModalProps extends LinkViewProps {
   isOpen: boolean,
   close: () => void,
+  terminologyUris: string[],
 }
 
-const ConceptSuggestModal: React.FC<ConceptSuggestModalProps> = ({linkUrl, setLinkUrl, linkText, setLinkText, isOpen, close}) => {
+const ConceptSuggestModal: React.FC<ConceptSuggestModalProps> = ({linkUrl, setLinkUrl, linkText, setLinkText, terminologyUris, isOpen, close}) => {
   const {terminologies, suggestConcept} = useTerminologies();
-  const [terminology, setTerminology] = useState("http://uri.suomi.fi/terminology/jhs/");
+  const [terminology, setTerminology] = useState(terminologyUris.length > 0 ? terminologyUris[0] : "http://uri.suomi.fi/terminology/jhs/");
   const [label, setLabel] = useState(linkText);
   const [definition, setDefinition] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
