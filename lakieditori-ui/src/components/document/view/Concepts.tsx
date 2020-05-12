@@ -1,9 +1,16 @@
-import React, {useState} from "react";
+import React, {useRef, useState} from "react";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {countNodes, queryFirstText} from "../../../utils/xmlUtils";
 import {ElementViewProps} from "../view/elements/ElementViewProps";
 import styled from "@emotion/styled";
 import {useDocumentConcepts} from "./useDocumentConcept";
+
+const ConceptList = styled.div`
+  position: sticky;
+  top: 56px;
+  height: 93vh;
+  overflow-y: scroll;
+`;
 
 export const ConceptLabelButton = styled(Button.secondaryNoborder)`
   font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
@@ -23,19 +30,22 @@ interface Props {
 }
 
 const Concepts: React.FC<Props> = ({document}) => {
+  const conceptListRef = useRef<HTMLDivElement>(null);
   const {concepts} = useDocumentConcepts(document);
 
   return (
-      <div>
+      <ConceptList ref={conceptListRef} tabIndex={2}
+                   onMouseEnter={() => conceptListRef?.current?.focus()}
+                   onMouseLeave={() => conceptListRef?.current?.blur()}>
         <div style={{
           fontWeight: tokens.values.typography.bodySemiBold.fontWeight,
-          padding: `${tokens.spacing.xs} 0`
+          padding: `${tokens.spacing.s} 0 0`
         }}>
           {concepts.length > 0 ? 'Käsitteet' : ''}
         </div>
 
         {concepts.map((concept, i) => <Concept key={i} document={document} element={concept}/>)}
-      </div>
+      </ConceptList>
   );
 };
 
