@@ -9,6 +9,11 @@ const NavSticky = styled.nav`
   top: 56px;
   height: 93vh;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  } 
 `;
 
 const NavLink = styled(Link)`

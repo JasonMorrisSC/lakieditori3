@@ -10,6 +10,11 @@ const ConceptList = styled.div`
   top: 56px;
   height: 93vh;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
+  } 
 `;
 
 export const ConceptLabelButton = styled(Button.secondaryNoborder)`
