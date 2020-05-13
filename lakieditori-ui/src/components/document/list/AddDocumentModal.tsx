@@ -31,7 +31,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModa
   }
 
   return (
-      <Modal isOpen={isModalOpen} contentLabel="Lisää uusi dokumentti" style={{
+      <Modal isOpen={isModalOpen} contentLabel="Uusi hallituksen esitys eduskunnalle" style={{
         content: {
           height: "60%",
           marginLeft: "auto",
@@ -42,7 +42,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModa
       }}>
         <FlexColTight style={{height: "100%"}}>
           <Heading.h1>
-            Lisää uusi dokumentti
+            Uusi hallituksen esitys eduskunnalle
           </Heading.h1>
 
           <hr/>

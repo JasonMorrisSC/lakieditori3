@@ -8,7 +8,7 @@ const NavSticky = styled.nav`
   position: sticky;
   top: 56px;
   height: 93vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 const NavLink = styled(Link)`

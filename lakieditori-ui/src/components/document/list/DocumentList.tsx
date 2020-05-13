@@ -56,7 +56,7 @@ const DocumentList: React.FC = () => {
 
           {user !== NULL_USER &&
           <Button icon={"plus"} onClick={() => setModalOpen(true)}>
-            Lisää uusi dokumentti
+            Uusi hallituksen esitys eduskunnalle
           </Button>}
         </div>
 

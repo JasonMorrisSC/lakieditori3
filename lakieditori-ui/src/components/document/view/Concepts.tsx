@@ -9,7 +9,7 @@ const ConceptList = styled.div`
   position: sticky;
   top: 56px;
   height: 93vh;
-  overflow-y: scroll;
+  overflow-y: auto;
 `;
 
 export const ConceptLabelButton = styled(Button.secondaryNoborder)`
