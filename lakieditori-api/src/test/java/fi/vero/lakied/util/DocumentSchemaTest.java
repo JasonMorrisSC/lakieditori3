@@ -2,6 +2,7 @@ package fi.vero.lakied.util;
 
 import static fi.vero.lakied.util.common.ResourceUtils.forAllResourcesAsString;
 import static fi.vero.lakied.util.common.ResourceUtils.resourceToString;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.io.IOException;
@@ -24,7 +25,7 @@ class DocumentSchemaTest {
     try {
       schema.newValidator().validate(new StreamSource(new StringReader(xml)));
     } catch (SAXException | IOException e) {
-      throw new AssertionError("Failed to validate: " + path.toString(), e);
+      throw new AssertionError("Failed to validate document at: " + path.toString(), e);
     }
   }
 
@@ -33,5 +34,11 @@ class DocumentSchemaTest {
     PathMatcher xmlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.xml");
 
     forAllResourcesAsString("example-documents", xmlFileMatcher::matches, this::validate);
+    forAllResourcesAsString("test-documents/valid", xmlFileMatcher::matches, this::validate);
+    forAllResourcesAsString("test-documents/invalid", xmlFileMatcher::matches, (path, xml) -> {
+      assertThrows(SAXException.class,
+          () -> schema.newValidator().validate(new StreamSource(new StringReader(xml))),
+          "Expected invalid document at: " + path.toString());
+    });
   }
 }

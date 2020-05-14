@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document number="1">
+  <title>Esimerkki väärästä väliotsikoiden käytöstä</title>
+
+  <subheading number="1">
+    Väliotsikko 1
+  </subheading>
+
+  <subheading number="1">
+    Subheading 1
+  </subheading>
+
+  <section number="1">
+    <title>Pykälä 1</title>
+  </section>
+
+  <subheading number="2">
+    Väliotsikko 2
+  </subheading>
+
+  <section number="2">
+    <title>Pykälä 2</title>
+  </section>
+
+  <section number="3">
+    <title>Pykälä 3</title>
+  </section>
+
+</document>
