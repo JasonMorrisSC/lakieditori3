@@ -1,10 +1,11 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import {queryElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
+import {childElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
 import SectionElement from "./SectionElement";
 import SanitizedHtml from "../../../common/SanitizedHtml";
 import {ElementViewProps} from "./ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
+import SubheadingElement from "./SubheadingElement";
 
 const ChapterElement: React.FC<ElementViewProps> = ({element}) => {
   checkArgument(element.tagName === "chapter");
@@ -22,10 +23,19 @@ const ChapterElement: React.FC<ElementViewProps> = ({element}) => {
           <SanitizedHtml element={title}/>
         </Heading.h2>
 
-        {queryElements(element, 'section').map((section, i) => {
-          return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>
-            <SectionElement element={section}/>
-          </div>
+        {childElements(element).map((e, i) => {
+          switch (e.tagName) {
+            case "section":
+              return <div key={i} id={`chapter-${number}-section-${e.getAttribute('number')}`}>
+                <SectionElement element={e}/>
+              </div>;
+            case "subheading":
+              return <div key={i} id={`chapter-${number}-subheading-${e.getAttribute('number')}`}>
+                <SubheadingElement element={e}/>
+              </div>;
+            default:
+              return "";
+          }
         })}
       </div>
   );

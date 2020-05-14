@@ -1,11 +1,12 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
-import {queryElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
+import {childElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
 import SanitizedHtml from "../../../common/SanitizedHtml";
 import ChapterElement from "./ChapterElement";
 import SectionElement from "./SectionElement";
 import {ElementViewProps} from "./ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
+import SubheadingElement from "./SubheadingElement";
 
 const DocumentElement: React.FC<ElementViewProps> = ({element}) => {
   checkArgument(element.tagName === "document");
@@ -28,16 +29,23 @@ const DocumentElement: React.FC<ElementViewProps> = ({element}) => {
           </Text.lead>
         </p>
 
-        {queryElements(element, 'section').map((section, i) => {
-          return <div key={i} id={`section-${section.getAttribute('number')}`}>
-            <SectionElement element={section}/>
-          </div>
-        })}
-
-        {queryElements(element, 'chapter').map((chapter, i) => {
-          return <div key={i} id={`chapter-${chapter.getAttribute('number')}`}>
-            <ChapterElement element={chapter}/>
-          </div>
+        {childElements(element).map((e, i) => {
+          switch (e.tagName) {
+            case "section":
+              return <div key={i} id={`section-${e.getAttribute('number')}`}>
+                <SectionElement element={e}/>
+              </div>;
+            case "subheading":
+              return <div key={i} id={`subheading-${e.getAttribute('number')}`}>
+                <SubheadingElement element={e}/>
+              </div>;
+            case "chapter":
+              return <div key={i} id={`chapter-${e.getAttribute('number')}`}>
+                <ChapterElement element={e}/>
+              </div>;
+            default:
+              return "";
+          }
         })}
       </article>
   );

@@ -116,3 +116,9 @@ export function countNodes(context: Node, xPathExpression: string): number {
   return new XPathEvaluator().evaluate(
       'count(' + xPathExpression + ')', context, null, XPathResult.NUMBER_TYPE, null).numberValue
 }
+
+export function childElements(node: Node): Element[] {
+  return Array.from(node.childNodes)
+  .filter(n => n.nodeType === Node.ELEMENT_NODE)
+  .map(n => n as Element);
+}
