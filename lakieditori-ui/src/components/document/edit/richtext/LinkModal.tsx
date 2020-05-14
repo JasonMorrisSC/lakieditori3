@@ -44,6 +44,15 @@ const InputIcon = styled(Icon)`
   pointer-events: none;
 `;
 
+const LabelSecondary = styled.label`
+  color: ${tokens.colors.depthDark27};
+  font-family: ${tokens.values.typography.bodyTextSmall.fontFamily};
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
+  font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
+  margin: 0;
+  line-height: 1;
+`;
+
 enum LinkView {
   CONCEPT_LIST,
   CONCEPT_SUGGEST,
@@ -218,19 +227,23 @@ interface ConceptLinkProps extends LinkViewProps {
 
 const ConceptLink: React.FC<ConceptLinkProps> = ({linkUrl, setLinkUrl, linkText, setLinkText, terminologyUris, suggest}) => {
   const [query, setQuery] = useState('');
-  const {concepts} = useConcepts(query, terminologyUris);
+  const [currentTerminologyUris, setCurrentTerminologyUris] = useState(terminologyUris);
+  const {concepts} = useConcepts(query, currentTerminologyUris);
   const {lemma} = useLemma(linkText);
 
   useEffect(() => {
     setQuery(lemma);
   }, [lemma]);
 
+  useEffect(() => {
+    setCurrentTerminologyUris(terminologyUris);
+  }, [terminologyUris]);
+
   return (
       <div>
         <div style={{
           display: "flex",
           alignItems: "flex-end",
-          marginBottom: tokens.spacing.s
         }}>
           <label style={{width: "100%", marginRight: tokens.spacing.m}}>
             Etsi käsitettä
@@ -243,6 +256,16 @@ const ConceptLink: React.FC<ConceptLinkProps> = ({linkUrl, setLinkUrl, linkText,
             Uusi käsite-ehdotus...
           </Button.tertiary>
         </div>
+
+        {terminologyUris.length > 0 &&
+        <div>
+          <input type="checkbox" id={"searchFromAll"}
+                 checked={currentTerminologyUris.length === 0}
+                 onChange={() => setCurrentTerminologyUris(currentTerminologyUris.length === 0 ? terminologyUris : [])}/>
+          <LabelSecondary htmlFor={"searchFromAll"} style={{marginLeft: tokens.spacing.xs}}>
+            Etsi kaikista sanastoista
+          </LabelSecondary>
+        </div>}
 
         <ConceptTable
             concepts={concepts}
@@ -258,7 +281,7 @@ interface ConceptTableProps extends LinkViewProps {
 
 const ConceptTable: React.FC<ConceptTableProps> = ({concepts, linkUrl, setLinkUrl, linkText, setLinkText}) => {
   return (
-      <TableSmall>
+      <TableSmall style={{marginTop: tokens.spacing.s}}>
         <thead>
         <tr>
           <th>Hakutulokset ({concepts.documentElement.childNodes.length})</th>
