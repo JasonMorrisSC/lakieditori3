@@ -24,6 +24,7 @@ export const ConceptLabelButton = styled(Button.secondaryNoborder)`
   background: none !important;
   min-height: 0;
   padding: ${tokens.spacing.xs} 0;
+  text-align: left;
   & > svg {
     height: 0.7em !important;
     width: 0.7em !important;
