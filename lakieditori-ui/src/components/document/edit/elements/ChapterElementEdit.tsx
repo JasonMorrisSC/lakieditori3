@@ -3,18 +3,20 @@ import {jsx} from '@emotion/core'
 import React from "react";
 import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {
+  childElements,
   cloneDocument,
   countNodes,
-  queryElements,
   queryFirstElement,
   queryFirstNode,
-  queryFirstText, queryTexts,
+  queryFirstText,
+  queryTexts,
   updateElement
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
 import SectionElementEdit from "./SectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
+import SubheadingElementEdit from "./SubheadingElementEdit";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -45,12 +47,53 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
     });
   }
 
+  function appendNewSubheading() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+      const subheadingCount = countNodes(newDocument, currentPath + '/subheading');
+
+      const sectionElement = newDocument.createElement("subheading");
+      sectionElement.setAttribute("number", (subheadingCount + 1) + "");
+
+      queryFirstNode(newDocument, currentPath)?.appendChild(sectionElement);
+      return newDocument;
+    });
+  }
+
   function removeChapter() {
     setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const newCurrentElement = queryFirstNode(newDocument, currentPath);
       newCurrentElement?.parentNode?.removeChild(newCurrentElement);
       return newDocument;
+    });
+  }
+
+  const renderChapterChildElements = (chNumber: string, element: Element) => {
+    let sectionCounter = 1;
+    let subheadingCounter = 1;
+
+    return childElements(element).map((e, i) => {
+      switch (e.tagName) {
+        case "section":
+          return <div key={i} id={`chapter-${chNumber}-section-${e.getAttribute('number')}`}>
+            <SectionElementEdit
+                document={document}
+                currentElement={e}
+                currentPath={currentPath + "/section[" + (sectionCounter++) + "]"}
+                setDocument={setDocument}/>
+          </div>;
+        case "subheading":
+          return <div key={i} id={`chapter-${chNumber}-subheading-${e.getAttribute('number')}`}>
+            <SubheadingElementEdit
+                document={document}
+                currentElement={e}
+                currentPath={currentPath + "/subheading[" + (subheadingCounter++) + "]"}
+                setDocument={setDocument}/>
+          </div>;
+        default:
+          return "";
+      }
     });
   }
 
@@ -88,18 +131,16 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
               }}/>
         </Heading.h2>
 
-        {queryElements(currentElement, 'section').map((section, i) => {
-          return <div key={i} id={`chapter-${number}-section-${section.getAttribute('number')}`}>
-            <SectionElementEdit document={document}
-                                currentElement={section}
-                                currentPath={currentPath + "/section[" + (i + 1) + "]"}
-                                setDocument={setDocument}/>
-          </div>
-        })}
+        {renderChapterChildElements(number, currentElement)}
 
         <Button.secondaryNoborder icon="plus" onClick={appendNewSection}
                                   style={{marginTop: sdt.spacing.l}}>
           Lisää uusi pykälä lukuun {number}
+        </Button.secondaryNoborder>
+
+        <Button.secondaryNoborder icon="plus" onClick={appendNewSubheading}
+                                  style={{marginTop: sdt.spacing.l}}>
+          Lisää uusi väliotsikko lukuun {number}
         </Button.secondaryNoborder>
 
         <hr style={{border: 0, borderBottom: `1px solid ${sdt.colors.depthLight13}`}}/>

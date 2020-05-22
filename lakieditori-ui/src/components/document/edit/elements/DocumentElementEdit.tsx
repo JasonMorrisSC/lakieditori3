@@ -3,10 +3,10 @@ import {css, jsx} from '@emotion/core'
 import React from "react";
 import {Button, Dropdown, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {
+  childElements,
   cloneDocument,
   countNodes,
   ensureElementAndUpdate,
-  queryElements,
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
@@ -18,6 +18,7 @@ import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import ChapterElementEdit from "./ChapterElementEdit";
 import SectionElementEdit from "./SectionElementEdit";
+import SubheadingElementEdit from "./SubheadingElementEdit";
 
 const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -28,6 +29,7 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
 
   const chapterCount = countNodes(currentElement, "chapter");
   const sectionCount = countNodes(currentElement, "section");
+  const subheadingCount = countNodes(currentElement, "subheading");
 
   function updateDocumentState(newValue: string) {
     setDocument((prevDocument) => {
@@ -78,6 +80,55 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
     });
   }
 
+  function appendNewSubheading() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+
+      const sectionElement = newDocument.createElement("subheading");
+      sectionElement.setAttribute("number", (subheadingCount + 1) + "");
+
+      queryFirstNode(newDocument, currentPath)?.appendChild(sectionElement);
+      return newDocument;
+    });
+  }
+
+  const renderDocumentChildElements = (element: Element) => {
+    let chapterCounter = 1;
+    let sectionCounter = 1;
+    let subheadingCounter = 1;
+
+    return childElements(element).map((e, i) => {
+      switch (e.tagName) {
+        case "section":
+          return <div key={i} id={`section-${e.getAttribute('number')}`}>
+            <SectionElementEdit
+                document={document}
+                currentElement={e}
+                currentPath={currentPath + "/section[" + (sectionCounter++) + "]"}
+                setDocument={setDocument}/>
+          </div>;
+        case "subheading":
+          return <div key={i} id={`subheading-${e.getAttribute('number')}`}>
+            <SubheadingElementEdit
+                document={document}
+                currentElement={e}
+                currentPath={currentPath + "/subheading[" + (subheadingCounter++) + "]"}
+                setDocument={setDocument}/>
+          </div>;
+        case "chapter":
+          return <div key={i} id={`chapter-${e.getAttribute('number')}`}>
+            <ChapterElementEdit
+                document={document}
+                currentElement={e}
+                currentPath={currentPath + "/chapter[" + (chapterCounter++) + "]"}
+                setDocument={setDocument}/>
+          </div>;
+        default:
+          return "";
+      }
+    });
+  }
+
   return (
       <article>
         <Heading.h1hero>
@@ -121,25 +172,9 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               fontWeight: tokens.values.typography.leadText.fontWeight,
             }}/>
 
-        {queryElements(currentElement, 'chapter').map((chapter, i) => {
-          return <div key={i} id={`chapter-${chapter.getAttribute('number')}`}>
-            <ChapterElementEdit document={document}
-                                currentElement={chapter}
-                                currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
-                                setDocument={setDocument}/>
-          </div>
-        })}
+        {renderDocumentChildElements(currentElement)}
 
-        {queryElements(currentElement, 'section').map((section, i) => {
-          return <div key={i} id={`section-${section.getAttribute('number')}`}>
-            <SectionElementEdit document={document}
-                                currentElement={section}
-                                currentPath={currentPath + "/section[" + (i + 1) + "]"}
-                                setDocument={setDocument}/>
-          </div>
-        })}
-
-        {sectionCount === 0 &&
+        {(sectionCount === 0 && subheadingCount === 0) &&
         <Button.secondaryNoborder
             icon="plus"
             onClick={appendNewChapter}
@@ -151,6 +186,13 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
             icon="plus" onClick={appendNewSection}
             style={{marginTop: tokens.spacing.l}}>
           Lisää uusi pykälä
+        </Button.secondaryNoborder>}
+        {chapterCount === 0 &&
+        <Button.secondaryNoborder
+            icon="plus"
+            onClick={appendNewSubheading}
+            style={{marginTop: tokens.spacing.l, marginRight: tokens.spacing.s}}>
+          Lisää uusi väliotsikko
         </Button.secondaryNoborder>}
       </article>
   );
