@@ -7,6 +7,7 @@ import SectionElement from "./SectionElement";
 import {ElementViewProps} from "./ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
 import SubheadingElement from "./SubheadingElement";
+import PartElement from "./PartElement";
 
 const DocumentElement: React.FC<ElementViewProps> = ({element}) => {
   checkArgument(element.tagName === "document");
@@ -42,6 +43,10 @@ const DocumentElement: React.FC<ElementViewProps> = ({element}) => {
             case "chapter":
               return <div key={i} id={`chapter-${e.getAttribute('number')}`}>
                 <ChapterElement element={e}/>
+              </div>;
+            case "part":
+              return <div key={i} id={`part-${e.getAttribute('number')}`}>
+                <PartElement element={e}/>
               </div>;
             default:
               return "";

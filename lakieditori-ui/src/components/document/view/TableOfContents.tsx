@@ -86,6 +86,28 @@ const TableOfContents: React.FC<Props> = ({document}) => {
     );
   };
 
+  const renderPartLink = (part: Element, key: number) => {
+    const number = queryFirstText(part, "@number");
+    const title = queryFirstText(part, "title");
+    return (
+        <li key={key}>
+          <NavLink to={`#part-${number}`}>
+            {number} osa - {title}
+          </NavLink>
+          <ul style={{listStyle: "none"}}>
+            {childElements(part).map((e, i) => {
+              switch (e.tagName) {
+                case "chapter":
+                  return renderChapterLink(e, i);
+                default:
+                  return "";
+              }
+            })}
+          </ul>
+        </li>
+    );
+  };
+
   const renderChapterSectionLink = (chapterNumber: string, section: Element, key: number) => {
     const number = queryFirstText(section, "@number");
     const title = queryFirstText(section, "title");
@@ -127,6 +149,8 @@ const TableOfContents: React.FC<Props> = ({document}) => {
                 return renderSubheadingLink(e, i);
               case "chapter":
                 return renderChapterLink(e, i);
+              case "part":
+                return renderPartLink(e, i);
               default:
                 return "";
             }

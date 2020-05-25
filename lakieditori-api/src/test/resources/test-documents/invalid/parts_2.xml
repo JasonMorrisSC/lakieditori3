@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<document number="1">
+  <title>Esimerkki osien käytöstä</title>
+
+  <part>
+    <title>Osa 1</title>
+
+    <chapter number="1">
+      <title>Luku 1</title>
+    </chapter>
+
+    <chapter number="2">
+      <title>Luku 2</title>
+    </chapter>
+  </part>
+
+</document>

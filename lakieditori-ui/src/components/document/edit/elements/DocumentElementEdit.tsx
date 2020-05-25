@@ -19,6 +19,7 @@ import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../Doc
 import ChapterElementEdit from "./ChapterElementEdit";
 import SectionElementEdit from "./SectionElementEdit";
 import SubheadingElementEdit from "./SubheadingElementEdit";
+import PartElementEdit from "./PartElementEdit";
 
 const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -27,6 +28,7 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
   const intro = queryFirstElement(currentElement, "intro");
   const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
+  const partCount = countNodes(currentElement, "part");
   const chapterCount = countNodes(currentElement, "chapter");
   const sectionCount = countNodes(currentElement, "section");
   const subheadingCount = countNodes(currentElement, "subheading");
@@ -51,6 +53,19 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "intro", ["chapter", "section"], (el) => el.innerHTML = newValue);
+    });
+  }
+
+  function appendNewPart() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+
+      const partElement = newDocument.createElement("part");
+      partElement.setAttribute("number", (partCount + 1) + "");
+      partElement.appendChild(newDocument.createElement("title"));
+
+      queryFirstNode(newDocument, currentPath)?.appendChild(partElement);
+      return newDocument;
     });
   }
 
@@ -123,6 +138,14 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
                 currentPath={currentPath + "/chapter[" + (chapterCounter++) + "]"}
                 setDocument={setDocument}/>
           </div>;
+        case "part":
+          return <div key={i} id={`part-${e.getAttribute('number')}`}>
+            <PartElementEdit
+                document={document}
+                currentElement={e}
+                currentPath={currentPath + "/part[" + (chapterCounter++) + "]"}
+                setDocument={setDocument}/>
+          </div>;
         default:
           return "";
       }
@@ -174,25 +197,32 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
 
         {renderDocumentChildElements(currentElement)}
 
-        {(sectionCount === 0 && subheadingCount === 0) &&
+        {(partCount === 0 && sectionCount === 0 && subheadingCount === 0) &&
         <Button.secondaryNoborder
             icon="plus"
             onClick={appendNewChapter}
             style={{marginTop: tokens.spacing.l, marginRight: tokens.spacing.s}}>
           Lisää uusi luku
         </Button.secondaryNoborder>}
-        {chapterCount === 0 &&
+        {(partCount === 0 && chapterCount === 0) &&
         <Button.secondaryNoborder
             icon="plus" onClick={appendNewSection}
             style={{marginTop: tokens.spacing.l}}>
           Lisää uusi pykälä
         </Button.secondaryNoborder>}
-        {chapterCount === 0 &&
+        {(partCount === 0 && chapterCount === 0) &&
         <Button.secondaryNoborder
             icon="plus"
             onClick={appendNewSubheading}
             style={{marginTop: tokens.spacing.l, marginRight: tokens.spacing.s}}>
           Lisää uusi väliotsikko
+        </Button.secondaryNoborder>}
+        {(sectionCount === 0 && subheadingCount === 0 && chapterCount === 0) &&
+        <Button.secondaryNoborder
+            icon="plus"
+            onClick={appendNewPart}
+            style={{marginTop: tokens.spacing.l, marginRight: tokens.spacing.s}}>
+          Lisää uusi osa
         </Button.secondaryNoborder>}
       </article>
   );
