@@ -5,6 +5,7 @@ import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.PutXmlMapping;
+import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,7 @@ public class UserWriteController {
       @AuthenticationPrincipal User principal,
       HttpServletResponse response) {
 
-    if (user.getDocumentElement().getAttribute("password").isEmpty()) {
+    if (XmlUtils.queryText(user, "/user/password").isEmpty()) {
       throw new BadRequestException("Password can't be empty");
     }
 
