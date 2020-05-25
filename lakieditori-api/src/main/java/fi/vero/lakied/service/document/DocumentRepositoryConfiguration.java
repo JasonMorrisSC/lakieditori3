@@ -97,6 +97,24 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
+  public ReadRepository<UUID, Empty> documentLockReadRepository(
+      DataSource ds) {
+    return new KeyAuthorizingReadRepository<>(
+        new JdbcDocumentLockReadRepository(ds),
+        documentPermissionEvaluator(ds));
+  }
+
+  @Bean
+  public WriteRepository<UUID, Empty> documentLockWriteRepository(
+      DataSource ds) {
+    return new KeyAuthorizingWriteRepository<>(
+        new JdbcDocumentLockWriteRepository(ds),
+        documentPermissionEvaluator(ds)
+            .mapPermission(p -> p == Permission.INSERT ? Permission.UPDATE : p)
+            .mapPermission(p -> p == Permission.DELETE ? Permission.UPDATE : p));
+  }
+
+  @Bean
   public PermissionEvaluator<Tuple3<UUID, String, Permission>> documentUserPermissionPermissionEvaluator(
       DataSource ds) {
     // delegate to document evaluator by extracting a document id from the permission tuple

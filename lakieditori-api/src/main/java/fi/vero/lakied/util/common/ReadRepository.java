@@ -8,6 +8,12 @@ import java.util.stream.Stream;
 
 public interface ReadRepository<K, V> {
 
+  default boolean isEmpty(Criteria<K, V> criteria, User user) {
+    try (Stream<K> keyStream = keys(criteria, user)) {
+      return !keyStream.findAny().isPresent();
+    }
+  }
+
   default long count(Criteria<K, V> criteria, User user) {
     try (Stream<K> keyStream = keys(criteria, user)) {
       return keyStream.count();
