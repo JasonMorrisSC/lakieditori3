@@ -64,7 +64,8 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
       partElement.setAttribute("number", (partCount + 1) + "");
       partElement.appendChild(newDocument.createElement("title"));
 
-      queryFirstNode(newDocument, currentPath)?.appendChild(partElement);
+      queryFirstNode(newDocument, currentPath)?.insertBefore(partElement,
+          queryFirstNode(newDocument, "/document/settings"));
       return newDocument;
     });
   }
@@ -77,7 +78,8 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
       chapterElement.setAttribute("number", (chapterCount + 1) + "");
       chapterElement.appendChild(newDocument.createElement("title"));
 
-      queryFirstNode(newDocument, currentPath)?.appendChild(chapterElement);
+      queryFirstNode(newDocument, currentPath)?.insertBefore(chapterElement,
+          queryFirstNode(newDocument, "/document/settings"));
       return newDocument;
     });
   }
@@ -90,7 +92,8 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
       sectionElement.setAttribute("number", (sectionCount + 1) + "");
       sectionElement.appendChild(newDocument.createElement("title"));
 
-      queryFirstNode(newDocument, currentPath)?.appendChild(sectionElement);
+      queryFirstNode(newDocument, currentPath)?.insertBefore(sectionElement,
+          queryFirstNode(newDocument, "/document/settings"));
       return newDocument;
     });
   }
@@ -102,7 +105,8 @@ const DocumentElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
       const sectionElement = newDocument.createElement("subheading");
       sectionElement.setAttribute("number", (subheadingCount + 1) + "");
 
-      queryFirstNode(newDocument, currentPath)?.appendChild(sectionElement);
+      queryFirstNode(newDocument, currentPath)?.insertBefore(sectionElement,
+          queryFirstNode(newDocument, "/document/settings"));
       return newDocument;
     });
   }
