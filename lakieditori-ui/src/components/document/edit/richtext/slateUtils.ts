@@ -120,13 +120,7 @@ export function unwrapLink(editor: Editor) {
 }
 
 export function selectionOrEnd(editor: Editor): Location {
-  if (editor.selection) {
-    return editor.selection
-  } else if (editor.children.length > 0) {
-    return Editor.end(editor, [])
-  } else {
-    return [0];
-  }
+  return editor.selection || [0];
 }
 
 export function selectionOrWord(editor: Editor): null | Range {
