@@ -15,10 +15,11 @@ import DocumentEditToolbar from "./DocumentEditToolbar";
 import Concepts from "../view/Concepts";
 
 interface Props {
-  id: string
+  id: string,
+  lock: null | string,
 }
 
-const DocumentEdit: React.FC<Props> = ({id}) => {
+const DocumentEdit: React.FC<Props> = ({id, lock}) => {
   const {document, setDocument, saveDocument} = useDocument(id);
 
   const element = document.documentElement;
@@ -26,7 +27,8 @@ const DocumentEdit: React.FC<Props> = ({id}) => {
 
   return (
       <main>
-        <DocumentEditToolbar id={id} title={title} saveDocument={() => saveDocument(document)}/>
+        <DocumentEditToolbar id={id} title={title} lock={lock}
+                             saveDocument={() => saveDocument(document)}/>
 
         <FlexRowPlain style={{
           backgroundColor: tokens.colors.whiteBase,

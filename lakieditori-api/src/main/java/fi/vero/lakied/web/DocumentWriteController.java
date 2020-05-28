@@ -1,13 +1,23 @@
 package fi.vero.lakied.web;
 
+import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentId;
+import static fi.vero.lakied.util.security.User.superuser;
+
 import fi.vero.lakied.util.common.Empty;
+import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
+import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.common.WriteRepository;
+import fi.vero.lakied.util.exception.BadRequestException;
+import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.PutXmlMapping;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,17 +36,19 @@ import org.w3c.dom.Document;
 @RequestMapping("/api/documents")
 public class DocumentWriteController {
 
+  private final ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository;
   private final WriteRepository<UUID, Document> documentWriteRepository;
   private final WriteRepository<UUID, Document> documentVersionWriteRepository;
   private final WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository;
-  private final User documentPermissionInitializer = User
-      .superuser("documentPermissionInitializer");
+  private final User documentPermissionInitializer = superuser("documentPermissionInitializer");
 
   @Autowired
   public DocumentWriteController(
+      ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository,
       WriteRepository<UUID, Document> documentWriteRepository,
       WriteRepository<UUID, Document> documentVersionWriteRepository,
       WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository) {
+    this.documentLockReadRepository = documentLockReadRepository;
     this.documentWriteRepository = documentWriteRepository;
     this.documentVersionWriteRepository = documentVersionWriteRepository;
     this.documentUserPermissionWriteRepository = documentUserPermissionWriteRepository;
@@ -75,8 +87,10 @@ public class DocumentWriteController {
       @PathVariable("id") UUID id,
       @RequestBody Document document,
       @AuthenticationPrincipal User user) {
-    documentWriteRepository.update(id, document, user);
-    documentVersionWriteRepository.insert(id, document, user);
+    tryUpdateLocked(id, user, () -> {
+      documentWriteRepository.update(id, document, user);
+      documentVersionWriteRepository.insert(id, document, user);
+    });
   }
 
   @DeleteMapping("/{id}")
@@ -84,8 +98,29 @@ public class DocumentWriteController {
   public void delete(
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
-    documentWriteRepository.delete(id, user);
-    documentVersionWriteRepository.insert(id, null, user);
+    tryUpdateLocked(id, user, () -> {
+      documentWriteRepository.delete(id, user);
+      documentVersionWriteRepository.insert(id, null, user);
+    });
+  }
+
+  private void tryUpdateLocked(UUID id, User user, Runnable updateOperation) {
+    Optional<Tuple2<String, LocalDateTime>> lock =
+        documentLockReadRepository.value(byDocumentId(id), superuser("document-lock-helper"));
+    Optional<Tuple2<String, LocalDateTime>> lockReadableToUser =
+        documentLockReadRepository.value(byDocumentId(id), user);
+
+    if (lockReadableToUser.isPresent() &&
+        !Objects.equals(lockReadableToUser.get()._1, user.getUsername())) {
+      throw new BadRequestException("Document is locked by: " + lockReadableToUser.get()._1);
+    }
+
+    if (lock.isPresent() && !Objects.equals(lock.get()._1, user.getUsername())) {
+      // resource is locked but user has no read permission for the lock (or the document for that matter)
+      throw new NotFoundException();
+    }
+
+    updateOperation.run();
   }
 
 }

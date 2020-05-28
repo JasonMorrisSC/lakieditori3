@@ -20,6 +20,7 @@ import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.PermissionEvaluator;
 import fi.vero.lakied.util.xml.DocumentValidatingWriteRepository;
 import fi.vero.lakied.util.xml.XmlUtils;
+import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.sql.DataSource;
 import javax.xml.validation.Schema;
@@ -97,7 +98,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public ReadRepository<UUID, Empty> documentLockReadRepository(
+  public ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository(
       DataSource ds) {
     return new KeyAuthorizingReadRepository<>(
         new JdbcDocumentLockReadRepository(ds),

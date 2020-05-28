@@ -1,15 +1,18 @@
-import React, {useState} from "react";
+import React, {useContext, useState} from "react";
 import {Link, useHistory} from "react-router-dom";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {ErrorPanel, Toolbar} from "../DocumentStyles";
+import {AuthenticationContext} from "../../../App";
 
 interface Props {
   id: string,
   title: string,
+  lock: null | string,
   saveDocument: () => Promise<any>,
 }
 
-const DocumentEditToolbar: React.FC<Props> = ({id, title, saveDocument}) => {
+const DocumentEditToolbar: React.FC<Props> = ({id, title, lock, saveDocument}) => {
+  const [user] = useContext(AuthenticationContext);
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState("");
 
@@ -43,6 +46,10 @@ const DocumentEditToolbar: React.FC<Props> = ({id, title, saveDocument}) => {
         <ErrorPanel>
           XML dokumentissa on virhe:<br/>
           {errorMessage ? errorMessage : ''}<br/>
+        </ErrorPanel>}
+        {lock && (lock !== user.username) &&
+        <ErrorPanel>
+          Dokumentti on lukittu käyttäjälle: {lock}
         </ErrorPanel>}
       </Toolbar>
   );

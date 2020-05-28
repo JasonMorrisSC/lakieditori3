@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useContext, useEffect, useRef, useState} from "react";
 import {Button, Text} from "suomifi-ui-components";
 import styled from '@emotion/styled'
 import {Link, useHistory} from "react-router-dom";
@@ -15,6 +15,7 @@ import "ace-builds/src-noconflict/mode-xml";
 import "ace-builds/src-noconflict/theme-eclipse";
 import {useValidation} from "./useValidation";
 import {useFormat} from "./useFormat";
+import {AuthenticationContext} from "../../../App";
 
 const Content = styled.div`
   display: flex;
@@ -41,10 +42,12 @@ interface LineNumberElementId {
 }
 
 interface Props {
-  id: string;
+  id: string,
+  lock: null | string,
 }
 
-const DocumentSourceEdit: React.FC<Props> = ({id}) => {
+const DocumentSourceEdit: React.FC<Props> = ({id, lock}) => {
+  const [user] = useContext(AuthenticationContext);
   const history = useHistory();
 
   const {document, saveDocument} = useDocument(id);
@@ -145,6 +148,11 @@ const DocumentSourceEdit: React.FC<Props> = ({id}) => {
           <ErrorPanel>
             XML dokumentissa on virhe:<br/>
             {errorMessage ? errorMessage : ''}<br/>
+          </ErrorPanel>}
+          {lock && (lock !== user.username) &&
+          <ErrorPanel>
+            Dokumentti on lukittu, sitä muokkaa käyttäjä:<br/>
+            {lock}<br/>
           </ErrorPanel>}
         </Toolbar>
 
