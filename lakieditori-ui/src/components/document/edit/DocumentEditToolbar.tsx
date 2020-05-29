@@ -34,7 +34,7 @@ const DocumentEditToolbar: React.FC<Props> = ({id, title, lock, saveDocument}) =
               icon={"close"}
               style={{marginRight: tokens.spacing.s, background: "none"}}
               onClick={() => history.push(`/documents/${id}`)}>
-            Sulje
+            Peruuta
           </Button.secondaryNoborder>
           <Button
               icon={"save"}
