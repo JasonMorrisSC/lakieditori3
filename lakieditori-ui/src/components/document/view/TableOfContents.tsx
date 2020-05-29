@@ -133,9 +133,7 @@ const TableOfContents: React.FC<Props> = ({document}) => {
   };
 
   return (
-      <NavSticky ref={navRef} tabIndex={0}
-                 onMouseEnter={() => navRef?.current?.focus()}
-                 onMouseLeave={() => navRef?.current?.blur()}>
+      <NavSticky>
         <div style={{padding: `${tokens.spacing.s} 0`}}>
           <Text.bold>Sisällysluettelo</Text.bold>
         </div>
@@ -156,7 +154,6 @@ const TableOfContents: React.FC<Props> = ({document}) => {
             }
           })}
         </ul>
-
       </NavSticky>
   );
 };

@@ -13,6 +13,7 @@ export const Toolbar = styled.div`
   position: sticky;
   top: 0;
   min-height: 40px;
+  z-index: 1;
 `;
 
 export const ErrorPanel = styled.div`

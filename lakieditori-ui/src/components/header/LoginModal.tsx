@@ -16,6 +16,9 @@ const LoginModal: React.FC<LoginModalProps> = ({isOpen, setOpen, login}) => {
 
   return (
       <Modal isOpen={isOpen} contentLabel="Kirjaudu" style={{
+        overlay: {
+          zIndex: 6,
+        },
         content: {
           height: "60%",
           marginRight: "auto",

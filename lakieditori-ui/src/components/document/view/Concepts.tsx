@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useState} from "react";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {countNodes, queryFirstText} from "../../../utils/xmlUtils";
 import {ElementViewProps} from "./elements/ElementViewProps";
@@ -17,7 +17,7 @@ const ConceptList = styled.div`
   } 
 `;
 
-export const ConceptLabelButton = styled(Button.secondaryNoborder)`
+const ConceptLabelButton = styled(Button.secondaryNoborder)`
   font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
   font-weight: ${tokens.values.typography.bodyTextSmall.fontWeight};
   color: ${tokens.colors.blackBase} !important;
@@ -36,13 +36,10 @@ interface Props {
 }
 
 const Concepts: React.FC<Props> = ({document}) => {
-  const conceptListRef = useRef<HTMLDivElement>(null);
   const {concepts} = useDocumentConcepts(document);
 
   return (
-      <ConceptList ref={conceptListRef} tabIndex={2}
-                   onMouseEnter={() => conceptListRef?.current?.focus()}
-                   onMouseLeave={() => conceptListRef?.current?.blur()}>
+      <ConceptList>
         <div style={{
           fontWeight: tokens.values.typography.bodySemiBold.fontWeight,
           padding: `${tokens.spacing.s} 0 0`
