@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="1">
+<statute number="1">
   <title>Esimerkki osien käytöstä</title>
 
   <part number="1">
-    <title>Osa 1</title>
+    <heading>Osa 1</heading>
   </part>
 
-</document>
+</statute>

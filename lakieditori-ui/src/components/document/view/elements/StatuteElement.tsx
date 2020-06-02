@@ -9,8 +9,8 @@ import {checkArgument} from "../../../../utils/checkUtils";
 import SubheadingElement from "./SubheadingElement";
 import PartElement from "./PartElement";
 
-const DocumentElement: React.FC<ElementViewProps> = ({element}) => {
-  checkArgument(element.tagName === "document");
+const StatuteElement: React.FC<ElementViewProps> = ({element}) => {
+  checkArgument(element.tagName === "statute");
 
   const number = queryFirstText(element, "@number");
   const title = queryFirstElement(element, "title");
@@ -56,4 +56,4 @@ const DocumentElement: React.FC<ElementViewProps> = ({element}) => {
   );
 };
 
-export default DocumentElement;
+export default StatuteElement;

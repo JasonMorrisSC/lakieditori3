@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="18.12.1995/1558">
+<statute number="18.12.1995/1558">
   <title>
     Laki verotusmenettelystä
   </title>
@@ -9,9 +9,9 @@
     Eduskunnan päätöksen mukaisesti säädetään:
   </intro>
   <chapter number="1">
-    <title>Yleiset säännökset</title>
+    <heading>Yleiset säännökset</heading>
     <section number="1">
-      <title>Lain soveltamisala</title>
+      <heading>Lain soveltamisala</heading>
       <subsection number="1">
         <content>
           Tässä laissa säädetään verotusmenettelystä ja muutoksenhausta verotukseen.
@@ -19,7 +19,7 @@
       </subsection>
     </section>
     <section number="2">
-      <title>Lakia sovelletaan seuraaviin veroihin ja maksuihin:</title>
+      <heading>Lakia sovelletaan seuraaviin veroihin ja maksuihin:</heading>
       <subsection number="1">
         <content>
           1) valtiolle tulon perusteella suoritettava vero (valtionvero);
@@ -54,4 +54,4 @@
       </subsection>
     </section>
   </chapter>
-</document>
+</statute>

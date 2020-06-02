@@ -49,21 +49,21 @@
     </xs:choice>
   </xs:complexType>
 
-  <xs:element name="document">
+  <xs:element name="statute">
     <xs:complexType>
       <xs:sequence>
         <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
         <xs:element name="intro" type="localizedRichTextType" minOccurs="0" maxOccurs="unbounded"/>
         <xs:choice>
           <xs:element name="part" type="partType" minOccurs="0" maxOccurs="unbounded">
-            <xs:unique name="uniquePartTitleLang">
-              <xs:selector xpath="title"/>
+            <xs:unique name="uniquePartHeadingLang">
+              <xs:selector xpath="heading"/>
               <xs:field xpath="@xml:lang"/>
             </xs:unique>
           </xs:element>
           <xs:element name="chapter" type="chapterType" minOccurs="0" maxOccurs="unbounded">
-            <xs:unique name="uniqueChapterTitleLang">
-              <xs:selector xpath="title"/>
+            <xs:unique name="uniqueChapterHeadingLang">
+              <xs:selector xpath="heading"/>
               <xs:field xpath="@xml:lang"/>
             </xs:unique>
             <xs:unique name="uniqueChapterSubheadingLang">
@@ -75,8 +75,8 @@
           <xs:choice maxOccurs="unbounded">
             <xs:element name="subheading" type="subheadingType" minOccurs="0"/>
             <xs:element name="section" type="sectionType" minOccurs="0">
-              <xs:unique name="uniqueDocumentSectionTitleLang">
-                <xs:selector xpath="title"/>
+              <xs:unique name="uniqueDocumentSectionHeadingLang">
+                <xs:selector xpath="heading"/>
                 <xs:field xpath="@xml:lang"/>
               </xs:unique>
             </xs:element>
@@ -135,10 +135,10 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="heading" type="localizedRichTextType" maxOccurs="unbounded"/>
       <xs:element name="chapter" type="chapterType" minOccurs="0" maxOccurs="unbounded">
-        <xs:unique name="uniquePartChapterTitleLang">
-          <xs:selector xpath="title"/>
+        <xs:unique name="uniquePartChapterHeadingLang">
+          <xs:selector xpath="heading"/>
           <xs:field xpath="@xml:lang"/>
         </xs:unique>
         <xs:unique name="uniquePartChapterSubheadingLang">
@@ -158,12 +158,12 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
+      <xs:element name="heading" type="localizedRichTextType" maxOccurs="unbounded"/>
       <xs:choice maxOccurs="unbounded">
         <xs:element name="subheading" type="subheadingType" minOccurs="0"/>
         <xs:element name="section" type="sectionType" minOccurs="0">
-          <xs:unique name="uniqueSectionTitleLang">
-            <xs:selector xpath="title"/>
+          <xs:unique name="uniqueSectionHeadingLang">
+            <xs:selector xpath="heading"/>
             <xs:field xpath="@xml:lang"/>
           </xs:unique>
         </xs:element>
@@ -179,7 +179,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="localizedRichTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="heading" type="localizedRichTextType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="subsection" type="subsectionType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueSubsectionContentLang">
           <xs:selector xpath="content"/>

@@ -74,7 +74,7 @@ const DocumentList: React.FC = () => {
           </tr>
           </thead>
           <tbody>
-          {queryElements(documents.documentElement, 'document')
+          {queryElements(documents.documentElement, 'statute')
           .sort(documentComparator)
           .map(renderDocumentRow)}
           </tbody>

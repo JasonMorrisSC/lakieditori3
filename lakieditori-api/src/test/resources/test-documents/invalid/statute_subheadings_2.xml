@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<statute number="1">
+  <title>Esimerkki väliotsikoiden ja lukujen väärästä ristiinkäytöstä</title>
+
+  <subheading number="1">
+    Väliotsikko 1
+  </subheading>
+
+  <chapter number="1">
+    <heading>Luvun otsikko</heading>
+  </chapter>
+
+</statute>

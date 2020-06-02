@@ -1,29 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="1">
+<statute number="1">
   <title>Esimerkki osien käytöstä</title>
 
   <part number="1">
-    <title>Osa 1</title>
+    <heading>Osa 1</heading>
 
     <chapter number="1">
-      <title>Luku 1</title>
+      <heading>Luku 1</heading>
     </chapter>
 
     <chapter number="2">
-      <title>Luku 2</title>
+      <heading>Luku 2</heading>
     </chapter>
   </part>
 
   <part number="2">
-    <title>Osa 2</title>
+    <heading>Osa 2</heading>
 
     <chapter number="3">
-      <title>Luku 3</title>
+      <heading>Luku 3</heading>
     </chapter>
 
     <chapter number="4">
-      <title>Luku 4</title>
+      <heading>Luku 4</heading>
     </chapter>
   </part>
 
-</document>
+</statute>

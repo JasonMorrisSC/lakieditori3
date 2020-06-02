@@ -19,9 +19,9 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModa
   const [newDocumentTitle, setNewDocumentTitle] = useState<string>("Nimetön dokumentti");
 
   function addNewDocument() {
-    let newDocument = parseXml('<document><title/></document>');
-    updateElement(newDocument, "/document", (e) => e.setAttribute("number", newDocumentNumber));
-    updateElement(newDocument, "/document/title", (e) => e.textContent = newDocumentTitle);
+    let newDocument = parseXml('<statute><title/></statute>');
+    updateElement(newDocument, "/statute", (e) => e.setAttribute("number", newDocumentNumber));
+    updateElement(newDocument, "/statute/title", (e) => e.textContent = newDocumentTitle);
 
     saveDocument(newDocument).then((response) => {
       const location = response.headers.location;

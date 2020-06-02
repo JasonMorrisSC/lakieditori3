@@ -10,7 +10,7 @@ const SectionElement: React.FC<ElementViewProps> = ({element}) => {
   checkArgument(element.tagName === "section");
 
   let number = queryFirstText(element, "@number");
-  const title = queryFirstElement(element, "title");
+  const heading = queryFirstElement(element, "heading");
 
   return (
       <div className="section" style={{marginTop: sdt.spacing.l}}>
@@ -19,7 +19,7 @@ const SectionElement: React.FC<ElementViewProps> = ({element}) => {
             {number} §
           </span>
           <br/>
-          <SanitizedHtml element={title}/>
+          <SanitizedHtml element={heading}/>
         </Heading.h3>
 
         {queryElements(element, 'subsection').map((subsection, i) => {

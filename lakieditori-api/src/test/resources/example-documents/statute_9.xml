@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="1.1.1734/4">
+<statute number="1.1.1734/4">
   <title>Oikeudenkäymiskaari</title>
 
   <chapter number="5">
-    <title>
+    <heading>
       Riita-asian vireillepano ja valmistelu
-    </title>
+    </heading>
 
     <subheading number="1">
       Haastehakemus
@@ -43,4 +43,4 @@
       </subsection>
     </section>
   </chapter>
-</document>
+</statute>

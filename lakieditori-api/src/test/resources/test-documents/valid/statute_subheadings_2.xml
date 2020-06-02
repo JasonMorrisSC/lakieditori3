@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="1">
+<statute number="1">
   <title>Esimerkki väliotsikoiden käytöstä</title>
 
-
   <chapter number="1">
-    <title>Luvun otsikko</title>
+    <heading>Luvun otsikko</heading>
 
     <subheading number="1" xml:lang="fi">
       Väliotsikko 1
@@ -14,7 +13,7 @@
     </subheading>
 
     <section number="1">
-      <title>Pykälä 1</title>
+      <heading>Pykälä 1</heading>
     </section>
 
     <subheading number="2">
@@ -22,11 +21,11 @@
     </subheading>
 
     <section number="2">
-      <title>Pykälä 2</title>
+      <heading>Pykälä 2</heading>
     </section>
     <section number="3">
-      <title>Pykälä 3</title>
+      <heading>Pykälä 3</heading>
     </section>
   </chapter>
 
-</document>
+</statute>

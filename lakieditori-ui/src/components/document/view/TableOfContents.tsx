@@ -1,4 +1,4 @@
-import React, {useRef} from "react";
+import React from "react";
 import {HashLink as Link} from 'react-router-hash-link';
 import styled from '@emotion/styled'
 import {suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
@@ -36,15 +36,13 @@ interface Props {
 }
 
 const TableOfContents: React.FC<Props> = ({document}) => {
-  const navRef = useRef<HTMLElement>(null);
-
   const renderSectionLink = (section: Element, key: number) => {
     const number = queryFirstText(section, "@number");
-    const title = queryFirstText(section, "title");
+    const heading = queryFirstText(section, "heading");
     return (
         <li key={key}>
           <NavLink to={`#section-${number}`}>
-            {number} § - {title}
+            {number} § - {heading}
           </NavLink>
         </li>
     );
@@ -52,11 +50,10 @@ const TableOfContents: React.FC<Props> = ({document}) => {
 
   const renderSubheadingLink = (subheading: Element, key: number) => {
     const number = queryFirstText(subheading, "@number");
-    const title = subheading.textContent;
     return (
         <li key={key}>
           <NavLink to={`#subheading-${number}`}>
-            {title}
+            {subheading.textContent}
           </NavLink>
         </li>
     );
@@ -64,11 +61,11 @@ const TableOfContents: React.FC<Props> = ({document}) => {
 
   const renderChapterLink = (chapter: Element, key: number) => {
     const number = queryFirstText(chapter, "@number");
-    const title = queryFirstText(chapter, "title");
+    const heading = queryFirstText(chapter, "heading");
     return (
         <li key={key}>
           <NavLink to={`#chapter-${number}`}>
-            {number} luku - {title}
+            {number} luku - {heading}
           </NavLink>
           <ul style={{listStyle: "none"}}>
             {childElements(chapter).map((e, i) => {
@@ -88,11 +85,11 @@ const TableOfContents: React.FC<Props> = ({document}) => {
 
   const renderPartLink = (part: Element, key: number) => {
     const number = queryFirstText(part, "@number");
-    const title = queryFirstText(part, "title");
+    const heading = queryFirstText(part, "heading");
     return (
         <li key={key}>
           <NavLink to={`#part-${number}`}>
-            {number} osa - {title}
+            {number} osa - {heading}
           </NavLink>
           <ul style={{listStyle: "none"}}>
             {childElements(part).map((e, i) => {
@@ -110,11 +107,11 @@ const TableOfContents: React.FC<Props> = ({document}) => {
 
   const renderChapterSectionLink = (chapterNumber: string, section: Element, key: number) => {
     const number = queryFirstText(section, "@number");
-    const title = queryFirstText(section, "title");
+    const heading = queryFirstText(section, "heading");
     return (
         <li key={key}>
           <NavLinkSecondary to={`#chapter-${chapterNumber}-section-${number}`}>
-            {number} § - {title}
+            {number} § - {heading}
           </NavLinkSecondary>
         </li>
     );
@@ -122,11 +119,10 @@ const TableOfContents: React.FC<Props> = ({document}) => {
 
   const renderChapterSubheadingLink = (chapterNumber: string, subheading: Element, key: number) => {
     const number = queryFirstText(subheading, "@number");
-    const title = subheading.textContent;
     return (
         <li key={key}>
           <NavLinkSecondary to={`#chapter-${chapterNumber}-subheading-${number}`}>
-            {title}
+            {subheading.textContent}
           </NavLinkSecondary>
         </li>
     );

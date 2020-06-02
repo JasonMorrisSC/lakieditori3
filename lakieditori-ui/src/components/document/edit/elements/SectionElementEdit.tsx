@@ -17,7 +17,7 @@ import {Input} from "../../../common/StyledInputComponents";
 
 const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
-  const title = queryFirstElement(currentElement, "title");
+  const heading = queryFirstElement(currentElement, "heading");
   const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
   function updateNumber(newValue: string) {
@@ -25,8 +25,8 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
         (el) => el.setAttribute('number', newValue)));
   }
 
-  function updateTitle(newValue: string) {
-    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/title",
+  function updateHeading(newValue: string) {
+    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/heading",
         (el) => el.innerHTML = newValue));
   }
 
@@ -79,8 +79,8 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
 
           <TextEditor
               label={`Pykälän ${number} otsikko`}
-              value={title}
-              setValue={updateTitle}
+              value={heading}
+              setValue={updateHeading}
               terminologyUris={terminologyUris}
               style={{
                 fontSize: sdt.values.typography.heading3.fontSize.value,

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="1">
-  <title>Esimerkki väärästä väliotsikoiden käytöstä</title>
+<statute number="1">
+  <title>Esimerkki väliotsikoiden väärästä käytöstä</title>
 
   <subheading number="1" xml:lang="fi">
     Väliotsikko 1
@@ -19,11 +19,11 @@
   </subheading>
 
   <section number="2">
-    <title>Pykälä 2</title>
+    <heading>Pykälä 2</heading>
   </section>
 
   <section number="3">
-    <title>Pykälä 3</title>
+    <heading>Pykälä 3</heading>
   </section>
 
-</document>
+</statute>

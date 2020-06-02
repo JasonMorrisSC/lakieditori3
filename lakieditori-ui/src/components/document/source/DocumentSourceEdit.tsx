@@ -6,7 +6,7 @@ import {parseXml, queryElements, queryFirstText, toString} from "../../../utils/
 import {useDocument} from "../useDocument";
 import {ErrorPanel, Toolbar} from "../DocumentStyles";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
-import DocumentElement from "../view/elements/DocumentElement";
+import StatuteElement from "../view/elements/StatuteElement";
 import {useLineNumberAnnotations} from "./useLineNumberAnnotations";
 import AceEditor from "react-ace";
 import 'ace-builds'
@@ -173,7 +173,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id, lock}) => {
           </Source>
           <Preview ref={previewElementRef}>
             <div style={{padding: tokens.spacing.l}}>
-              <DocumentElement element={parseXml(editorValue).documentElement}/>
+              <StatuteElement element={parseXml(editorValue).documentElement}/>
             </div>
           </Preview>
         </Content>

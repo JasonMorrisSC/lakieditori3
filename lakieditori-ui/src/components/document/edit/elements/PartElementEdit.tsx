@@ -17,16 +17,16 @@ import ChapterElementEdit from "./ChapterElementEdit";
 
 const PartElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
-  const title = queryFirstElement(currentElement, "title");
-  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
+  const heading = queryFirstElement(currentElement, "heading");
+  const terminologyUris = queryTexts(document.documentElement, "/statute/settings/vocabulary");
 
   function updateNumber(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath,
         (el) => el.setAttribute('number', newValue)));
   }
 
-  function updateTitle(newValue: string) {
-    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/title",
+  function updateHeading(newValue: string) {
+    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/heading",
         (el) => el.innerHTML = newValue));
   }
 
@@ -37,7 +37,7 @@ const PartElementEdit: React.FC<ElementEditProps> = ({document, setDocument, cur
 
       const chapterElement = newDocument.createElement("chapter");
       chapterElement.setAttribute('number', (chapterCount + 1) + "");
-      chapterElement.appendChild(newDocument.createElement("title"));
+      chapterElement.appendChild(newDocument.createElement("heading"));
 
       queryFirstNode(newDocument, currentPath)?.appendChild(chapterElement);
       return newDocument;
@@ -78,8 +78,8 @@ const PartElementEdit: React.FC<ElementEditProps> = ({document, setDocument, cur
 
           <TextEditor
               label={`Osan ${number} otsikko`}
-              value={title}
-              setValue={updateTitle}
+              value={heading}
+              setValue={updateHeading}
               terminologyUris={terminologyUris}
               style={{
                 fontSize: sdt.values.typography.heading2.fontSize.value,

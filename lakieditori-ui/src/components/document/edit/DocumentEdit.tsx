@@ -10,7 +10,7 @@ import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
 import TableOfContents from "../view/TableOfContents";
-import DocumentElementEdit from "./elements/DocumentElementEdit";
+import StatuteElementEdit from "./elements/StatuteElementEdit";
 import DocumentEditToolbar from "./DocumentEditToolbar";
 import Concepts from "../view/Concepts";
 
@@ -47,8 +47,8 @@ const DocumentEdit: React.FC<Props> = ({id, lock}) => {
             flex: 8,
             padding: tokens.spacing.xl
           }}>
-            <DocumentElementEdit document={document} setDocument={setDocument}
-                                 currentPath={"/document"} currentElement={element}/>
+            <StatuteElementEdit document={document} setDocument={setDocument}
+                                currentPath={"/statute"} currentElement={element}/>
           </div>
 
           <div style={{

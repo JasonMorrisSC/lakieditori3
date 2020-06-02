@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="5.7.2019/808">
+<statute number="5.7.2019/808">
   <title>
     Laki oikeudenkäynnistä hallintoasioissa
   </title>
@@ -7,9 +7,9 @@
     Eduskunnan päätöksen mukaisesti säädetään:
   </intro>
   <chapter number="1">
-    <title>Yleiset säännökset</title>
+    <heading>Yleiset säännökset</heading>
     <section number="1">
-      <title>Lain tarkoitus</title>
+      <heading>Lain tarkoitus</heading>
       <subsection number="1">
         <content>
           Tässä laissa säädetään oikeusturvan ja oikeudenmukaisen oikeudenkäynnin takeista
@@ -18,7 +18,7 @@
       </subsection>
     </section>
     <section number="2">
-      <title>Lain soveltamisala</title>
+      <heading>Lain soveltamisala</heading>
       <subsection number="1">
         <content>
           Tätä lakia sovelletaan oikeudenkäynnissä yleisissä hallintotuomioistuimissa, joita ovat
@@ -53,7 +53,7 @@
       </subsection>
     </section>
     <section number="3">
-      <title>Suhde muuhun lainsäädäntöön</title>
+      <heading>Suhde muuhun lainsäädäntöön</heading>
       <subsection number="1">
         <content>
           Jos muussa laissa on tästä laista poikkeavia säännöksiä, niitä sovelletaan tämän lain
@@ -62,7 +62,7 @@
       </subsection>
     </section>
     <section number="4">
-      <title>Määritelmät</title>
+      <heading>Määritelmät</heading>
       <subsection number="1">
         <content>
           Tässä laissa tarkoitetaan:
@@ -85,7 +85,7 @@
       </subsection>
     </section>
     <section number="5">
-      <title>Esteellisyys</title>
+      <heading>Esteellisyys</heading>
       <subsection number="1">
         <content>
           Tuomari ei saa käsitellä asiaa hallintotuomioistuimessa, jos hän on esteellinen. Tuomaria
@@ -111,9 +111,9 @@
     </section>
   </chapter>
   <chapter number="2">
-    <title>Valitus hallintopäätöksestä</title>
+    <heading>Valitus hallintopäätöksestä</heading>
     <section number="6">
-      <title>Hallintopäätöksen valituskelpoisuus</title>
+      <heading>Hallintopäätöksen valituskelpoisuus</heading>
       <subsection number="1">
         <content>
           Valittamalla saa hakea muutosta päätökseen, jolla viranomainen on ratkaissut hallintoasian
@@ -129,7 +129,7 @@
       </subsection>
     </section>
     <section number="7">
-      <title>Valitusoikeus hallintopäätöksestä</title>
+      <heading>Valitusoikeus hallintopäätöksestä</heading>
       <subsection number="1">
         <content>
           Hallintopäätökseen saa hakea muutosta valittamalla se, johon päätös on kohdistettu tai
@@ -148,7 +148,7 @@
       </subsection>
     </section>
     <section number="8">
-      <title>Valitustie hallintopäätöksestä</title>
+      <heading>Valitustie hallintopäätöksestä</heading>
       <subsection number="1">
         <content>
           Viranomaisen päätöksestä valitetaan hallinto-oikeuteen. Valtioneuvoston yleisistunnon
@@ -164,10 +164,10 @@
       </subsection>
     </section>
     <section number="9">
-      <title>
+      <heading>
         Valitus kunnallisen viranomaisen, Ahvenanmaan maakunnan viranomaisen ja kirkollisen
         viranomaisen päätöksestä
-      </title>
+      </heading>
       <subsection number="1">
         <content>
           Valituksesta kunnallisen viranomaisen päätökseen säädetään kuntalaissa (410/2015).
@@ -190,7 +190,7 @@
       </subsection>
     </section>
     <section number="10">
-      <title>Toimivaltainen hallinto-oikeus</title>
+      <heading>Toimivaltainen hallinto-oikeus</heading>
       <subsection number="1">
         <content>
           Alueellisesti toimivaltainen on se hallinto-oikeus, jonka tuomiopiirissä on
@@ -232,7 +232,7 @@
       </subsection>
     </section>
     <section number="11">
-      <title>Asiakokonaisuuden yhdessä käsitteleminen hallinto-oikeudessa</title>
+      <heading>Asiakokonaisuuden yhdessä käsitteleminen hallinto-oikeudessa</heading>
       <subsection number="1">
         <content>
           Sen estämättä, mitä 10 §:ssä säädetään, hallinto-oikeus on toimivaltainen käsittelemään
@@ -271,7 +271,7 @@
       </subsection>
     </section>
     <section number="12">
-      <title>Perustevalitus</title>
+      <heading>Perustevalitus</heading>
       <subsection number="1">
         <content>
           Perustevalitukseen sovelletaan, mitä tässä laissa säädetään valituksesta, jollei muualla
@@ -280,4 +280,4 @@
       </subsection>
     </section>
   </chapter>
-</document>
+</statute>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="1284/2019">
+<statute number="1284/2019">
   <title>rikoslain 46 luvun 4 §:n muuttamisesta</title>
   <intro>
     Eduskunnan päätöksen mukaisesti
@@ -8,9 +8,9 @@
     seuraavasti:
   </intro>
   <chapter number="46">
-    <title>Maahantuontiin ja maastavientiin liittyvät rikokset</title>
+    <heading>Maahantuontiin ja maastavientiin liittyvät rikokset</heading>
     <section number="4">
-      <title>Salakuljetus</title>
+      <heading>Salakuljetus</heading>
       <subsection number="3">
         <content>
           Salakuljetuksesta tuomitaan myös se, joka tahallaan tai törkeästä huolimattomuudesta
@@ -22,4 +22,4 @@
       </subsection>
     </section>
   </chapter>
-</document>
+</statute>

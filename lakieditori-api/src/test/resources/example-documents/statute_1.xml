@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<document number="1300/2019">
+<statute number="1300/2019">
   <title>
     Maa- ja metsätalousministeriön asetus biologisessa torjunnassa ja pölytyksessä käytettävien
     makroeliöiden markkinoinnista, käytöstä ja maahantuonnista
@@ -9,7 +9,7 @@
     §:n 5 momentin nojalla:
   </intro>
   <section number="1">
-    <title>Ilmoitusvelvollisuus makroeliöstä</title>
+    <heading>Ilmoitusvelvollisuus makroeliöstä</heading>
     <subsection number="1">
       <content>
         Kasvinterveyslain 8 §:n 2 momentissa tarkoitetussa ilmoituksessa alkuperäisestä
@@ -65,4 +65,4 @@
       </paragraph>
     </subsection>
   </section>
-</document>
+</statute>

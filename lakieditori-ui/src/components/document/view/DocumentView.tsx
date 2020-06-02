@@ -6,7 +6,7 @@ import TableOfContents from "./TableOfContents";
 import Concepts from "./Concepts";
 import {useDocument} from "../useDocument";
 import DocumentViewToolbar from "./DocumentViewToolbar";
-import DocumentElement from "./elements/DocumentElement";
+import StatuteElement from "./elements/StatuteElement";
 
 interface Props {
   id: string
@@ -39,7 +39,7 @@ const DocumentView: React.FC<Props> = ({id}) => {
             flex: 8,
             padding: tokens.spacing.xl
           }}>
-            <DocumentElement element={element}/>
+            <StatuteElement element={element}/>
           </div>
 
 

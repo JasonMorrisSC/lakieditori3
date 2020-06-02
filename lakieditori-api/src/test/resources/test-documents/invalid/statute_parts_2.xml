@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<statute number="1">
+  <title>Esimerkki osien väärästä käytöstä</title>
+
+  <part>
+    <heading>Osa 1</heading>
+
+    <chapter number="1">
+      <heading>Luku 1</heading>
+    </chapter>
+
+    <chapter number="2">
+      <heading>Luku 2</heading>
+    </chapter>
+  </part>
+
+</statute>

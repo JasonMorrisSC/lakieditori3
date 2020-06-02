@@ -11,7 +11,7 @@ const ChapterElement: React.FC<ElementViewProps> = ({element}) => {
   checkArgument(element.tagName === "chapter");
 
   let number = queryFirstText(element, "@number");
-  const title = queryFirstElement(element, "title");
+  const heading = queryFirstElement(element, "heading");
 
   return (
       <div className="chapter" style={{margin: `${sdt.spacing.xl} 0`}}>
@@ -20,7 +20,7 @@ const ChapterElement: React.FC<ElementViewProps> = ({element}) => {
             {number} luku
           </span>
           <br/>
-          <SanitizedHtml element={title}/>
+          <SanitizedHtml element={heading}/>
         </Heading.h2>
 
         {childElements(element).map((e, i) => {

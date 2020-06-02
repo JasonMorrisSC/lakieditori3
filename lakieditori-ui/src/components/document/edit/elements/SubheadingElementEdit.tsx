@@ -17,8 +17,6 @@ const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
   const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
 
   function updateContent(newValue: string) {
-    console.log("update subheading at: " + currentPath, newValue);
-
     setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const newCurrentElement = queryFirstElement(newDocument, currentPath);

@@ -20,16 +20,16 @@ import SubheadingElementEdit from "./SubheadingElementEdit";
 
 const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
-  const title = queryFirstElement(currentElement, "title");
-  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
+  const heading = queryFirstElement(currentElement, "heading");
+  const terminologyUris = queryTexts(document.documentElement, "/document/statute/vocabulary");
 
   function updateNumber(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath,
         (el) => el.setAttribute('number', newValue)));
   }
 
-  function updateTitle(newValue: string) {
-    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/title",
+  function updateHeading(newValue: string) {
+    setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/heading",
         (el) => el.innerHTML = newValue));
   }
 
@@ -40,7 +40,7 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
 
       const sectionElement = newDocument.createElement("section");
       sectionElement.setAttribute('number', (sectionCount + 1) + "");
-      sectionElement.appendChild(newDocument.createElement("title"));
+      sectionElement.appendChild(newDocument.createElement("heading"));
 
       queryFirstNode(newDocument, currentPath)?.appendChild(sectionElement);
       return newDocument;
@@ -122,8 +122,8 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
 
           <TextEditor
               label={`Luvun ${number} otsikko`}
-              value={title}
-              setValue={updateTitle}
+              value={heading}
+              setValue={updateHeading}
               terminologyUris={terminologyUris}
               style={{
                 fontSize: sdt.values.typography.heading2.fontSize.value,
