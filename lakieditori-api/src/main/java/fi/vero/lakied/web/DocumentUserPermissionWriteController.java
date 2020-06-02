@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/documents/{documentId}/permissions")
+@RequestMapping("/api/documents/{id}/permissions")
 public class DocumentUserPermissionWriteController {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
@@ -48,7 +48,7 @@ public class DocumentUserPermissionWriteController {
   @PostXmlMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void post(
-      @PathVariable("documentId") UUID documentId,
+      @PathVariable("id") UUID id,
       @RequestBody Document permissions,
       @AuthenticationPrincipal User user) {
 
@@ -59,14 +59,14 @@ public class DocumentUserPermissionWriteController {
               return Stream.of(XmlUtils.queryText(permission, "@value").split(","))
                   .filter(s -> !s.isEmpty())
                   .map(Permission::valueOf)
-                  .map(value -> Tuple.of(documentId, username, value));
+                  .map(value -> Tuple.of(id, username, value));
             })
             .collect(Collectors.toSet());
 
     Set<Tuple3<UUID, String, Permission>> oldPermissionSet;
     try (Stream<Tuple2<Tuple3<UUID, String, Permission>, Empty>> entries =
         documentUserPermissionReadRepository.entries(
-            DocumentUserPermissionCriteria.byDocumentId(documentId),
+            DocumentUserPermissionCriteria.byDocumentId(id),
             User.superuser("permissionReader"))) {
       oldPermissionSet = entries.map(e -> e._1).collect(Collectors.toSet());
     }

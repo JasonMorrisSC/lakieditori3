@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/documents/{documentId}/permissions")
+@RequestMapping("/api/documents/{id}/permissions")
 public class DocumentUserPermissionReadController {
 
   private final ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository;
@@ -34,16 +34,13 @@ public class DocumentUserPermissionReadController {
   }
 
   @GetXmlMapping
-  public Document get(
-      @PathVariable("documentId") UUID documentId,
-      @AuthenticationPrincipal User user) {
-
+  public Document get(@PathVariable("id") UUID id, @AuthenticationPrincipal User user) {
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder();
     builder.pushElement("permissions");
 
     try (Stream<Tuple2<Tuple3<UUID, String, Permission>, Empty>> entries =
         documentUserPermissionReadRepository.entries(
-            DocumentUserPermissionCriteria.byDocumentId(documentId), user)) {
+            DocumentUserPermissionCriteria.byDocumentId(id), user)) {
 
       Map<String, String> permissionsByUsername = entries
           // keep only username and permission
