@@ -3,12 +3,39 @@
 
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
 
-  <xs:group name="formattingElements">
-    <xs:choice>
+  <xs:complexType name="localizedRichTextType">
+    <xs:annotation>
+      <xs:documentation>
+        Localizable formatted text that can contain links.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:complexContent>
+      <xs:extension base="richTextType">
+        <xs:attribute ref="xml:lang" default=""/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="richTextType" mixed="true">
+    <xs:annotation>
+      <xs:documentation>
+        Formatted text that can contain links.
+      </xs:documentation>
+    </xs:annotation>
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="a">
+        <xs:complexType>
+          <xs:complexContent>
+            <xs:extension base="formattedTextType">
+              <xs:attribute name="href" type="xs:anyURI" use="required"/>
+            </xs:extension>
+          </xs:complexContent>
+        </xs:complexType>
+      </xs:element>
       <xs:element name="em" type="richTextType"/>
       <xs:element name="strong" type="richTextType"/>
     </xs:choice>
-  </xs:group>
+  </xs:complexType>
 
   <xs:complexType name="formattedTextType" mixed="true">
     <xs:annotation>
@@ -17,41 +44,16 @@
       </xs:documentation>
     </xs:annotation>
     <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:group ref="formattingElements"/>
+      <xs:element name="em" type="formattedTextType"/>
+      <xs:element name="strong" type="formattedTextType"/>
     </xs:choice>
-  </xs:complexType>
-
-  <xs:complexType name="linkType">
-    <xs:annotation>
-      <xs:documentation>
-        Base type for links (i.e. formatted text element that requires an href attribute).
-      </xs:documentation>
-    </xs:annotation>
-    <xs:complexContent>
-      <xs:extension base="formattedTextType">
-        <xs:attribute name="href" type="xs:anyURI" use="required"/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="richTextType" mixed="true">
-    <xs:annotation>
-      <xs:documentation>
-        This type extends formatted text content with links ('a').
-      </xs:documentation>
-    </xs:annotation>
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:group ref="formattingElements"/>
-      <xs:element name="a" type="linkType"/>
-    </xs:choice>
-    <xs:attribute ref="xml:lang" default=""/>
   </xs:complexType>
 
   <xs:element name="document">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="title" type="richTextType" maxOccurs="unbounded"/>
-        <xs:element name="intro" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
+        <xs:element name="intro" type="localizedRichTextType" minOccurs="0" maxOccurs="unbounded"/>
         <xs:choice>
           <xs:element name="part" type="partType" minOccurs="0" maxOccurs="unbounded">
             <xs:unique name="uniquePartTitleLang">
@@ -111,7 +113,7 @@
 
   <xs:complexType name="subheadingType">
     <xs:complexContent>
-      <xs:extension base="richTextType">
+      <xs:extension base="localizedRichTextType">
         <xs:attribute name="number" type="xs:string" use="required"/>
       </xs:extension>
     </xs:complexContent>
@@ -133,7 +135,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="richTextType" maxOccurs="unbounded"/>
+      <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
       <xs:element name="chapter" type="chapterType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniquePartChapterTitleLang">
           <xs:selector xpath="title"/>
@@ -156,7 +158,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="richTextType" maxOccurs="unbounded"/>
+      <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
       <xs:choice maxOccurs="unbounded">
         <xs:element name="subheading" type="subheadingType" minOccurs="0"/>
         <xs:element name="section" type="sectionType" minOccurs="0">
@@ -177,7 +179,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="title" type="richTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="title" type="localizedRichTextType" minOccurs="0" maxOccurs="unbounded"/>
       <xs:element name="subsection" type="subsectionType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueSubsectionContentLang">
           <xs:selector xpath="content"/>
@@ -195,7 +197,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="localizedRichTextType" maxOccurs="unbounded"/>
       <xs:element name="paragraph" type="paragraphType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueParagraphContentLang">
           <xs:selector xpath="content"/>
@@ -213,7 +215,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="localizedRichTextType" maxOccurs="unbounded"/>
       <xs:element name="subparagraph" type="subparagraphType" minOccurs="0" maxOccurs="unbounded">
         <xs:unique name="uniqueSubparagraphContentLang">
           <xs:selector xpath="content"/>
@@ -231,7 +233,7 @@
       </xs:documentation>
     </xs:annotation>
     <xs:sequence>
-      <xs:element name="content" type="richTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="localizedRichTextType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
   </xs:complexType>
