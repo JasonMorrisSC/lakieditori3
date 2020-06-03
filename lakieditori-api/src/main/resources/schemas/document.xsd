@@ -82,7 +82,6 @@
             </xs:element>
           </xs:choice>
         </xs:choice>
-        <xs:element name="settings" type="settingsType" minOccurs="0"/>
       </xs:sequence>
       <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>
@@ -236,17 +235,6 @@
       <xs:element name="content" type="localizedRichTextType" maxOccurs="unbounded"/>
     </xs:sequence>
     <xs:attribute name="number" type="xs:string" use="required"/>
-  </xs:complexType>
-
-  <xs:complexType name="settingsType">
-    <xs:annotation>
-      <xs:documentation>
-        Document settings
-      </xs:documentation>
-    </xs:annotation>
-    <xs:choice>
-      <xs:element name="vocabulary" type="xs:anyURI" minOccurs="0" maxOccurs="unbounded"/>
-    </xs:choice>
   </xs:complexType>
 
 </xs:schema>

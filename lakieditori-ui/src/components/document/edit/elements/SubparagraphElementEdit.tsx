@@ -5,17 +5,17 @@ import {
   ensureElementAndUpdate,
   queryFirstElement,
   queryFirstNode,
-  queryFirstText,
-  queryTexts
+  queryFirstText
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
 import {ElementEditProps} from "./ElementEditProps";
+import {splitIfTruthy} from "../../../../utils/arrayUtils";
 
-const SubparagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
+const SubparagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
-  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
+  const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {

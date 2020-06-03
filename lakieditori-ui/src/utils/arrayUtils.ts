@@ -5,3 +5,7 @@ export const toggle = (array: any[], value: any) => {
     array.push(value);
   }
 };
+
+export const splitIfTruthy = (value: string, symbol: any) => {
+  return value ? value.split(symbol) : [];
+}

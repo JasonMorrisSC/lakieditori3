@@ -13,6 +13,7 @@ import TableOfContents from "../view/TableOfContents";
 import StatuteElementEdit from "./elements/StatuteElementEdit";
 import DocumentEditToolbar from "./DocumentEditToolbar";
 import Concepts from "../view/Concepts";
+import {useDocumentProperties} from "../useDocumentProperties";
 
 interface Props {
   id: string,
@@ -21,6 +22,7 @@ interface Props {
 
 const DocumentEdit: React.FC<Props> = ({id, lock}) => {
   const {document, setDocument, saveDocument} = useDocument(id);
+  const {properties: documentProperties} = useDocumentProperties(id);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
@@ -47,8 +49,11 @@ const DocumentEdit: React.FC<Props> = ({id, lock}) => {
             flex: 8,
             padding: tokens.spacing.xl
           }}>
-            <StatuteElementEdit document={document} setDocument={setDocument}
-                                currentPath={"/statute"} currentElement={element}/>
+            <StatuteElementEdit document={document}
+                                setDocument={setDocument}
+                                documentProperties={documentProperties}
+                                currentPath={"/statute"}
+                                currentElement={element}/>
           </div>
 
           <div style={{

@@ -48,6 +48,15 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
+  public ReadRepository<Tuple2<UUID, String>, String> documentPropertiesReadRepository(
+      DataSource ds) {
+    return
+        new KeyAuthorizingReadRepository<>(
+            new JdbcDocumentPropertiesReadRepository(ds),
+            documentPermissionEvaluator(ds).mapObject(o -> o._1));
+  }
+
+  @Bean
   public WriteRepository<UUID, Document> documentWriteRepository(
       PlatformTransactionManager txm,
       DataSource ds) {
@@ -58,6 +67,17 @@ public class DocumentRepositoryConfiguration {
                     new JdbcDocumentWriteRepository(ds), txm),
                 documentSchema()),
             documentPermissionEvaluator(ds));
+  }
+
+  @Bean
+  public WriteRepository<Tuple2<UUID, String>, String> documentPropertiesWriteRepository(
+      PlatformTransactionManager txm,
+      DataSource ds) {
+    return
+        new KeyAuthorizingWriteRepository<>(
+            new TransactionalJdbcWriteRepository<>(
+                new JdbcDocumentPropertiesWriteRepository(ds), txm),
+            documentPermissionEvaluator(ds).mapObject(o -> o._1));
   }
 
   @Bean

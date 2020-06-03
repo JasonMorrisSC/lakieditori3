@@ -4,8 +4,4 @@
     <a href="http://uri.suomi.fi/terminology/verotus/c160">Perintö-</a>
     ja <a href="http://uri.suomi.fi/terminology/verotus/c186">lahjavero</a>laki
   </title>
-  <settings>
-    <vocabulary>http://uri.suomi.fi/terminology/jhs/</vocabulary>
-    <vocabulary>http://uri.suomi.fi/terminology/verotus/</vocabulary>
-  </settings>
 </statute>

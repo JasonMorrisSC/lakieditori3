@@ -4,6 +4,7 @@ import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.security.User;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 public interface ReadRepository<K, V> {
@@ -37,6 +38,20 @@ public interface ReadRepository<K, V> {
   default void forEachEntry(Criteria<K, V> criteria, User user, BiConsumer<K, V> consumer) {
     try (Stream<Tuple2<K, V>> entries = entries(criteria, user)) {
       entries.forEach(e -> consumer.accept(e._1, e._2));
+    }
+  }
+
+  default <A, R> R collectEntries(Criteria<K, V> criteria, User user,
+      Collector<Tuple2<K, V>, A, R> collector) {
+    try (Stream<Tuple2<K, V>> entries = entries(criteria, user)) {
+      return entries.collect(collector);
+    }
+  }
+
+  default <A, R> R collectKeys(Criteria<K, V> criteria, User user,
+      Collector<K, A, R> collector) {
+    try (Stream<K> entries = keys(criteria, user)) {
+      return entries.collect(collector);
     }
   }
 

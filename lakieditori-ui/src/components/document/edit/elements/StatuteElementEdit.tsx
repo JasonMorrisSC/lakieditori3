@@ -10,7 +10,6 @@ import {
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
-  queryTexts,
   updateElement
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
@@ -20,13 +19,14 @@ import ChapterElementEdit from "./ChapterElementEdit";
 import SectionElementEdit from "./SectionElementEdit";
 import SubheadingElementEdit from "./SubheadingElementEdit";
 import PartElementEdit from "./PartElementEdit";
+import {splitIfTruthy} from "../../../../utils/arrayUtils";
 
-const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
+const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
   const intro = queryFirstElement(currentElement, "intro");
-  const terminologyUris = queryTexts(document.documentElement, "/statute/settings/vocabulary");
+  const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   const partCount = countNodes(currentElement, "part");
   const chapterCount = countNodes(currentElement, "chapter");
@@ -64,8 +64,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
       partElement.setAttribute("number", (partCount + 1) + "");
       partElement.appendChild(newDocument.createElement("heading"));
 
-      queryFirstNode(newDocument, currentPath)?.insertBefore(partElement,
-          queryFirstNode(newDocument, "/statute/settings"));
+      queryFirstNode(newDocument, currentPath)?.appendChild(partElement);
       return newDocument;
     });
   }
@@ -78,8 +77,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
       chapterElement.setAttribute("number", (chapterCount + 1) + "");
       chapterElement.appendChild(newDocument.createElement("heading"));
 
-      queryFirstNode(newDocument, currentPath)?.insertBefore(chapterElement,
-          queryFirstNode(newDocument, "/statute/settings"));
+      queryFirstNode(newDocument, currentPath)?.appendChild(chapterElement);
       return newDocument;
     });
   }
@@ -92,8 +90,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
       sectionElement.setAttribute("number", (sectionCount + 1) + "");
       sectionElement.appendChild(newDocument.createElement("heading"));
 
-      queryFirstNode(newDocument, currentPath)?.insertBefore(sectionElement,
-          queryFirstNode(newDocument, "/statute/settings"));
+      queryFirstNode(newDocument, currentPath)?.appendChild(sectionElement);
       return newDocument;
     });
   }
@@ -102,11 +99,10 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
     setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
 
-      const sectionElement = newDocument.createElement("subheading");
-      sectionElement.setAttribute("number", (subheadingCount + 1) + "");
+      const subheadingElement = newDocument.createElement("subheading");
+      subheadingElement.setAttribute("number", (subheadingCount + 1) + "");
 
-      queryFirstNode(newDocument, currentPath)?.insertBefore(sectionElement,
-          queryFirstNode(newDocument, "/statute/settings"));
+      queryFirstNode(newDocument, currentPath)?.appendChild(subheadingElement);
       return newDocument;
     });
   }
@@ -123,6 +119,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             <SectionElementEdit
                 document={document}
                 currentElement={e}
+                documentProperties={documentProperties}
                 currentPath={currentPath + "/section[" + (sectionCounter++) + "]"}
                 setDocument={setDocument}/>
           </div>;
@@ -131,6 +128,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             <SubheadingElementEdit
                 document={document}
                 currentElement={e}
+                documentProperties={documentProperties}
                 currentPath={currentPath + "/subheading[" + (subheadingCounter++) + "]"}
                 setDocument={setDocument}/>
           </div>;
@@ -139,6 +137,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             <ChapterElementEdit
                 document={document}
                 currentElement={e}
+                documentProperties={documentProperties}
                 currentPath={currentPath + "/chapter[" + (chapterCounter++) + "]"}
                 setDocument={setDocument}/>
           </div>;
@@ -147,6 +146,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             <PartElementEdit
                 document={document}
                 currentElement={e}
+                documentProperties={documentProperties}
                 currentPath={currentPath + "/part[" + (chapterCounter++) + "]"}
                 setDocument={setDocument}/>
           </div>;

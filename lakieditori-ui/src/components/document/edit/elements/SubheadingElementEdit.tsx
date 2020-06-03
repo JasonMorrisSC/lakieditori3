@@ -4,17 +4,17 @@ import {
   cloneDocument,
   queryFirstElement,
   queryFirstNode,
-  queryFirstText,
-  queryTexts
+  queryFirstText
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
 import {ElementEditProps} from "./ElementEditProps";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
+import {splitIfTruthy} from "../../../../utils/arrayUtils";
 
-const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
+const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
-  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
+  const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {

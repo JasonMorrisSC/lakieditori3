@@ -1,14 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {
-  cloneDocument,
-  countNodes,
-  queryElements,
-  queryFirstElement,
-  queryFirstText
-} from "../../../utils/xmlUtils";
+import {queryElements, queryFirstElement, queryFirstText} from "../../../utils/xmlUtils";
 import {useTerminologies} from "./useTerminologies";
-import {useDocument} from "../useDocument";
 import Select, {OptionTypeBase} from "react-select";
+import {useDocumentProperties} from "../useDocumentProperties";
+import {splitIfTruthy} from "../../../utils/arrayUtils";
 
 interface Props {
   id: string
@@ -16,7 +11,7 @@ interface Props {
 
 const Terminologies: React.FC<Props> = ({id}) => {
   const {terminologies} = useTerminologies();
-  const {document, saveDocument} = useDocument(id);
+  const {properties, saveProperties} = useDocumentProperties(id);
 
   const [terminologyOptions, setTerminologyOptions] = useState<OptionTypeBase[]>([]);
   const [selectedTerminologies, setSelectedTerminologies] = useState<OptionTypeBase[]>([]);
@@ -33,19 +28,17 @@ const Terminologies: React.FC<Props> = ({id}) => {
 
   useEffect(() => {
     const findLabel = (uri: string): string => {
-      return queryFirstElement(terminologies.documentElement, `/terminologies/terminology[@uri = '${uri}']`)?.textContent || uri;
+      return queryFirstElement(terminologies.documentElement,
+          `/terminologies/terminology[@uri = '${uri}']`)?.textContent || uri;
     };
 
     setSelectedTerminologies(
-        queryElements(document.documentElement, "/document/settings/vocabulary")
-        .map(e => {
-          const uri = e.textContent || "???";
-          return {
-            value: uri,
-            label: findLabel(uri)
-          }
-        }));
-  }, [terminologies, document]);
+        splitIfTruthy(properties["terminologies"], ",")
+        .map(uri => ({
+          value: uri,
+          label: findLabel(uri)
+        })));
+  }, [terminologies, properties]);
 
   const labelComparator = (a: Element, b: Element): number => {
     const aLabel = queryFirstText(a, 'label');
@@ -54,27 +47,10 @@ const Terminologies: React.FC<Props> = ({id}) => {
   };
 
   const selectTerminologies = (entries: any) => {
-    const copy = cloneDocument(document);
-    const copyRoot = copy.documentElement;
+    const value = entries ? entries.map((e: any) => e.value).join(",") : "";
+    const updatedProperties = {...properties, terminologies: value};
 
-    if (countNodes(copyRoot, "/document/settings") === 0) {
-      copyRoot.appendChild(copy.createElement("settings"));
-    } else {
-      queryElements(copyRoot, "/document/settings/vocabulary")
-      .forEach(e => e.parentElement?.removeChild(e));
-    }
-
-    const settings = queryFirstElement(copyRoot, "/document/settings");
-
-    if (settings && entries) {
-      entries.forEach((e: any) => {
-        settings.appendChild(copy.createElement("vocabulary")).textContent = e.value;
-      });
-    }
-
-    saveDocument(copy).catch(error => {
-      console.error(error);
-    });
+    saveProperties(updatedProperties).catch(error => console.error(error));
   };
 
   return (

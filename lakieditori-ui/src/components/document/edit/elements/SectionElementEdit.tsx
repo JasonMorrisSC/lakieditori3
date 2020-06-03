@@ -7,18 +7,18 @@ import {
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
-  queryTexts,
   updateElement
 } from "../../../../utils/xmlUtils";
 import {ElementEditProps} from "./ElementEditProps";
 import SubsectionElementEdit from "./SubsectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
+import {splitIfTruthy} from "../../../../utils/arrayUtils";
 
-const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, currentPath, currentElement}) => {
+const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const heading = queryFirstElement(currentElement, "heading");
-  const terminologyUris = queryTexts(document.documentElement, "/document/settings/vocabulary");
+  const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateNumber(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath,
@@ -92,6 +92,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           return <SubsectionElementEdit key={i}
                                         document={document}
                                         currentElement={subsection}
+                                        documentProperties={documentProperties}
                                         currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
                                         setDocument={setDocument}/>
         })}
