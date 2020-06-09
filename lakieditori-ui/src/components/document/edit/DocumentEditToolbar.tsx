@@ -36,7 +36,7 @@ const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, save
           <Button.secondaryNoborder
               icon={"close"}
               style={{marginRight: tokens.spacing.s, background: "none"}}
-              onClick={() => history.push(`/documents/${id}`)}>
+              onClick={() => history.push(`/${schemaName}/documents/${id}`)}>
             Peruuta
           </Button.secondaryNoborder>
           <Button

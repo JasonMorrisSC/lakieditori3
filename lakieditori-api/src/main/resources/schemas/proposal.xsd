@@ -53,7 +53,8 @@
     <xs:complexType>
       <xs:sequence>
         <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
-        <xs:element name="abstract" type="localizedRichTextType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="abstract" type="localizedRichTextType" minOccurs="0"
+          maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>
