@@ -1,32 +1,34 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
-import SubsectionElement from "./SubsectionElement";
 import SanitizedHtml from "../../../common/SanitizedHtml";
-import {ElementViewProps} from "./ElementViewProps";
+import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
+import ChapterElement from "./ChapterElement";
 
-const SectionElement: React.FC<ElementViewProps> = ({element}) => {
-  checkArgument(element.tagName === "section");
+const PartElement: React.FC<ElementViewProps> = ({element}) => {
+  checkArgument(element.tagName === "part");
 
   let number = queryFirstText(element, "@number");
   const heading = queryFirstElement(element, "heading");
 
   return (
-      <div className="section" style={{marginTop: sdt.spacing.l}}>
-        <Heading.h3>
+      <div className="part" style={{margin: `${sdt.spacing.xl} 0`}}>
+        <Heading.h2>
           <span style={{color: sdt.colors.highlightBase}}>
-            {number} §
+            {number} osa
           </span>
           <br/>
           <SanitizedHtml element={heading}/>
-        </Heading.h3>
+        </Heading.h2>
 
-        {queryElements(element, 'subsection').map((subsection, i) => {
-          return <SubsectionElement key={i} element={subsection}/>
-        })}
+        {queryElements(element, 'chapter').map((e, i) => (
+            <div key={i} id={`chapter-${e.getAttribute('number')}`}>
+              <ChapterElement element={e}/>
+            </div>
+        ))}
       </div>
   );
 };
 
-export default SectionElement;
+export default PartElement;

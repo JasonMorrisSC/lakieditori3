@@ -6,7 +6,7 @@ import {parseXml, queryElements, queryFirstText, toString} from "../../../utils/
 import {useDocument} from "../useDocument";
 import {ErrorPanel, Toolbar} from "../DocumentStyles";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
-import StatuteElement from "../view/elements/StatuteElement";
+import StatuteElement from "../view/statute/StatuteElement";
 import {useLineNumberAnnotations} from "./useLineNumberAnnotations";
 import AceEditor from "react-ace";
 import 'ace-builds'
@@ -16,6 +16,7 @@ import "ace-builds/src-noconflict/theme-eclipse";
 import {useValidation} from "./useValidation";
 import {useFormat} from "./useFormat";
 import {AuthenticationContext} from "../../../App";
+import ProposalElement from "../view/proposal/ProposalElement";
 
 const Content = styled.div`
   display: flex;
@@ -175,7 +176,10 @@ const DocumentSourceEdit: React.FC<Props> = ({schemaName, id, lock}) => {
           </Source>
           <Preview ref={previewElementRef}>
             <div style={{padding: tokens.spacing.l}}>
-              <StatuteElement element={parseXml(editorValue).documentElement}/>
+              {schemaName === "statute" &&
+              <StatuteElement element={parseXml(editorValue).documentElement}/>}
+              {schemaName === "proposal" &&
+              <ProposalElement element={parseXml(editorValue).documentElement}/>}
             </div>
           </Preview>
         </Content>

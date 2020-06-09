@@ -1,7 +1,7 @@
 import React, {useState} from "react";
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {countNodes, queryFirstText} from "../../../utils/xmlUtils";
-import {ElementViewProps} from "./elements/ElementViewProps";
+import {ElementViewProps} from "./ElementViewProps";
 import styled from "@emotion/styled";
 import {useDocumentConcepts} from "./useDocumentConcept";
 

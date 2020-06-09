@@ -11,11 +11,11 @@ import {
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
-import {ElementEditProps} from "./ElementEditProps";
-import ParagraphElementEdit from "./ParagraphElementEdit";
+import {ElementEditProps} from "../ElementEditProps";
+import SubparagraphElementEdit from "./SubparagraphElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
 
-const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const ParagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
@@ -23,28 +23,28 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["paragraph"], (el) => el.innerHTML = newValue);
+          "content", ["subparagraph"], (el) => el.innerHTML = newValue);
     });
   }
 
-  function addParagraph() {
+  function addSubparagraph() {
     setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const newCurrentElement = queryFirstNode(newDocument, currentPath);
 
       if (newCurrentElement) {
-        const paragraphs = countNodes(newCurrentElement, "paragraph")
-        const newParagraph = newDocument.createElement("paragraph");
-        newParagraph.setAttribute("number", `${paragraphs + 1}`);
+        const subparagraphs = countNodes(newCurrentElement, "subparagraph")
+        const newSubparagraph = newDocument.createElement("subparagraph");
+        newSubparagraph.setAttribute("number", `${subparagraphs + 1}`);
 
-        newCurrentElement.appendChild(newParagraph);
+        newCurrentElement.appendChild(newSubparagraph);
       }
 
       return newDocument;
     });
   }
 
-  function removeSubsection() {
+  function removeParagraph() {
     setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const newCurrentElement = queryFirstNode(newDocument, currentPath);
@@ -56,36 +56,38 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
   const customTools = (
       <div>
         <StyledToolbarButton icon={"plus"} style={{marginRight: tokens.spacing.m}}
-                             onClick={addParagraph}>
-          Lisää kohta
+                             onClick={addSubparagraph}>
+          Lisää alakohta
         </StyledToolbarButton>
-        <StyledToolbarButton icon={"close"} style={{marginRight: 0}} onClick={removeSubsection}>
+        <StyledToolbarButton icon={"close"} style={{marginRight: 0}} onClick={removeParagraph}>
           Poista
         </StyledToolbarButton>
       </div>
   );
 
   return (
-      <div className="subsection">
+      <li className="paragraph" style={{color: tokens.colors.highlightLight45}}>
         <TextEditor
-            label={`Momentti ${number}`}
+            label={`Kohta ${number}`}
             value={content}
             setValue={updateContent}
             terminologyUris={terminologyUris}
+            style={{color: tokens.colors.blackBase}}
             customTools={customTools}/>
 
         <ul>
-          {queryElements(currentElement, 'paragraph').map((paragraph, i) => (
-              <ParagraphElementEdit key={i}
-                                    document={document}
-                                    currentElement={paragraph}
-                                    documentProperties={documentProperties}
-                                    currentPath={currentPath + "/paragraph[" + (i + 1) + "]"}
-                                    setDocument={setDocument}/>
+          {queryElements(currentElement, 'subparagraph').map((paragraph, i) => (
+              <SubparagraphElementEdit
+                  key={i}
+                  document={document}
+                  currentElement={paragraph}
+                  documentProperties={documentProperties}
+                  currentPath={currentPath + "/subparagraph[" + (i + 1) + "]"}
+                  setDocument={setDocument}/>
           ))}
         </ul>
-      </div>
+      </li>
   );
 };
 
-export default SubsectionElementEdit;
+export default ParagraphElementEdit;

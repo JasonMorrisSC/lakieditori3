@@ -10,10 +10,11 @@ import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
 import TableOfContents from "../view/TableOfContents";
-import StatuteElementEdit from "./elements/StatuteElementEdit";
+import StatuteElementEdit from "./statute/StatuteElementEdit";
 import DocumentEditToolbar from "./DocumentEditToolbar";
 import Concepts from "../view/Concepts";
 import {useDocumentProperties} from "../useDocumentProperties";
+import ProposalElementEdit from "./proposal/ProposalElementEdit";
 
 interface Props {
   schemaName: string,
@@ -50,11 +51,20 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
             flex: 8,
             padding: tokens.spacing.xl
           }}>
-            <StatuteElementEdit document={document}
-                                setDocument={setDocument}
-                                documentProperties={documentProperties}
-                                currentPath={"/statute"}
-                                currentElement={element}/>
+            {schemaName === "statute" &&
+            <StatuteElementEdit
+                document={document}
+                setDocument={setDocument}
+                documentProperties={documentProperties}
+                currentPath={"/statute"}
+                currentElement={element}/>}
+            {schemaName === "proposal" &&
+            <ProposalElementEdit
+                document={document}
+                setDocument={setDocument}
+                documentProperties={documentProperties}
+                currentPath={"/proposal"}
+                currentElement={element}/>}
           </div>
 
           <div style={{

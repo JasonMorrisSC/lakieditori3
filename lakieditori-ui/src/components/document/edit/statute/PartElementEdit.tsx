@@ -9,7 +9,7 @@ import {
   queryFirstText,
   updateElement
 } from "../../../../utils/xmlUtils";
-import {ElementEditProps} from "./ElementEditProps";
+import {ElementEditProps} from "../ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
 import ChapterElementEdit from "./ChapterElementEdit";

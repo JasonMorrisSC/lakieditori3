@@ -2,32 +2,29 @@ import React from "react";
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {
   cloneDocument,
+  ensureElementAndUpdate,
   queryFirstElement,
   queryFirstNode,
   queryFirstText
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
-import {ElementEditProps} from "./ElementEditProps";
-import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
+import {ElementEditProps} from "../ElementEditProps";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
 
-const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const SubparagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
+  const content = queryFirstElement(currentElement, "content");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {
-      const newDocument = cloneDocument(prevDocument);
-      const newCurrentElement = queryFirstElement(newDocument, currentPath);
-      if (newCurrentElement) {
-        newCurrentElement.innerHTML = newValue;
-      }
-      return newDocument;
+      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
+          "content", [], (el) => el.innerHTML = newValue);
     });
   }
 
-  function removeSubheading() {
+  function removeSubparagraph() {
     setDocument((prevDocument) => {
       const newDocument = cloneDocument(prevDocument);
       const newCurrentElement = queryFirstNode(newDocument, currentPath);
@@ -38,23 +35,23 @@ const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
 
   const customTools = (
       <div>
-        <StyledToolbarButton icon={"close"} style={{marginRight: 0}} onClick={removeSubheading}>
+        <StyledToolbarButton icon={"close"} style={{marginRight: 0}} onClick={removeSubparagraph}>
           Poista
         </StyledToolbarButton>
       </div>
   );
 
   return (
-      <div className="subheading" style={{marginTop: sdt.spacing.l}}>
+      <li className="subparagraph" style={{color: tokens.colors.highlightLight45}}>
         <TextEditor
-            label={`Väliotsikko ${number}`}
-            value={currentElement}
+            label={`Alakohta ${number}`}
+            value={content}
             setValue={updateContent}
             terminologyUris={terminologyUris}
             style={{color: tokens.colors.blackBase}}
             customTools={customTools}/>
-      </div>
+      </li>
   );
 };
 
-export default SubheadingElementEdit;
+export default SubparagraphElementEdit;

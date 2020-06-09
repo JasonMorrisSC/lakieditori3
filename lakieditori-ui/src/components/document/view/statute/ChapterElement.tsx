@@ -3,7 +3,7 @@ import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {childElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
 import SectionElement from "./SectionElement";
 import SanitizedHtml from "../../../common/SanitizedHtml";
-import {ElementViewProps} from "./ElementViewProps";
+import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
 import SubheadingElement from "./SubheadingElement";
 

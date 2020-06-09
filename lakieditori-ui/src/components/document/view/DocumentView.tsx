@@ -6,7 +6,8 @@ import TableOfContents from "./TableOfContents";
 import Concepts from "./Concepts";
 import {useDocument} from "../useDocument";
 import DocumentViewToolbar from "./DocumentViewToolbar";
-import StatuteElement from "./elements/StatuteElement";
+import StatuteElement from "./statute/StatuteElement";
+import ProposalElement from "./proposal/ProposalElement";
 
 interface Props {
   schemaName: string,
@@ -40,9 +41,11 @@ const DocumentView: React.FC<Props> = ({schemaName, id}) => {
             flex: 8,
             padding: tokens.spacing.xl
           }}>
-            <StatuteElement element={element}/>
+            {schemaName === "statute" &&
+            <StatuteElement element={element}/>}
+            {schemaName === "proposal" &&
+            <ProposalElement element={element}/>}
           </div>
-
 
           <div style={{
             flex: 2,

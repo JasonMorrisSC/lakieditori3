@@ -1,7 +1,7 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import SanitizedHtml from "../../../common/SanitizedHtml";
-import {ElementViewProps} from "./ElementViewProps";
+import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
 
 const SubheadingElement: React.FC<ElementViewProps> = ({element}) => {
