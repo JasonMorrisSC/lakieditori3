@@ -2,7 +2,7 @@ import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {childElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
 import SectionElement from "./SectionElement";
-import SanitizedHtml from "../../../common/SanitizedHtml";
+import SanitizedInlineHtml from "../../../common/SanitizedInlineHtml";
 import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
 import SubheadingElement from "./SubheadingElement";
@@ -20,7 +20,7 @@ const ChapterElement: React.FC<ElementViewProps> = ({element}) => {
             {number} luku
           </span>
           <br/>
-          <SanitizedHtml element={heading}/>
+          <SanitizedInlineHtml element={heading}/>
         </Heading.h2>
 
         {childElements(element).map((e, i) => {

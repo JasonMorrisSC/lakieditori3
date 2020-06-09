@@ -1,9 +1,10 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
 import {queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
-import SanitizedHtml from "../../../common/SanitizedHtml";
+import SanitizedInlineHtml from "../../../common/SanitizedInlineHtml";
 import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
+import SanitizedBlockHtml from "../../../common/SanitizedBlockHtml";
 
 const ProposalElement: React.FC<ElementViewProps> = ({element}) => {
   checkArgument(element.tagName === "proposal");
@@ -17,12 +18,12 @@ const ProposalElement: React.FC<ElementViewProps> = ({element}) => {
         <Heading.h1hero>
           <small style={{color: tokens.colors.accentBase}}>{number}</small>
           <br/>
-          <SanitizedHtml element={title}/>
+          <SanitizedInlineHtml element={title}/>
         </Heading.h1hero>
 
         <p>
           <Text.lead>
-            <SanitizedHtml element={abstract}/>
+            <SanitizedBlockHtml element={abstract}/>
           </Text.lead>
         </p>
 

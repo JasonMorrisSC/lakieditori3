@@ -1,7 +1,7 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
 import {childElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
-import SanitizedHtml from "../../../common/SanitizedHtml";
+import SanitizedInlineHtml from "../../../common/SanitizedInlineHtml";
 import ChapterElement from "./ChapterElement";
 import SectionElement from "./SectionElement";
 import {ElementViewProps} from "../ElementViewProps";
@@ -21,12 +21,12 @@ const StatuteElement: React.FC<ElementViewProps> = ({element}) => {
         <Heading.h1hero>
           <small style={{color: tokens.colors.accentBase}}>{number}</small>
           <br/>
-          <SanitizedHtml element={title}/>
+          <SanitizedInlineHtml element={title}/>
         </Heading.h1hero>
 
         <p>
           <Text.lead>
-            <SanitizedHtml element={intro}/>
+            <SanitizedInlineHtml element={intro}/>
           </Text.lead>
         </p>
 

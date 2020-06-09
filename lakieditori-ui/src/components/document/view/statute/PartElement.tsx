@@ -1,7 +1,7 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {queryElements, queryFirstElement, queryFirstText} from "../../../../utils/xmlUtils";
-import SanitizedHtml from "../../../common/SanitizedHtml";
+import SanitizedInlineHtml from "../../../common/SanitizedInlineHtml";
 import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
 import ChapterElement from "./ChapterElement";
@@ -19,7 +19,7 @@ const PartElement: React.FC<ElementViewProps> = ({element}) => {
             {number} osa
           </span>
           <br/>
-          <SanitizedHtml element={heading}/>
+          <SanitizedInlineHtml element={heading}/>
         </Heading.h2>
 
         {queryElements(element, 'chapter').map((e, i) => (

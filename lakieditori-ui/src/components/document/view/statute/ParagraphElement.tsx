@@ -1,7 +1,7 @@
 import React from "react";
 import {suomifiDesignTokens as sdt} from "suomifi-ui-components";
 import {queryElements, queryFirstElement} from "../../../../utils/xmlUtils";
-import SanitizedHtml from "../../../common/SanitizedHtml";
+import SanitizedInlineHtml from "../../../common/SanitizedInlineHtml";
 import SubparagraphElement from "./SubparagraphElement";
 import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
@@ -14,7 +14,7 @@ const ParagraphElement: React.FC<ElementViewProps> = ({element}) => {
   return (
       <li className="paragraph" style={{color: sdt.colors.highlightLight45}}>
         <p style={{color: sdt.colors.blackBase}}>
-          <SanitizedHtml element={content}/>
+          <SanitizedInlineHtml element={content}/>
         </p>
 
         <ul>

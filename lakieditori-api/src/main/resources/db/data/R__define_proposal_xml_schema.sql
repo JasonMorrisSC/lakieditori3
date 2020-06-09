@@ -319,57 +319,75 @@ SET name       = 'proposal.xsd',
 
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
 
-  <xs:complexType name="localizedRichTextType">
-    <xs:annotation>
-      <xs:documentation>
-        Localizable formatted text that can contain links.
-      </xs:documentation>
-    </xs:annotation>
+  <xs:complexType name="localizedInlineHypertextType">
     <xs:complexContent>
-      <xs:extension base="richTextType">
+      <xs:extension base="inlineHypertextType">
         <xs:attribute ref="xml:lang" default=""/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="richTextType" mixed="true">
-    <xs:annotation>
-      <xs:documentation>
-        Formatted text that can contain links.
-      </xs:documentation>
-    </xs:annotation>
+  <xs:complexType name="localizedBlockHypertextType">
+    <xs:complexContent>
+      <xs:extension base="blockHypertextType">
+        <xs:attribute ref="xml:lang" default=""/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="blockHypertextType" mixed="true">
     <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="blockHypertextElements"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="inlineHypertextType" mixed="true">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="inlineHypertextElements"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:complexType name="inlineTextType" mixed="true">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:group ref="inlineFormattingElements"/>
+    </xs:choice>
+  </xs:complexType>
+
+  <xs:group name="blockHypertextElements">
+    <xs:choice>
+      <xs:element name="p" type="inlineHypertextType"/>
+      <xs:group ref="inlineHypertextElements"/>
+    </xs:choice>
+  </xs:group>
+
+  <xs:group name="inlineHypertextElements">
+    <xs:choice>
       <xs:element name="a">
         <xs:complexType>
           <xs:complexContent>
-            <xs:extension base="formattedTextType">
+            <xs:extension base="inlineTextType">
               <xs:attribute name="href" type="xs:anyURI" use="required"/>
             </xs:extension>
           </xs:complexContent>
         </xs:complexType>
       </xs:element>
-      <xs:element name="em" type="richTextType"/>
-      <xs:element name="strong" type="richTextType"/>
+      <xs:group ref="inlineFormattingElements"/>
     </xs:choice>
-  </xs:complexType>
+  </xs:group>
 
-  <xs:complexType name="formattedTextType" mixed="true">
-    <xs:annotation>
-      <xs:documentation>
-        Text content that can contain formatting tags (e.g. ''em'').
-      </xs:documentation>
-    </xs:annotation>
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="em" type="formattedTextType"/>
-      <xs:element name="strong" type="formattedTextType"/>
+  <xs:group name="inlineFormattingElements">
+    <xs:choice>
+      <xs:element name="em" type="inlineTextType"/>
+      <xs:element name="strong" type="inlineTextType"/>
     </xs:choice>
-  </xs:complexType>
+  </xs:group>
 
   <xs:element name="proposal">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="title" type="localizedRichTextType" maxOccurs="unbounded"/>
-        <xs:element name="abstract" type="localizedRichTextType" minOccurs="0" maxOccurs="unbounded"/>
+        <xs:element name="title" type="inlineHypertextType" maxOccurs="unbounded"/>
+        <xs:element name="abstract" type="localizedBlockHypertextType" minOccurs="0"
+          maxOccurs="unbounded"/>
       </xs:sequence>
       <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>

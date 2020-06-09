@@ -1,6 +1,6 @@
 import React from "react";
 import {Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components";
-import SanitizedHtml from "../../../common/SanitizedHtml";
+import SanitizedInlineHtml from "../../../common/SanitizedInlineHtml";
 import {ElementViewProps} from "../ElementViewProps";
 import {checkArgument} from "../../../../utils/checkUtils";
 
@@ -10,7 +10,7 @@ const SubheadingElement: React.FC<ElementViewProps> = ({element}) => {
   return (
       <div className="subheading" style={{marginTop: sdt.spacing.l}}>
         <Heading.h2>
-          <SanitizedHtml element={element}/>
+          <SanitizedInlineHtml element={element}/>
         </Heading.h2>
       </div>
   );

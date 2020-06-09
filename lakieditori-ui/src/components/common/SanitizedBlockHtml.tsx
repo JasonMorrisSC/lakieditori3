@@ -5,9 +5,9 @@ interface Props {
   element: Element | null;
 }
 
-const SanitizedHtml: React.FC<Props> = ({element}) => {
+const SanitizedBlockHtml: React.FC<Props> = ({element}) => {
   const clean = sanitizeHtml(element?.innerHTML || '', {
-    allowedTags: ['em', 'strong', 'a'],
+    allowedTags: ['em', 'strong', 'a', 'p'],
     allowedAttributes: {
       a: ['href']
     }
@@ -16,4 +16,4 @@ const SanitizedHtml: React.FC<Props> = ({element}) => {
   return <span dangerouslySetInnerHTML={{__html: clean}}/>;
 };
 
-export default SanitizedHtml;
+export default SanitizedBlockHtml;
