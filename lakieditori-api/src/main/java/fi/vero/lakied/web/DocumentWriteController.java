@@ -1,13 +1,14 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentId;
+import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentKey;
 import static fi.vero.lakied.util.security.User.superuser;
 
+import fi.vero.lakied.service.document.DocumentKey;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.Tuple3;
+import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.exception.NotFoundException;
@@ -33,21 +34,22 @@ import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/documents")
+@RequestMapping("/api/schemas/{schemaName}/documents")
 public class DocumentWriteController {
 
-  private final ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository;
-  private final WriteRepository<UUID, Document> documentWriteRepository;
-  private final WriteRepository<UUID, Document> documentVersionWriteRepository;
-  private final WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository;
+  private final ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository;
+  private final WriteRepository<DocumentKey, Document> documentWriteRepository;
+  private final WriteRepository<DocumentKey, Document> documentVersionWriteRepository;
+  private final WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository;
   private final User documentPermissionInitializer = superuser("documentPermissionInitializer");
+  private final User documentLockHelper = superuser("documentLockHelper");
 
   @Autowired
   public DocumentWriteController(
-      ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository,
-      WriteRepository<UUID, Document> documentWriteRepository,
-      WriteRepository<UUID, Document> documentVersionWriteRepository,
-      WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository) {
+      ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository,
+      WriteRepository<DocumentKey, Document> documentWriteRepository,
+      WriteRepository<DocumentKey, Document> documentVersionWriteRepository,
+      WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository) {
     this.documentLockReadRepository = documentLockReadRepository;
     this.documentWriteRepository = documentWriteRepository;
     this.documentVersionWriteRepository = documentVersionWriteRepository;
@@ -57,26 +59,27 @@ public class DocumentWriteController {
   @PostXmlMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void post(
+      @PathVariable("schemaName") String schemaName,
       @RequestBody Document document,
       @AuthenticationPrincipal User user,
       HttpServletResponse response) {
     UUID id = UUID.randomUUID();
 
-    documentWriteRepository.insert(id, document, user);
-    documentVersionWriteRepository.insert(id, document, user);
+    documentWriteRepository.insert(DocumentKey.of(schemaName, id), document, user);
+    documentVersionWriteRepository.insert(DocumentKey.of(schemaName, id), document, user);
 
     // add read and write permissions to the new document
     documentUserPermissionWriteRepository.insert(
-        Tuple.of(id, user.getUsername(), Permission.READ), Empty.INSTANCE,
+        Tuple.of(schemaName, id, user.getUsername(), Permission.READ), Empty.INSTANCE,
         documentPermissionInitializer);
     documentUserPermissionWriteRepository.insert(
-        Tuple.of(id, user.getUsername(), Permission.UPDATE), Empty.INSTANCE,
+        Tuple.of(schemaName, id, user.getUsername(), Permission.UPDATE), Empty.INSTANCE,
         documentPermissionInitializer);
     documentUserPermissionWriteRepository.insert(
-        Tuple.of(id, user.getUsername(), Permission.DELETE), Empty.INSTANCE,
+        Tuple.of(schemaName, id, user.getUsername(), Permission.DELETE), Empty.INSTANCE,
         documentPermissionInitializer);
 
-    String resultUrl = "/api/documents/" + id;
+    String resultUrl = "/api/documents/" + schemaName + "/" + id;
     response.setHeader(HttpHeaders.LOCATION, resultUrl);
     response.setHeader("Refresh", "0;url=" + resultUrl);
   }
@@ -84,31 +87,34 @@ public class DocumentWriteController {
   @PutXmlMapping(path = "/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void put(
+      @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @RequestBody Document document,
       @AuthenticationPrincipal User user) {
-    tryUpdateLocked(id, user, () -> {
-      documentWriteRepository.update(id, document, user);
-      documentVersionWriteRepository.insert(id, document, user);
+    tryUpdateLocked(schemaName, id, user, () -> {
+      documentWriteRepository.update(DocumentKey.of(schemaName, id), document, user);
+      documentVersionWriteRepository.insert(DocumentKey.of(schemaName, id), document, user);
     });
   }
 
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void delete(
+      @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
-    tryUpdateLocked(id, user, () -> {
-      documentWriteRepository.delete(id, user);
-      documentVersionWriteRepository.insert(id, null, user);
+    tryUpdateLocked(schemaName, id, user, () -> {
+      documentWriteRepository.delete(DocumentKey.of(schemaName, id), user);
+      documentVersionWriteRepository.insert(DocumentKey.of(schemaName, id), null, user);
     });
   }
 
-  private void tryUpdateLocked(UUID id, User user, Runnable updateOperation) {
+  private void tryUpdateLocked(String schemaName, UUID id, User user,
+      Runnable updateOperation) {
     Optional<Tuple2<String, LocalDateTime>> lock =
-        documentLockReadRepository.value(byDocumentId(id), superuser("document-lock-helper"));
+        documentLockReadRepository.value(byDocumentKey(schemaName, id), documentLockHelper);
     Optional<Tuple2<String, LocalDateTime>> lockReadableToUser =
-        documentLockReadRepository.value(byDocumentId(id), user);
+        documentLockReadRepository.value(byDocumentKey(schemaName, id), user);
 
     if (lockReadableToUser.isPresent() &&
         !Objects.equals(lockReadableToUser.get()._1, user.getUsername())) {

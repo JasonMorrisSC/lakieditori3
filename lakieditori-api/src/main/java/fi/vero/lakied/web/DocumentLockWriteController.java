@@ -1,13 +1,14 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentId;
+import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentKey;
 import static fi.vero.lakied.service.document.DocumentLockCriteria.byUsername;
+import static fi.vero.lakied.util.criteria.Criteria.and;
 
+import fi.vero.lakied.service.document.DocumentKey;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.common.WriteRepository;
-import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.security.User;
 import java.time.LocalDateTime;
@@ -27,18 +28,18 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/documents/{documentId}/lock")
+@RequestMapping("/api/schemas/{schemaName}/documents/{id}/lock")
 public class DocumentLockWriteController {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
-  private final ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository;
-  private final WriteRepository<UUID, Empty> documentLockWriteRepository;
+  private final ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository;
+  private final WriteRepository<DocumentKey, Empty> documentLockWriteRepository;
 
   @Autowired
   public DocumentLockWriteController(
-      ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository,
-      WriteRepository<UUID, Empty> documentLockWriteRepository) {
+      ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository,
+      WriteRepository<DocumentKey, Empty> documentLockWriteRepository) {
     this.documentLockReadRepository = documentLockReadRepository;
     this.documentLockWriteRepository = documentLockWriteRepository;
   }
@@ -46,44 +47,49 @@ public class DocumentLockWriteController {
   @PostMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void acquire(
-      @PathVariable("documentId") UUID documentId,
+      @PathVariable("schemaName") String schemaName,
+      @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
 
+    DocumentKey documentKey = DocumentKey.of(schemaName, id);
+
     Optional<Tuple2<String, LocalDateTime>> lock = documentLockReadRepository
-        .value(byDocumentId(documentId), User.superuser("document-lock-helper"));
+        .value(byDocumentKey(schemaName, id), User.superuser("document-lock-helper"));
 
     if (!lock.isPresent()) {
-      log.debug("User {} acquired lock for {}", user.getUsername(), documentId);
-      documentLockWriteRepository.insert(documentId, Empty.INSTANCE, user);
+      log.debug("User {} acquired lock for {}", user.getUsername(), documentKey);
+      documentLockWriteRepository.insert(documentKey, Empty.INSTANCE, user);
       return;
     }
 
     if (Objects.equals(lock.get()._1, user.getUsername())) {
-      log.debug("User {} refreshed lock for {}", user.getUsername(), documentId);
-      documentLockWriteRepository.update(documentId, Empty.INSTANCE, user);
+      log.debug("User {} refreshed lock for {}", user.getUsername(), documentKey);
+      documentLockWriteRepository.update(documentKey, Empty.INSTANCE, user);
       return;
     }
 
-    throw new BadRequestException("Can't acquire document lock for: " + documentId);
+    throw new BadRequestException("Can't acquire document lock for: " + documentKey);
   }
 
   @DeleteMapping
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void release(
-      @PathVariable("documentId") UUID documentId,
+      @PathVariable("schemaName") String schemaName,
+      @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
     if (!documentLockReadRepository.isEmpty(
-        Criteria.and(byDocumentId(documentId), byUsername(user.getUsername())), user)) {
-      log.debug("User {} released lock for {}", user.getUsername(), documentId);
-      documentLockWriteRepository.delete(documentId, user);
+        and(byDocumentKey(schemaName, id), byUsername(user.getUsername())), user)) {
+      log.debug("User {} released lock for {}", user.getUsername(), id);
+      documentLockWriteRepository.delete(DocumentKey.of(schemaName, id), user);
     }
   }
 
   @DeleteMapping(params = "force=true")
   public void forceRelease(
-      @PathVariable("documentId") UUID documentId,
+      @PathVariable("schemaName") String schemaName,
+      @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
-    documentLockWriteRepository.delete(documentId, user);
+    documentLockWriteRepository.delete(DocumentKey.of(schemaName, id), user);
   }
 
 }

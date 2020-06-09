@@ -9,7 +9,7 @@ export function usePermissions(id: string) {
   const [permissions, setPermissions] = useState<Document>(parseXml('<permissions></permissions>'));
 
   useEffect(() => {
-    axios.get('/api/documents/' + id + '/permissions', {
+    axios.get('/api/schemas/statute/documents/' + id + '/permissions', {
       responseType: 'document'
     }).then(res => {
       setPermissions(res.data);
@@ -17,9 +17,9 @@ export function usePermissions(id: string) {
   }, [id, user]);
 
   const savePermissions = (newPermissions: Document): Promise<any> => (
-      axios.post('/api/documents/' + id + '/permissions', toString(newPermissions), {
+      axios.post('/api/schemas/statute/documents/' + id + '/permissions', toString(newPermissions), {
         headers: {'Content-Type': 'text/xml'}
-      }).then(() => axios.get('/api/documents/' + id + '/permissions', {
+      }).then(() => axios.get('/api/schemas/statute/documents/' + id + '/permissions', {
         responseType: 'document'
       })).then(res => {
         setPermissions(res.data);

@@ -1,7 +1,8 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentId;
+import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentKey;
 
+import fi.vero.lakied.service.document.DocumentKey;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
@@ -21,46 +22,47 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/documents/{id}/lock")
+@RequestMapping("/api/schemas/{schemaName}/documents/{id}/lock")
 public class DocumentLockReadController {
 
   private final Logger log = LoggerFactory.getLogger(getClass());
 
   private final User documentLockHelper = User.superuser("document-lock-helper");
 
-  private final ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository;
-  private final WriteRepository<UUID, Empty> documentLockWriteRepository;
+  private final ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository;
+  private final WriteRepository<DocumentKey, Empty> documentLockWriteRepository;
 
   @Autowired
   public DocumentLockReadController(
-      ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository,
-      WriteRepository<UUID, Empty> documentLockWriteRepository) {
+      ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository,
+      WriteRepository<DocumentKey, Empty> documentLockWriteRepository) {
     this.documentLockReadRepository = documentLockReadRepository;
     this.documentLockWriteRepository = documentLockWriteRepository;
   }
 
   @GetMapping
   public String get(
+      @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
 
-    removeLockIfExpired(id);
+    removeLockIfExpired(schemaName, id);
 
-    return documentLockReadRepository.value(byDocumentId(id), user)
+    return documentLockReadRepository.value(byDocumentKey(schemaName, id), user)
         .map(t -> t._1)
         .orElseThrow(NotFoundException::new);
   }
 
-  private void removeLockIfExpired(UUID id) {
+  private void removeLockIfExpired(String schemaName, UUID id) {
     boolean isExpired = documentLockReadRepository
-        .value(byDocumentId(id), documentLockHelper)
+        .value(byDocumentKey(schemaName, id), documentLockHelper)
         .map(lock -> lock._2)
         .map(lockDate -> ChronoUnit.MINUTES.between(lockDate, LocalDateTime.now()) > 10)
         .orElse(false);
 
     if (isExpired) {
       log.debug("Removing expired lock for: " + id);
-      documentLockWriteRepository.delete(id, documentLockHelper);
+      documentLockWriteRepository.delete(DocumentKey.of(schemaName, id), documentLockHelper);
     }
   }
 

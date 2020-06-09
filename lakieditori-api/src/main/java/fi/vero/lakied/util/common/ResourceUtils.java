@@ -18,6 +18,14 @@ public final class ResourceUtils {
   private ResourceUtils() {
   }
 
+  public static Path resourcePath(String resourceName) {
+    try {
+      return Paths.get(Resources.getResource(resourceName).toURI());
+    } catch (URISyntaxException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
   public static String resourceToString(String resourceName) {
     try {
       return Resources.toString(Resources.getResource(resourceName), Charsets.UTF_8);

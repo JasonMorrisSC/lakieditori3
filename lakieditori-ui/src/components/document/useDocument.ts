@@ -12,7 +12,7 @@ export function useDocument(id: string) {
 
   useEffect(() => {
     axios
-    .get(`/api/documents/${id}`, getConfig)
+    .get(`/api/schemas/statute/documents/${id}`, getConfig)
     .then(res => setDocument(res.data));
   }, [id, user]);
 
@@ -20,8 +20,8 @@ export function useDocument(id: string) {
     const xmlData = typeof document === "string" ? document : toString(document);
 
     return axios
-    .put(`/api/documents/${id}`, xmlData, putConfig)
-    .then(() => axios.get(`/api/documents/${id}`, getConfig))
+    .put(`/api/schemas/statute/documents/${id}`, xmlData, putConfig)
+    .then(() => axios.get(`/api/schemas/statute/documents/${id}`, getConfig))
     .then((res) => setDocument(res.data));
   };
 

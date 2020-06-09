@@ -8,13 +8,13 @@ export function useDocumentProperties(id: string) {
 
   useEffect(() => {
     axios
-    .get(`/api/documents/${id}/properties`)
+    .get(`/api/schemas/statute/documents/${id}/properties`)
     .then(res => setProperties(res.data));
   }, [id, user]);
 
   const saveProperties = (properties: { [name: string]: string }): Promise<any> => {
     return axios
-    .post(`/api/documents/${id}/properties`, properties)
+    .post(`/api/schemas/statute/documents/${id}/properties`, properties)
     .then(() => axios.get(`/api/documents/${id}/properties`))
     .then((res) => setProperties(res.data));
   };

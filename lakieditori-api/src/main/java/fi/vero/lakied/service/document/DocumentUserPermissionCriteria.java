@@ -2,7 +2,7 @@ package fi.vero.lakied.service.document;
 
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.Tuple;
-import fi.vero.lakied.util.common.Tuple3;
+import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.criteria.SqlCriteria;
 import fi.vero.lakied.util.security.Permission;
@@ -13,21 +13,23 @@ public final class DocumentUserPermissionCriteria {
   private DocumentUserPermissionCriteria() {
   }
 
-  public static SqlCriteria<Tuple3<UUID, String, Permission>, Empty> byId(
-      UUID documentId, String username, Permission permission) {
+  public static SqlCriteria<Tuple4<String, UUID, String, Permission>, Empty> byKey(
+      String schemaName, UUID documentId, String username, Permission permission) {
     return Criteria.sql(
-        (k, v) -> Tuple.of(documentId, username, permission).equals(k),
-        "document_id = ? and username = ? and permission = ?",
+        (k, v) -> Tuple.of(schemaName, documentId, username, permission).equals(k),
+        "document_schema_name = ? and document_id = ? and username = ? and permission = ?",
+        schemaName,
         documentId,
         username,
         permission.toString());
   }
 
-  public static SqlCriteria<Tuple3<UUID, String, Permission>, Empty> byDocumentId(
-      UUID documentId) {
+  public static SqlCriteria<Tuple4<String, UUID, String, Permission>, Empty> byDocumentKey(
+      String schemaName, UUID documentId) {
     return Criteria.sql(
-        (k, v) -> documentId.equals(k._1),
-        "document_id = ?",
+        (k, v) -> schemaName.equals(k._1) && documentId.equals(k._2),
+        "document_schema_name = ? and document_id = ?",
+        schemaName,
         documentId);
   }
 

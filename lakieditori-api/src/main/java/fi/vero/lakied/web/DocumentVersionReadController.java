@@ -2,6 +2,7 @@ package fi.vero.lakied.web;
 
 import com.google.common.collect.Streams;
 import fi.vero.lakied.service.document.DocumentCriteria;
+import fi.vero.lakied.service.document.DocumentKey;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
@@ -25,23 +26,25 @@ import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/documents/{id}")
+@RequestMapping("/api/schemas/{schemaName}/documents/{id}")
 public class DocumentVersionReadController {
 
-  private final ReadRepository<UUID, Audited<Document>> documentVersionReadRepository;
+  private final ReadRepository<DocumentKey, Audited<Document>> documentVersionReadRepository;
 
   @Autowired
   public DocumentVersionReadController(
-      ReadRepository<UUID, Audited<Document>> documentVersionReadRepository) {
+      ReadRepository<DocumentKey, Audited<Document>> documentVersionReadRepository) {
     this.documentVersionReadRepository = documentVersionReadRepository;
   }
 
   @GetXmlMapping("/versions")
   public Document getDocumentVersions(
+      @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
 
-    long versionCount = documentVersionReadRepository.count(DocumentCriteria.byId(id), user);
+    long versionCount = documentVersionReadRepository
+        .count(DocumentCriteria.byKey(schemaName, id), user);
 
     if (versionCount == 0) {
       throw new NotFoundException();
@@ -49,8 +52,8 @@ public class DocumentVersionReadController {
 
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("documents");
 
-    try (Stream<Tuple2<UUID, Audited<Document>>> entries = documentVersionReadRepository
-        .entries(DocumentCriteria.byId(id), user)) {
+    try (Stream<Tuple2<DocumentKey, Audited<Document>>> entries = documentVersionReadRepository
+        .entries(DocumentCriteria.byKey(schemaName, id), user)) {
 
       Stream<Long> indexStream = LongStream.iterate(versionCount, i -> i - 1).boxed();
 
@@ -73,6 +76,7 @@ public class DocumentVersionReadController {
 
   @GetXmlMapping("/versions/{number}")
   public Document getDocumentVersion(
+      @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @PathVariable("number") Long number,
       @AuthenticationPrincipal User user) {
@@ -81,14 +85,15 @@ public class DocumentVersionReadController {
       throw new BadRequestException("Version number can't be less than one.");
     }
 
-    long versionCount = documentVersionReadRepository.count(DocumentCriteria.byId(id), user);
+    long versionCount = documentVersionReadRepository
+        .count(DocumentCriteria.byKey(schemaName, id), user);
 
     if (number > versionCount) {
       throw new NotFoundException();
     }
 
-    try (Stream<Tuple2<UUID, Audited<Document>>> entries = documentVersionReadRepository
-        .entries(DocumentCriteria.byId(id), user)) {
+    try (Stream<Tuple2<DocumentKey, Audited<Document>>> entries = documentVersionReadRepository
+        .entries(DocumentCriteria.byKey(schemaName, id), user)) {
 
       return entries
           .skip(versionCount - number)
@@ -118,12 +123,14 @@ public class DocumentVersionReadController {
 
   @GetXmlMapping(path = "/diff", params = {"leftVersion", "rightVersion"})
   public Document getDocumentVersionDiff(
+      @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @RequestParam("leftVersion") Long leftVersionNumber,
       @RequestParam("rightVersion") Long rightVersionNumber,
       @AuthenticationPrincipal User user) {
 
-    long versionCount = documentVersionReadRepository.count(DocumentCriteria.byId(id), user);
+    long versionCount = documentVersionReadRepository
+        .count(DocumentCriteria.byKey(schemaName, id), user);
 
     if (versionCount == 0) {
       throw new NotFoundException();
@@ -135,10 +142,10 @@ public class DocumentVersionReadController {
 
     Document left = leftVersionNumber == 0
         ? XmlUtils.parseUnchecked("<document></document>")
-        : getDocumentVersion(id, leftVersionNumber, user);
+        : getDocumentVersion(schemaName, id, leftVersionNumber, user);
     Document right = rightVersionNumber == 0
         ? XmlUtils.parseUnchecked("<document></document>")
-        : getDocumentVersion(id, rightVersionNumber, user);
+        : getDocumentVersion(schemaName, id, rightVersionNumber, user);
 
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder()
         .pushElement("differences")
@@ -146,9 +153,8 @@ public class DocumentVersionReadController {
         .attribute("leftVersion", leftVersionNumber.toString())
         .attribute("rightVersion", rightVersionNumber.toString());
 
-    XmlUtils.textDiff(left, right).forEach(difference -> {
-      builder.pushExternal(difference.toDocument()).pop();
-    });
+    XmlUtils.textDiff(left, right).forEach(difference ->
+        builder.pushExternal(difference.toDocument()).pop());
 
     return builder.build();
   }

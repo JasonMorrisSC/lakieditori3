@@ -7,14 +7,9 @@ import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.io.IOException;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.validation.Schema;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
@@ -22,25 +17,6 @@ import org.xml.sax.SAXException;
 @RestController
 @RequestMapping("/api")
 public class DocumentUtilsController {
-
-  private final Schema schema;
-
-  @Autowired
-  public DocumentUtilsController(Schema schema) {
-    this.schema = schema;
-  }
-
-  @PostXmlMapping("/validate")
-  @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void validate(@RequestBody Document document) {
-    try {
-      schema.newValidator().validate(new DOMSource(document));
-    } catch (SAXException e) {
-      throw new BadRequestException(e);
-    } catch (IOException e) {
-      throw new InternalServerErrorException(e);
-    }
-  }
 
   @PostXmlMapping(path = "/annotateLineNumbers", produces = {
       MediaType.TEXT_XML_VALUE,

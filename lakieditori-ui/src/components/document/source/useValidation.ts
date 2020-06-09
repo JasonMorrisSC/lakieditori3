@@ -13,7 +13,7 @@ export function useValidation(document: string | Document) {
 
   useEffect(() => {
     const timer = setTimeout(() =>
-            axios.post(`/api/validate`,
+            axios.post(`/api/schemas/statute/validate`,
                 typeof document === "string" ? document : toString(document),
                 config)
             .then(() => setValidationErrorMessage(""))

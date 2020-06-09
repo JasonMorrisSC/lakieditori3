@@ -8,7 +8,7 @@ export function useVersions(id: string) {
   const [versions, setVersions] = useState<Document>(parseXml('<documents></documents>'));
 
   useEffect(() => {
-    axios.get('/api/documents/' + id + '/versions', {
+    axios.get('/api/schemas/statute/documents/' + id + '/versions', {
       responseType: 'document'
     }).then(res => {
       setVersions(res.data);

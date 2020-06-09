@@ -1,9 +1,8 @@
 package fi.vero.lakied.service.user;
 
-import fi.vero.lakied.util.common.ReadRepository;
+import fi.vero.lakied.util.common.SqlReadRepository;
 import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.criteria.SqlCriteria;
 import fi.vero.lakied.util.jdbc.JdbcUtils;
 import fi.vero.lakied.util.security.User;
@@ -14,7 +13,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 public class JdbcUserPropertiesReadRepository implements
-    ReadRepository<Tuple2<UUID, String>, String> {
+    SqlReadRepository<Tuple2<UUID, String>, String> {
 
   private final JdbcTemplate jdbc;
   private final RowMapper<Tuple2<Tuple2<UUID, String>, String>> rowMapper;
@@ -28,10 +27,9 @@ public class JdbcUserPropertiesReadRepository implements
 
   @Override
   public Stream<Tuple2<Tuple2<UUID, String>, String>> entries(
-      Criteria<Tuple2<UUID, String>, String> criteria, User user) {
-    SqlCriteria<Tuple2<UUID, String>, String> sqlCriteria = (SqlCriteria<Tuple2<UUID, String>, String>) criteria;
+      SqlCriteria<Tuple2<UUID, String>, String> criteria, User user) {
     return JdbcUtils.queryForStream(jdbc.getDataSource(),
-        "select * from user_properties where " + sqlCriteria.sql(), sqlCriteria.args(), rowMapper);
+        "select * from user_properties where " + criteria.sql(), criteria.args(), rowMapper);
   }
 
 }

@@ -9,7 +9,7 @@ export function useDocumentLock(id: null | string) {
   useEffect(() => {
     if (id) {
       axios
-      .get(`/api/documents/${id}/lock`)
+      .get(`/api/schemas/statute/documents/${id}/lock`)
       .then(response => setLock(response.data))
       .catch(error => {
         if (error.response.status === 404) {
@@ -26,7 +26,7 @@ export function useDocumentLock(id: null | string) {
     console.debug("acquire lock for: " + id);
 
     return axios
-    .post(`/api/documents/${id}/lock`)
+    .post(`/api/schemas/statute/documents/${id}/lock`)
     .then(() => setLock(user.username));
   };
 
@@ -34,9 +34,9 @@ export function useDocumentLock(id: null | string) {
     console.debug("release lock for: " + id);
 
     return axios
-    .delete(`/api/documents/${id}/lock`)
+    .delete(`/api/schemas/statute/documents/${id}/lock`)
     .then(() => {
-      return axios.get(`/api/documents/${id}/lock`)
+      return axios.get(`/api/schemas/statute/documents/${id}/lock`)
       .then(response => setLock(response.data))
       .catch(error => {
         if (error.response.status === 404) {

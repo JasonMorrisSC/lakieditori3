@@ -5,7 +5,7 @@ import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.Tuple3;
+import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
@@ -22,29 +22,32 @@ import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/documents/{id}/permissions")
+@RequestMapping("/api/schemas/{schemaName}/documents/{id}/permissions")
 public class DocumentUserPermissionReadController {
 
-  private final ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository;
+  private final ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository;
 
   @Autowired
   public DocumentUserPermissionReadController(
-      ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository) {
+      ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository) {
     this.documentUserPermissionReadRepository = documentUserPermissionReadRepository;
   }
 
   @GetXmlMapping
-  public Document get(@PathVariable("id") UUID id, @AuthenticationPrincipal User user) {
+  public Document get(
+      @PathVariable("schemaName") String schemaName,
+      @PathVariable("id") UUID id,
+      @AuthenticationPrincipal User user) {
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder();
     builder.pushElement("permissions");
 
-    try (Stream<Tuple2<Tuple3<UUID, String, Permission>, Empty>> entries =
+    try (Stream<Tuple2<Tuple4<String, UUID, String, Permission>, Empty>> entries =
         documentUserPermissionReadRepository.entries(
-            DocumentUserPermissionCriteria.byDocumentId(id), user)) {
+            DocumentUserPermissionCriteria.byDocumentKey(schemaName, id), user)) {
 
       Map<String, String> permissionsByUsername = entries
           // keep only username and permission
-          .map(e -> Tuple.of(e._1._2, e._1._3))
+          .map(e -> Tuple.of(e._1._3, e._1._4))
           // group permissions by username
           .collect(
               Collectors.groupingBy(e -> e._1,

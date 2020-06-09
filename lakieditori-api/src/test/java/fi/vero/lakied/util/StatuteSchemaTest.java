@@ -15,11 +15,11 @@ import javax.xml.validation.Schema;
 import org.junit.jupiter.api.Test;
 import org.xml.sax.SAXException;
 
-class DocumentSchemaTest {
+class StatuteSchemaTest {
 
   private Schema schema = XmlUtils.parseSchema(
       resourceToString("schemas/xml.xsd"),
-      resourceToString("schemas/document.xsd"));
+      resourceToString("schemas/statute.xsd"));
 
   private void validate(Path path, String xml) {
     try {
@@ -33,12 +33,14 @@ class DocumentSchemaTest {
   void shouldValidateExampleDocuments() {
     PathMatcher xmlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.xml");
 
-    forAllResourcesAsString("example-documents", xmlFileMatcher::matches, this::validate);
-    forAllResourcesAsString("test-documents/valid", xmlFileMatcher::matches, this::validate);
-    forAllResourcesAsString("test-documents/invalid", xmlFileMatcher::matches, (path, xml) -> {
-      assertThrows(SAXException.class,
-          () -> schema.newValidator().validate(new StreamSource(new StringReader(xml))),
-          "Expected invalid document at: " + path.toString());
-    });
+    forAllResourcesAsString("documents/statute/examples", xmlFileMatcher::matches,
+        this::validate);
+    forAllResourcesAsString("documents/statute/tests/valid", xmlFileMatcher::matches,
+        this::validate);
+    forAllResourcesAsString("documents/statute/tests/invalid", xmlFileMatcher::matches,
+        (path, xml) ->
+            assertThrows(SAXException.class,
+                () -> schema.newValidator().validate(new StreamSource(new StringReader(xml))),
+                "Expected invalid document at: " + path.toString()));
   }
 }

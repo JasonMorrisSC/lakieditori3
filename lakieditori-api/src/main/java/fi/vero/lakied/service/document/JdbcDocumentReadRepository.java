@@ -1,13 +1,12 @@
 package fi.vero.lakied.service.document;
 
 import fi.vero.lakied.util.common.Audited;
-import fi.vero.lakied.util.common.ReadRepository;
+import fi.vero.lakied.util.common.SqlReadRepository;
 import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.security.User;
-import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.criteria.SqlCriteria;
 import fi.vero.lakied.util.jdbc.JdbcUtils;
+import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.util.UUID;
 import java.util.stream.Stream;
@@ -17,15 +16,17 @@ import org.springframework.jdbc.core.RowMapper;
 import org.w3c.dom.Document;
 
 public class JdbcDocumentReadRepository implements
-    ReadRepository<UUID, Audited<Document>> {
+    SqlReadRepository<DocumentKey, Audited<Document>> {
 
   private final JdbcTemplate jdbc;
-  private final RowMapper<Tuple2<UUID, Audited<Document>>> rowMapper;
+  private final RowMapper<Tuple2<DocumentKey, Audited<Document>>> rowMapper;
 
   public JdbcDocumentReadRepository(DataSource dataSource) {
     this.jdbc = new JdbcTemplate(dataSource);
     this.rowMapper = (rs, rowNum) -> Tuple.of(
-        UUID.fromString(rs.getString("id")),
+        DocumentKey.of(
+            rs.getString("schema_name"),
+            UUID.fromString(rs.getString("id"))),
         new Audited<Document>(
             rs.getString("created_by"),
             rs.getTimestamp("created_date").toLocalDateTime(),
@@ -35,11 +36,10 @@ public class JdbcDocumentReadRepository implements
   }
 
   @Override
-  public Stream<Tuple2<UUID, Audited<Document>>> entries(
-      Criteria<UUID, Audited<Document>> criteria, User user) {
-    SqlCriteria<UUID, Audited<Document>> sqlCriteria = (SqlCriteria<UUID, Audited<Document>>) criteria;
+  public Stream<Tuple2<DocumentKey, Audited<Document>>> entries(
+      SqlCriteria<DocumentKey, Audited<Document>> criteria, User user) {
     return JdbcUtils.queryForStream(jdbc.getDataSource(),
-        "select * from document where " + sqlCriteria.sql(), sqlCriteria.args(), rowMapper);
+        "select * from document where " + criteria.sql(), criteria.args(), rowMapper);
   }
 
 }

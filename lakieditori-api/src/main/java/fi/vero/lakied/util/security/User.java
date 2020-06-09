@@ -236,6 +236,10 @@ public final class User implements UserDetails {
     public UserBuilder password(String password) {
       return new UserBuilder(id, username, Objects.requireNonNull(password));
     }
+
+    public UserBuilder randomPassword() {
+      return new UserBuilder(id, username, UUID.randomUUID().toString());
+    }
   }
 
   public static final class UserBuilder {

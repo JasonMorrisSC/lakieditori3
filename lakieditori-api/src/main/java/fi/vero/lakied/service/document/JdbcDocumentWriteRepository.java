@@ -4,13 +4,12 @@ import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.w3c.dom.Document;
 
 public class JdbcDocumentWriteRepository implements
-    WriteRepository<UUID, Document> {
+    WriteRepository<DocumentKey, Document> {
 
   private final JdbcTemplate jdbc;
 
@@ -19,17 +18,19 @@ public class JdbcDocumentWriteRepository implements
   }
 
   @Override
-  public void insert(UUID id, Document document, User user) {
+  public void insert(DocumentKey id, Document document, User user) {
     LocalDateTime now = LocalDateTime.now();
     jdbc.update(
         "insert into document ("
+            + "schema_name, "
             + "id, "
             + "created_by, "
             + "created_date, "
             + "last_modified_by, "
             + "last_modified_date, "
-            + "document) values (?, ?, ?, ?, ?, ?)",
-        id,
+            + "document) values (?, ?, ?, ?, ?, ?, ?)",
+        id.schemaName,
+        id.id,
         user.getUsername(),
         now,
         user.getUsername(),
@@ -38,22 +39,24 @@ public class JdbcDocumentWriteRepository implements
   }
 
   @Override
-  public void update(UUID id, Document document, User user) {
+  public void update(DocumentKey id, Document document, User user) {
     jdbc.update(
         "update document "
             + "set document = ?,"
             + "    last_modified_by = ?,"
             + "    last_modified_date = ? "
-            + "where id = ?",
+            + "where schema_name = ? and id = ?",
         XmlUtils.print(document),
         user.getUsername(),
         LocalDateTime.now(),
-        id);
+        id.schemaName,
+        id.id);
   }
 
   @Override
-  public void delete(UUID id, User user) {
-    jdbc.update("delete from document where id = ?", id);
+  public void delete(DocumentKey key, User user) {
+    jdbc.update("delete from document where schema_name = ? and id = ?",
+        key.schemaName, key.id);
   }
 
 }

@@ -4,10 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import fi.vero.lakied.service.document.DocumentCriteria;
+import fi.vero.lakied.service.document.DocumentKey;
 import fi.vero.lakied.service.document.JdbcDocumentReadRepository;
 import fi.vero.lakied.service.document.JdbcDocumentWriteRepository;
+import fi.vero.lakied.service.schema.JdbcSchemaWriteRepository;
 import fi.vero.lakied.service.user.JdbcUserWriteRepository;
 import fi.vero.lakied.util.common.Audited;
+import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.security.User;
@@ -29,15 +32,18 @@ class JdbcDocumentRepositoryTest {
   @Autowired
   private DataSource dataSource;
 
-  private ReadRepository<UUID, Audited<Document>> documentReadRepository;
-  private WriteRepository<UUID, Document> documentWriteRepository;
+  private ReadRepository<DocumentKey, Audited<Document>> documentReadRepository;
+  private WriteRepository<DocumentKey, Document> documentWriteRepository;
 
-  private User user = User.superuser("ExampleUser");
+  private final User user = User.superuser("ExampleUser");
 
   @BeforeEach
   void setUp() {
     JdbcUserWriteRepository userWriteRepository = new JdbcUserWriteRepository(dataSource);
     userWriteRepository.insert(UUID.randomUUID(), user, user);
+
+    JdbcSchemaWriteRepository schemaWriteRepository = new JdbcSchemaWriteRepository(dataSource);
+    schemaWriteRepository.insert("example", Empty.INSTANCE, user);
 
     this.documentReadRepository = new JdbcDocumentReadRepository(dataSource);
     this.documentWriteRepository = new JdbcDocumentWriteRepository(dataSource);
@@ -48,9 +54,10 @@ class JdbcDocumentRepositoryTest {
     UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
-    documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
+    documentWriteRepository
+        .insert(DocumentKey.of("example", id), XmlUtils.parseUnchecked(xml), user);
 
-    assertEquals(1, documentReadRepository.count(DocumentCriteria.byId(id), user));
+    assertEquals(1, documentReadRepository.count(DocumentCriteria.byKey("example", id), user));
   }
 
   @Test
@@ -58,11 +65,11 @@ class JdbcDocumentRepositoryTest {
     UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
-    documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
+    documentWriteRepository
+        .insert(DocumentKey.of("example", id), XmlUtils.parseUnchecked(xml), user);
 
-    assertThrows(DataIntegrityViolationException.class, () -> {
-      documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
-    });
+    assertThrows(DataIntegrityViolationException.class, () -> documentWriteRepository
+        .insert(DocumentKey.of("example", id), XmlUtils.parseUnchecked(xml), user));
   }
 
   @Test
@@ -70,24 +77,26 @@ class JdbcDocumentRepositoryTest {
     UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
-    documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
-
-    assertEquals("World!", documentReadRepository.value(DocumentCriteria.byId(id), user)
-        .map(v -> v.value)
-        .orElseThrow(AssertionError::new)
-        .getElementsByTagName("title")
-        .item(0)
-        .getTextContent());
-
     documentWriteRepository
-        .update(id, XmlUtils.parseUnchecked("<document><title>World!!</title></document>"), user);
+        .insert(DocumentKey.of("example", id), XmlUtils.parseUnchecked(xml), user);
 
-    assertEquals("World!!", documentReadRepository.value(DocumentCriteria.byId(id), user)
+    assertEquals("World!", documentReadRepository.value(DocumentCriteria.byKey("example", id), user)
         .map(v -> v.value)
         .orElseThrow(AssertionError::new)
         .getElementsByTagName("title")
         .item(0)
         .getTextContent());
+
+    documentWriteRepository.update(DocumentKey.of("example", id),
+        XmlUtils.parseUnchecked("<document><title>World!!</title></document>"), user);
+
+    assertEquals("World!!",
+        documentReadRepository.value(DocumentCriteria.byKey("example", id), user)
+            .map(v -> v.value)
+            .orElseThrow(AssertionError::new)
+            .getElementsByTagName("title")
+            .item(0)
+            .getTextContent());
   }
 
   @Test
@@ -95,13 +104,14 @@ class JdbcDocumentRepositoryTest {
     UUID id = UUID.randomUUID();
     String xml = "<document><title>World!</title></document>";
 
-    documentWriteRepository.insert(id, XmlUtils.parseUnchecked(xml), user);
+    documentWriteRepository.insert(
+        DocumentKey.of("example", id), XmlUtils.parseUnchecked(xml), user);
 
-    assertEquals(1, documentReadRepository.count(DocumentCriteria.byId(id), user));
+    assertEquals(1, documentReadRepository.count(DocumentCriteria.byKey("example", id), user));
 
-    documentWriteRepository.delete(id, user);
+    documentWriteRepository.delete(DocumentKey.of("example", id), user);
 
-    assertEquals(0, documentReadRepository.count(DocumentCriteria.byId(id), user));
+    assertEquals(0, documentReadRepository.count(DocumentCriteria.byKey("example", id), user));
   }
 
 }

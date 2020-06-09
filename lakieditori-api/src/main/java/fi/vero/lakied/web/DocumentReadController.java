@@ -1,9 +1,9 @@
 package fi.vero.lakied.web;
 
 import fi.vero.lakied.service.document.DocumentCriteria;
+import fi.vero.lakied.service.document.DocumentKey;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
@@ -17,39 +17,44 @@ import org.springframework.web.bind.annotation.RestController;
 import org.w3c.dom.Document;
 
 @RestController
-@RequestMapping("/api/documents")
+@RequestMapping("/api/schemas/{schemaName}/documents")
 public class DocumentReadController {
 
-  private final ReadRepository<UUID, Audited<Document>> documentReadRepository;
+  private final ReadRepository<DocumentKey, Audited<Document>> documentReadRepository;
 
   @Autowired
   public DocumentReadController(
-      ReadRepository<UUID, Audited<Document>> documentReadRepository) {
+      ReadRepository<DocumentKey, Audited<Document>> documentReadRepository) {
     this.documentReadRepository = documentReadRepository;
   }
 
   @GetXmlMapping
-  public Document getAll(@AuthenticationPrincipal User user) {
+  public Document getAll(
+      @PathVariable("schemaName") String schemaName,
+      @AuthenticationPrincipal User user) {
+
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("documents");
 
-    documentReadRepository.forEachEntry(Criteria.matchAll(), user, (id, auditedDocument) ->
-        builder.pushExternal(auditedDocument.value)
-            .attribute("id", id.toString())
-            .attribute("createdBy", auditedDocument.createdBy)
-            .attribute("createdDate", auditedDocument.createdDate.toString())
-            .attribute("lastModifiedBy", auditedDocument.lastModifiedBy)
-            .attribute("lastModifiedDate", auditedDocument.lastModifiedDate.toString())
-            .pop());
+    documentReadRepository.forEachEntry(DocumentCriteria.bySchemaName(schemaName), user,
+        (key, auditedDocument) ->
+            builder.pushExternal(auditedDocument.value)
+                .attribute("id", key.id.toString())
+                .attribute("createdBy", auditedDocument.createdBy)
+                .attribute("createdDate", auditedDocument.createdDate.toString())
+                .attribute("lastModifiedBy", auditedDocument.lastModifiedBy)
+                .attribute("lastModifiedDate", auditedDocument.lastModifiedDate.toString())
+                .pop());
 
     return builder.build();
   }
 
   @GetXmlMapping("/{id}")
   public Document get(
+      @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
     return documentReadRepository
-        .value(DocumentCriteria.byId(id), user)
+        .value(DocumentCriteria.byKey(schemaName, id), user)
         .map(auditedDocument -> XmlDocumentBuilder.builder()
             .pushExternal(auditedDocument.value)
             .attribute("id", id.toString())

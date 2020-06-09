@@ -9,19 +9,20 @@ import org.apache.http.HttpStatus;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 
-class DocumentUtilsControllerTest extends BaseApiIntegrationTest {
+class DocumentValidateControllerTest extends BaseApiIntegrationTest {
 
   @Test
   void shouldValidateExampleXmlDocuments() {
     PathMatcher xmlFileMatcher = FileSystems.getDefault().getPathMatcher("glob:**/*.xml");
 
-    forAllResourcesAsString("example-documents", xmlFileMatcher::matches, (path, document) ->
-        given(adminAuthorizedRequest)
-            .contentType(MediaType.APPLICATION_XML_VALUE)
-            .body(document)
-            .post("/api/validate")
-            .then()
-            .statusCode(HttpStatus.SC_NO_CONTENT));
+    forAllResourcesAsString("documents/statute/examples", xmlFileMatcher::matches,
+        (path, document) ->
+            given(adminAuthorizedRequest)
+                .contentType(MediaType.APPLICATION_XML_VALUE)
+                .body(document)
+                .post("/api/schemas/statute/validate")
+                .then()
+                .statusCode(HttpStatus.SC_NO_CONTENT));
   }
 
 }

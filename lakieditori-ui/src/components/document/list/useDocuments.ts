@@ -8,7 +8,7 @@ export function useDocuments() {
   const [documents, setDocuments] = useState<Document>(parseXml("<documents/>"));
 
   useEffect(() => {
-    axios.get('/api/documents/', {
+    axios.get('/api/schemas/statute/documents/', {
       responseType: 'document'
     }).then(res => {
       setDocuments(res.data);
@@ -16,14 +16,14 @@ export function useDocuments() {
   }, [user]);
 
   const saveDocument = (document: Document) => {
-    return axios.post('/api/documents', toString(document), {
+    return axios.post('/api/schemas/statute/documents', toString(document), {
       headers: {'Content-Type': 'text/xml'}
     });
   };
 
   const removeDocument = (id: string) => {
-    return axios.delete(`/api/documents/${id}`).then(() => {
-      return axios.get('/api/documents', {responseType: 'document'});
+    return axios.delete(`/api/schemas/statute/documents/${id}`).then(() => {
+      return axios.get('/api/schemas/statute/documents', {responseType: 'document'});
     }).then(res => {
       setDocuments(res.data);
     });

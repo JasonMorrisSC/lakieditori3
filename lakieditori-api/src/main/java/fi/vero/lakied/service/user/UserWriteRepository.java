@@ -62,9 +62,8 @@ public class UserWriteRepository implements WriteRepository<UUID, User> {
 
   @Override
   public void delete(UUID id, User principal) {
-    userPropertiesReadRepository
-        .forEachEntry(UserPropertiesCriteria.byUserId(id), principal,
-            (k, v) -> userPropertiesWriteRepository.delete(Tuple.of(id, k._2), principal));
+    userPropertiesReadRepository.forEachEntry(UserPropertiesCriteria.byUserId(id), principal,
+        (k, v) -> userPropertiesWriteRepository.delete(Tuple.of(id, k._2), principal));
 
     userWriteRepository.delete(id, principal);
   }

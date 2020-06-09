@@ -1,6 +1,5 @@
 package fi.vero.lakied.service.document;
 
-import static fi.vero.lakied.util.common.ResourceUtils.resourceToString;
 import static fi.vero.lakied.util.security.PermissionEvaluator.permitAuthenticated;
 import static fi.vero.lakied.util.security.PermissionEvaluator.permitInsert;
 import static fi.vero.lakied.util.security.PermissionEvaluator.permitRead;
@@ -11,6 +10,7 @@ import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.common.Tuple3;
+import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
 import fi.vero.lakied.util.security.EntryAuthorizingReadRepository;
@@ -18,12 +18,9 @@ import fi.vero.lakied.util.security.KeyAuthorizingReadRepository;
 import fi.vero.lakied.util.security.KeyAuthorizingWriteRepository;
 import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.PermissionEvaluator;
-import fi.vero.lakied.util.xml.DocumentValidatingWriteRepository;
-import fi.vero.lakied.util.xml.XmlUtils;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import javax.sql.DataSource;
-import javax.xml.validation.Schema;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -33,14 +30,8 @@ import org.w3c.dom.Document;
 public class DocumentRepositoryConfiguration {
 
   @Bean
-  public Schema documentSchema() {
-    return XmlUtils.parseSchema(
-        resourceToString("schemas/xml.xsd"),
-        resourceToString("schemas/document.xsd"));
-  }
-
-  @Bean
-  public ReadRepository<UUID, Audited<Document>> documentReadRepository(DataSource ds) {
+  public ReadRepository<DocumentKey, Audited<Document>> documentReadRepository(
+      DataSource ds) {
     return
         new EntryAuthorizingReadRepository<>(
             new JdbcDocumentReadRepository(ds),
@@ -48,40 +39,42 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public ReadRepository<Tuple2<UUID, String>, String> documentPropertiesReadRepository(
+  public ReadRepository<Tuple3<String, UUID, String>, String> documentPropertiesReadRepository(
       DataSource ds) {
     return
         new KeyAuthorizingReadRepository<>(
             new JdbcDocumentPropertiesReadRepository(ds),
-            documentPermissionEvaluator(ds).mapObject(o -> o._1));
+            documentPermissionEvaluator(ds).mapObject(o -> DocumentKey.of(o._1, o._2)));
   }
 
   @Bean
-  public WriteRepository<UUID, Document> documentWriteRepository(
+  public WriteRepository<DocumentKey, Document> documentWriteRepository(
+      ReadRepository<Tuple2<String, Integer>, Tuple2<String, Document>> schemaDefinitionReadRepository,
       PlatformTransactionManager txm,
       DataSource ds) {
     return
         new KeyAuthorizingWriteRepository<>(
-            new DocumentValidatingWriteRepository<>(
+            new ValidatingDocumentWriteRepository(
                 new TransactionalJdbcWriteRepository<>(
                     new JdbcDocumentWriteRepository(ds), txm),
-                documentSchema()),
+                schemaDefinitionReadRepository),
             documentPermissionEvaluator(ds));
   }
 
   @Bean
-  public WriteRepository<Tuple2<UUID, String>, String> documentPropertiesWriteRepository(
+  public WriteRepository<Tuple3<String, UUID, String>, String> documentPropertiesWriteRepository(
       PlatformTransactionManager txm,
       DataSource ds) {
     return
         new KeyAuthorizingWriteRepository<>(
             new TransactionalJdbcWriteRepository<>(
                 new JdbcDocumentPropertiesWriteRepository(ds), txm),
-            documentPermissionEvaluator(ds).mapObject(o -> o._1));
+            documentPermissionEvaluator(ds).mapObject(o -> DocumentKey.of(o._1, o._2)));
   }
 
   @Bean
-  public ReadRepository<UUID, Audited<Document>> documentVersionReadRepository(DataSource ds) {
+  public ReadRepository<DocumentKey, Audited<Document>> documentVersionReadRepository(
+      DataSource ds) {
     return
         new EntryAuthorizingReadRepository<>(
             new JdbcDocumentVersionReadRepository(ds),
@@ -89,20 +82,21 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public WriteRepository<UUID, Document> documentVersionWriteRepository(
+  public WriteRepository<DocumentKey, Document> documentVersionWriteRepository(
+      ReadRepository<Tuple2<String, Integer>, Tuple2<String, Document>> schemaDefinitionReadRepository,
       PlatformTransactionManager txm,
       DataSource ds) {
     return
         new KeyAuthorizingWriteRepository<>(
-            new DocumentValidatingWriteRepository<>(
+            new ValidatingDocumentWriteRepository(
                 new TransactionalJdbcWriteRepository<>(
                     new JdbcDocumentVersionWriteRepository(ds), txm),
-                documentSchema()),
+                schemaDefinitionReadRepository),
             documentPermissionEvaluator(ds));
   }
 
   @Bean
-  public ReadRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionReadRepository(
+  public ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository(
       DataSource ds) {
     return new KeyAuthorizingReadRepository<>(
         new JdbcDocumentUserPermissionReadRepository(ds),
@@ -110,7 +104,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public WriteRepository<Tuple3<UUID, String, Permission>, Empty> documentUserPermissionWriteRepository(
+  public WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository(
       DataSource ds) {
     return new KeyAuthorizingWriteRepository<>(
         new JdbcDocumentUserPermissionWriteRepository(ds),
@@ -118,7 +112,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public ReadRepository<UUID, Tuple2<String, LocalDateTime>> documentLockReadRepository(
+  public ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository(
       DataSource ds) {
     return new KeyAuthorizingReadRepository<>(
         new JdbcDocumentLockReadRepository(ds),
@@ -126,7 +120,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public WriteRepository<UUID, Empty> documentLockWriteRepository(
+  public WriteRepository<DocumentKey, Empty> documentLockWriteRepository(
       DataSource ds) {
     return new KeyAuthorizingWriteRepository<>(
         new JdbcDocumentLockWriteRepository(ds),
@@ -136,11 +130,11 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public PermissionEvaluator<Tuple3<UUID, String, Permission>> documentUserPermissionPermissionEvaluator(
+  public PermissionEvaluator<Tuple4<String, UUID, String, Permission>> documentUserPermissionPermissionEvaluator(
       DataSource ds) {
-    // delegate to document evaluator by extracting a document id from the permission tuple
-    PermissionEvaluator<Tuple3<UUID, String, Permission>> delegate =
-        documentPermissionEvaluator(ds).mapObject(o -> o._1);
+    // delegate to document evaluator by extracting a document key from the permission tuple
+    PermissionEvaluator<Tuple4<String, UUID, String, Permission>> delegate =
+        documentPermissionEvaluator(ds).mapObject(o -> DocumentKey.of(o._1, o._2));
 
     // document permission modifications always require an update permission to the document
     return delegate
@@ -149,15 +143,15 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public PermissionEvaluator<Tuple2<UUID, Audited<Document>>> documentEntryPermissionEvaluator(
+  public PermissionEvaluator<Tuple2<DocumentKey, Audited<Document>>> documentEntryPermissionEvaluator(
       DataSource ds) {
 
-    PermissionEvaluator<Tuple2<UUID, Audited<Document>>> permitRecommendation =
+    PermissionEvaluator<Tuple2<DocumentKey, Audited<Document>>> permitRecommendation =
         xPathPermissionEvaluator("/document/@state = 'RECOMMENDATION'").mapObject(t -> t._2.value);
-    PermissionEvaluator<Tuple2<UUID, Audited<Document>>> permitDraft =
+    PermissionEvaluator<Tuple2<DocumentKey, Audited<Document>>> permitDraft =
         xPathPermissionEvaluator("/document/@state = 'DRAFT'").mapObject(t -> t._2.value);
 
-    return PermissionEvaluator.<Tuple2<UUID, Audited<Document>>>denyAll()
+    return PermissionEvaluator.<Tuple2<DocumentKey, Audited<Document>>>denyAll()
         // anyone can read recommendations
         .or(permitRecommendation
             .and(permitRead()))
@@ -171,13 +165,14 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public PermissionEvaluator<UUID> documentPermissionEvaluator(DataSource ds) {
-    PermissionEvaluator<UUID> authenticated = PermissionEvaluator.permitAuthenticated();
-    PermissionEvaluator<UUID> userPermission =
+  public PermissionEvaluator<DocumentKey> documentPermissionEvaluator(DataSource ds) {
+    PermissionEvaluator<DocumentKey> authenticated = PermissionEvaluator
+        .permitAuthenticated();
+    PermissionEvaluator<DocumentKey> userPermission =
         new DocumentUserPermissionEvaluator(
             new JdbcDocumentUserPermissionReadRepository(ds));
 
-    return PermissionEvaluator.<UUID>permitSuperuser()
+    return PermissionEvaluator.<DocumentKey>permitSuperuser()
         // authenticated can create new docs
         .or(authenticated.and(permitInsert()))
         // otherwise check database for user specific permissions
