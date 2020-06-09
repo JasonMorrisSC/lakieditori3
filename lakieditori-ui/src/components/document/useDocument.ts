@@ -14,7 +14,7 @@ export function useDocument(schemaName: string, id: string) {
     axios
     .get(`/api/schemas/${schemaName}/documents/${id}`, getConfig)
     .then(res => setDocument(res.data));
-  }, [id, user]);
+  }, [schemaName, id, user]);
 
   const saveDocument = (document: string | Document): Promise<any> => {
     const xmlData = typeof document === "string" ? document : toString(document);

@@ -13,7 +13,7 @@ export function useDocuments(schemaName: string) {
     }).then(res => {
       setDocuments(res.data);
     });
-  }, [user]);
+  }, [schemaName, user]);
 
   const saveDocument = (document: Document) => {
     return axios.post(`/api/schemas/${schemaName}/documents/`, toString(document), {

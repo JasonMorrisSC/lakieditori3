@@ -22,7 +22,7 @@ export function useValidation(schemaName: string, document: string | Document) {
 
     return () => clearTimeout(timer);
 
-  }, [document]);
+  }, [schemaName, document]);
 
   return {validationErrorMessage};
 }
