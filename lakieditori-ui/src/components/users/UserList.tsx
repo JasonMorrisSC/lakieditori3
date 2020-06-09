@@ -52,9 +52,9 @@ const UserList: React.FC = () => {
             Käyttäjät
           </Heading.h2>
 
-          <Button icon={'plus'} onClick={() => setModalOpen(true)}>
+          <Button.secondaryNoborder icon={'plus'} onClick={() => setModalOpen(true)}>
             Uusi käyttäjä
-          </Button>
+          </Button.secondaryNoborder>
         </div>
 
         <Table style={{margin: `${tokens.spacing.s} 0 ${tokens.spacing.m} 0`}}>
