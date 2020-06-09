@@ -11,7 +11,7 @@ CREATE TABLE users
     superuser  boolean      NOT NULL,
     enabled    boolean      NOT NULL,
 
-    CONSTRAINT users_username_check CHECK (username ~ '^[A-Za-z0-9\\-\\.\\_]+$')
+    CONSTRAINT users_username_check CHECK (username ~ '^[A-Za-z0-9\-\.\_]+$')
 );
 
 CREATE INDEX users_username_idx ON users (username);
@@ -27,7 +27,7 @@ CREATE TABLE user_properties
         PRIMARY KEY (user_id, key),
     CONSTRAINT user_properties_user_fkey
         FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
-    CONSTRAINT user_properties_key_check CHECK (key ~ '^[A-Za-z0-9\\-\\.\\_]+$')
+    CONSTRAINT user_properties_key_check CHECK (key ~ '^[A-Za-z0-9\-\.\_]+$')
 );
 
 CREATE INDEX user_properties_user_id_idx ON user_properties (user_id);
@@ -36,7 +36,7 @@ CREATE INDEX user_properties_user_id_idx ON user_properties (user_id);
 CREATE TABLE schema
 (
     name varchar(255) PRIMARY KEY,
-    CONSTRAINT schema_name_check CHECK (name ~ '^[A-Za-z0-9\\-\\.\\_]+$')
+    CONSTRAINT schema_name_check CHECK (name ~ '^[A-Za-z0-9\-\.\_]+$')
 );
 
 
@@ -51,7 +51,7 @@ CREATE TABLE schema_definition
     CONSTRAINT schema_definition_schema_fkey
         FOREIGN KEY (schema_name) REFERENCES schema (name) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT schema_definition_name_unique UNIQUE (schema_name, name),
-    CONSTRAINT schema_definition_name_check CHECK (name ~ '^[A-Za-z0-9\\-\\.\\_]+$')
+    CONSTRAINT schema_definition_name_check CHECK (name ~ '^[A-Za-z0-9\-\.\_]+$')
 );
 
 CREATE INDEX schema_definition_schema_name_idx ON schema_definition (schema_name);
@@ -91,7 +91,7 @@ CREATE TABLE document_properties
     CONSTRAINT document_properties_document_fkey
         FOREIGN KEY (document_schema_name, document_id)
             REFERENCES document (schema_name, id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT document_properties_key_check CHECK (key ~ '^[A-Za-z0-9\\-\\.\\_]+$')
+    CONSTRAINT document_properties_key_check CHECK (key ~ '^[A-Za-z0-9\-\.\_]+$')
 );
 
 CREATE INDEX document_properties_document_id_idx ON document_properties (document_id);
