@@ -1,11 +1,11 @@
--- define schema if it doesn't exist
+-- insert schema if it doesn't exist
 INSERT INTO schema (name)
 SELECT 'statute'
 WHERE NOT EXISTS(SELECT 1
                  FROM schema
                  WHERE name = 'statute');
 
--- define first schema definition if it doesn't exist
+-- insert first schema definition if it doesn't exist
 INSERT INTO schema_definition (schema_name, index, name, definition)
 SELECT 'statute', 1, '1', ''
 WHERE NOT EXISTS(SELECT 1
@@ -13,7 +13,7 @@ WHERE NOT EXISTS(SELECT 1
                  WHERE schema_name = 'statute'
                    AND index = 1);
 
--- define second schema definition if it doesn't exist
+-- insert second schema definition if it doesn't exist
 INSERT INTO schema_definition (schema_name, index, name, definition)
 SELECT 'statute', 2, '2', ''
 WHERE NOT EXISTS(SELECT 1
