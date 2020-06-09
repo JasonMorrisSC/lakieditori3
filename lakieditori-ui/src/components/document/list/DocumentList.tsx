@@ -68,7 +68,6 @@ const DocumentList: React.FC<Props> = ({schemaName, listLabel, addButtonLabel}) 
 
         <Table style={{
           margin: `${tokens.spacing.s} 0 ${tokens.spacing.m} 0`,
-          tableLayout: "initial",
         }}>
           <thead>
           <tr>
@@ -80,7 +79,7 @@ const DocumentList: React.FC<Props> = ({schemaName, listLabel, addButtonLabel}) 
           </tr>
           </thead>
           <tbody>
-          {queryElements(documents.documentElement, 'statute')
+          {queryElements(documents.documentElement, schemaName)
           .sort(documentComparator)
           .map(renderDocumentRow)}
           </tbody>
