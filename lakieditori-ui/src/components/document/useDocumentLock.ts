@@ -2,14 +2,14 @@ import {useContext, useEffect, useState} from "react";
 import axios from "axios";
 import {AuthenticationContext} from "../../App";
 
-export function useDocumentLock(id: null | string) {
+export function useDocumentLock(schemaName: null | string, id: null | string) {
   const [user] = useContext(AuthenticationContext);
   const [lock, setLock] = useState<null | string>(null);
 
   useEffect(() => {
-    if (id) {
+    if (schemaName && id) {
       axios
-      .get(`/api/schemas/statute/documents/${id}/lock`)
+      .get(`/api/schemas/${schemaName}/documents/${id}/lock`)
       .then(response => setLock(response.data))
       .catch(error => {
         if (error.response.status === 404) {
@@ -20,13 +20,13 @@ export function useDocumentLock(id: null | string) {
         }
       });
     }
-  }, [id, user]);
+  }, [schemaName, id, user]);
 
   const acquireDocumentLock = (): Promise<any> => {
     console.debug("acquire lock for: " + id);
 
     return axios
-    .post(`/api/schemas/statute/documents/${id}/lock`)
+    .post(`/api/schemas/${schemaName}/documents/${id}/lock`)
     .then(() => setLock(user.username));
   };
 
@@ -34,9 +34,9 @@ export function useDocumentLock(id: null | string) {
     console.debug("release lock for: " + id);
 
     return axios
-    .delete(`/api/schemas/statute/documents/${id}/lock`)
+    .delete(`/api/schemas/${schemaName}/documents/${id}/lock`)
     .then(() => {
-      return axios.get(`/api/schemas/statute/documents/${id}/lock`)
+      return axios.get(`/api/schemas/${schemaName}/documents/${id}/lock`)
       .then(response => setLock(response.data))
       .catch(error => {
         if (error.response.status === 404) {

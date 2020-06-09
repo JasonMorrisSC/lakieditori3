@@ -42,15 +42,16 @@ interface LineNumberElementId {
 }
 
 interface Props {
+  schemaName: string,
   id: string,
   lock: null | string,
 }
 
-const DocumentSourceEdit: React.FC<Props> = ({id, lock}) => {
+const DocumentSourceEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   const [user] = useContext(AuthenticationContext);
   const history = useHistory();
 
-  const {document, saveDocument} = useDocument(id);
+  const {document, saveDocument} = useDocument(schemaName, id);
   const {formattedDocument} = useFormat(document);
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
@@ -60,7 +61,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id, lock}) => {
   const previewElementRef = useRef<HTMLDivElement>(null);
   const [lineNumberMap, setLineNumberMap] = useState<LineNumberElementId[]>([]);
   const {annotatedDocument} = useLineNumberAnnotations(editorValue);
-  const {validationErrorMessage} = useValidation(editorValue);
+  const {validationErrorMessage} = useValidation(schemaName, editorValue);
 
   useEffect(() => {
     setEditorValue(toString(formattedDocument ? formattedDocument : document));
@@ -117,7 +118,7 @@ const DocumentSourceEdit: React.FC<Props> = ({id, lock}) => {
 
   function saveAndClose() {
     saveDocument(editorValue).then(() => {
-      history.push(`/documents/${id}`);
+      history.push(`/${schemaName}/documents/${id}`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
     });
@@ -127,14 +128,15 @@ const DocumentSourceEdit: React.FC<Props> = ({id, lock}) => {
       <main>
         <Toolbar style={{zIndex: 5}}>
           <Text>
-            <Link to={"/documents"}>Etusivu</Link> / <Link
-              to={`/documents/${id}`}>{title}</Link> / XML
+            <Link to={`/${schemaName}/documents`}>Etusivu</Link>&nbsp;/&nbsp;
+            <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>&nbsp;/&nbsp;
+            XML
           </Text>
           <div>
             <Button.secondaryNoborder
                 style={{marginRight: tokens.spacing.s, background: "none"}}
                 icon={"close"}
-                onClick={() => history.push(`/documents/${id}`)}>
+                onClick={() => history.push(`/${schemaName}/documents/${id}`)}>
               Peruuta
             </Button.secondaryNoborder>
             <Button

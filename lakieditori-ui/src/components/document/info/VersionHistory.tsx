@@ -8,8 +8,13 @@ import {TableStyleRow} from "../../common/StyledComponents";
 import VersionDiff from "./VersionDiff";
 import {useVersions} from "./useVersions";
 
-const VersionHistory: React.FC<Props> = ({id}) => {
-  const {versions} = useVersions(id);
+interface Props {
+  schemaName: string,
+  id: string
+}
+
+const VersionHistory: React.FC<Props> = ({schemaName, id}) => {
+  const {versions} = useVersions(schemaName, id);
   const [selectedVersion, setSelectedVersion] = useState<number>(-1);
 
   return (
@@ -49,9 +54,5 @@ const VersionHistory: React.FC<Props> = ({id}) => {
       </div>
   );
 };
-
-interface Props {
-  id: string
-}
 
 export default VersionHistory;

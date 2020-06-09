@@ -6,13 +6,13 @@ import {parseXml, toString} from "../../utils/xmlUtils";
 const getConfig: AxiosRequestConfig = {responseType: 'document'};
 const putConfig: AxiosRequestConfig = {headers: {'Content-Type': 'text/xml'}};
 
-export function useDocument(id: string) {
+export function useDocument(schemaName: string, id: string) {
   const [user] = useContext(AuthenticationContext);
-  const [document, setDocument] = useState<Document>(parseXml("<document/>"));
+  const [document, setDocument] = useState<Document>(parseXml(`<${schemaName}/>`));
 
   useEffect(() => {
     axios
-    .get(`/api/schemas/statute/documents/${id}`, getConfig)
+    .get(`/api/schemas/${schemaName}/documents/${id}`, getConfig)
     .then(res => setDocument(res.data));
   }, [id, user]);
 
@@ -20,8 +20,8 @@ export function useDocument(id: string) {
     const xmlData = typeof document === "string" ? document : toString(document);
 
     return axios
-    .put(`/api/schemas/statute/documents/${id}`, xmlData, putConfig)
-    .then(() => axios.get(`/api/schemas/statute/documents/${id}`, getConfig))
+    .put(`/api/schemas/${schemaName}/documents/${id}`, xmlData, putConfig)
+    .then(() => axios.get(`/api/schemas/${schemaName}/documents/${id}`, getConfig))
     .then((res) => setDocument(res.data));
   };
 

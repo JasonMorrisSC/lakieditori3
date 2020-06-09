@@ -9,8 +9,9 @@ import {useDocumentLock} from "./useDocumentLock";
 const DocumentRoutes: React.FC = () => {
   const match = useRouteMatch();
   const location = useLocation();
-  const {documentId} = useParams();
-  const {lock, acquireDocumentLock, releaseDocumentLock} = useDocumentLock(documentId || null);
+  const {schemaName, documentId} = useParams();
+  const {lock, acquireDocumentLock, releaseDocumentLock} =
+      useDocumentLock(schemaName || null, documentId || null);
 
   useEffect(() => {
     if (location.pathname.endsWith("edit") || location.pathname.endsWith("source")) {
@@ -23,16 +24,20 @@ const DocumentRoutes: React.FC = () => {
   return (
       <Switch>
         <Route path={`${match.path}/edit`}>
-          {documentId && <DocumentEdit id={documentId} lock={lock}/>}
+          {schemaName && documentId &&
+          <DocumentEdit schemaName={schemaName} id={documentId} lock={lock}/>}
         </Route>
         <Route path={`${match.path}/source`}>
-          {documentId && <DocumentSourceEdit id={documentId} lock={lock}/>}
+          {schemaName && documentId &&
+          <DocumentSourceEdit schemaName={schemaName} id={documentId} lock={lock}/>}
         </Route>
         <Route path={`${match.path}/info`}>
-          {documentId && <DocumentInfo id={documentId}/>}
+          {schemaName && documentId &&
+          <DocumentInfo schemaName={schemaName} id={documentId}/>}
         </Route>
         <Route path={match.path}>
-          {documentId && <DocumentView id={documentId}/>}
+          {schemaName && documentId &&
+          <DocumentView schemaName={schemaName} id={documentId}/>}
         </Route>
       </Switch>
   );

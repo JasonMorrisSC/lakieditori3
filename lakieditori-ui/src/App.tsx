@@ -61,8 +61,11 @@ const App: React.FC = () => {
           <Header/>
           <Container>
             <Switch>
-              <Route path="/documents/:documentId">
+              <Route path="/:schemaName/documents/:documentId">
                 <DocumentRoutes/>
+              </Route>
+              <Route path="/:schemaName/documents">
+                <Redirect to={"/"}/>
               </Route>
               <Route path="/documents">
                 <Redirect to={"/"}/>

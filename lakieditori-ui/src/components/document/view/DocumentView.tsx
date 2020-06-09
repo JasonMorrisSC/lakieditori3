@@ -9,18 +9,19 @@ import DocumentViewToolbar from "./DocumentViewToolbar";
 import StatuteElement from "./elements/StatuteElement";
 
 interface Props {
+  schemaName: string,
   id: string
 }
 
-const DocumentView: React.FC<Props> = ({id}) => {
-  const {document} = useDocument(id);
+const DocumentView: React.FC<Props> = ({schemaName, id}) => {
+  const {document} = useDocument(schemaName, id);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
 
   return (
       <main>
-        <DocumentViewToolbar id={id} title={title}/>
+        <DocumentViewToolbar schemaName={schemaName} id={id} title={title}/>
 
         <FlexRowPlain style={{
           backgroundColor: tokens.colors.whiteBase,

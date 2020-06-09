@@ -5,20 +5,21 @@ import {ErrorPanel, Toolbar} from "../DocumentStyles";
 import {AuthenticationContext} from "../../../App";
 
 interface Props {
+  schemaName: string,
   id: string,
   title: string,
   lock: null | string,
   saveDocument: () => Promise<any>,
 }
 
-const DocumentEditToolbar: React.FC<Props> = ({id, title, lock, saveDocument}) => {
+const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, saveDocument}) => {
   const [user] = useContext(AuthenticationContext);
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState("");
 
   function saveAndClose() {
     saveDocument().then(() => {
-      history.push(`/documents/${id}`);
+      history.push(`/${schemaName}/documents/${id}`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
     });
@@ -27,7 +28,9 @@ const DocumentEditToolbar: React.FC<Props> = ({id, title, lock, saveDocument}) =
   return (
       <Toolbar>
         <div>
-          <Link to={"/"}>Etusivu</Link> / <Link to={`/documents/${id}`}>{title}</Link> / Muokkaa
+          <Link to={"/"}>Etusivu</Link>&nbsp;/&nbsp;
+          <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>&nbsp;/&nbsp;
+          Muokkaa
         </div>
         <div>
           <Button.secondaryNoborder

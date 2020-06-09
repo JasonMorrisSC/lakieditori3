@@ -6,11 +6,12 @@ import {NULL_USER} from "../../../utils/User";
 import {Toolbar} from "../DocumentStyles";
 
 interface Props {
+  schemaName: string,
   id: string,
   title: string,
 }
 
-const DocumentViewToolbar: React.FC<Props> = ({id, title}) => {
+const DocumentViewToolbar: React.FC<Props> = ({schemaName, id, title}) => {
   const history = useHistory();
   const [user] = useContext(AuthenticationContext);
   return (
@@ -23,18 +24,18 @@ const DocumentViewToolbar: React.FC<Props> = ({id, title}) => {
           <Button.secondaryNoborder
               icon={"registers"}
               style={{marginRight: tokens.spacing.s, background: "none"}}
-              onClick={() => history.push(`/documents/${id}/source`)}>
+              onClick={() => history.push(`/${schemaName}/documents/${id}/source`)}>
             XML
           </Button.secondaryNoborder>
           <Button.secondary
               icon={"info"}
               style={{marginRight: tokens.spacing.s}}
-              onClick={() => history.push(`/documents/${id}/info`)}>
+              onClick={() => history.push(`/${schemaName}/documents/${id}/info`)}>
             Lisätietoja
           </Button.secondary>
           <Button
               icon={"edit"}
-              onClick={() => history.push(`/documents/${id}/edit`)}>
+              onClick={() => history.push(`/${schemaName}/documents/${id}/edit`)}>
             Muokkaa
           </Button>
         </div>}

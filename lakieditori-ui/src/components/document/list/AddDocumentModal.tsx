@@ -8,30 +8,32 @@ import {Input} from "../../common/StyledInputComponents";
 import {currentYear} from "../../../utils/dateUtils";
 
 interface AddDocumentModalProps {
+  schemaName: string,
+  title: string,
   isModalOpen: boolean,
   setModalOpen: (isModalOpen: boolean) => void,
   saveDocument: (document: Document) => Promise<any>,
 }
 
-const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModalOpen, saveDocument}) => {
+const AddDocumentModal: React.FC<AddDocumentModalProps> = ({schemaName, title, isModalOpen, setModalOpen, saveDocument}) => {
   const history = useHistory();
   const [newDocumentNumber, setNewDocumentNumber] = useState<string>(`${currentYear()}/???`);
   const [newDocumentTitle, setNewDocumentTitle] = useState<string>("Nimetön dokumentti");
 
   function addNewDocument() {
-    let newDocument = parseXml('<statute><title/></statute>');
-    updateElement(newDocument, "/statute", (e) => e.setAttribute("number", newDocumentNumber));
-    updateElement(newDocument, "/statute/title", (e) => e.textContent = newDocumentTitle);
+    let newDocument = parseXml(`<${schemaName}><title/></${schemaName}>`);
+    updateElement(newDocument, `/${schemaName}`, (e) => e.setAttribute("number", newDocumentNumber));
+    updateElement(newDocument, `/${schemaName}/title`, (e) => e.textContent = newDocumentTitle);
 
     saveDocument(newDocument).then((response) => {
       const location = response.headers.location;
       const createdId = location.substring(location.lastIndexOf('/') + 1);
-      history.push(`/documents/${createdId}/edit`);
+      history.push(`${schemaName}/documents/${createdId}/edit`);
     });
   }
 
   return (
-      <Modal isOpen={isModalOpen} contentLabel="Uusi hallituksen esitys eduskunnalle" style={{
+      <Modal isOpen={isModalOpen} contentLabel={title} style={{
         content: {
           height: "60%",
           marginLeft: "auto",
@@ -42,7 +44,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({isModalOpen, setModa
       }}>
         <FlexColTight style={{height: "100%"}}>
           <Heading.h1>
-            Uusi hallituksen esitys eduskunnalle
+            {title}
           </Heading.h1>
 
           <hr/>

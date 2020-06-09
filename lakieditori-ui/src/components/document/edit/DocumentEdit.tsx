@@ -16,20 +16,21 @@ import Concepts from "../view/Concepts";
 import {useDocumentProperties} from "../useDocumentProperties";
 
 interface Props {
+  schemaName: string,
   id: string,
   lock: null | string,
 }
 
-const DocumentEdit: React.FC<Props> = ({id, lock}) => {
-  const {document, setDocument, saveDocument} = useDocument(id);
-  const {properties: documentProperties} = useDocumentProperties(id);
+const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
+  const {document, setDocument, saveDocument} = useDocument(schemaName, id);
+  const {properties: documentProperties} = useDocumentProperties(schemaName, id);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
 
   return (
       <main>
-        <DocumentEditToolbar id={id} title={title} lock={lock}
+        <DocumentEditToolbar schemaName={schemaName} id={id} title={title} lock={lock}
                              saveDocument={() => saveDocument(document)}/>
 
         <FlexRowPlain style={{

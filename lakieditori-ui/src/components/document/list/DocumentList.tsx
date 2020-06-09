@@ -11,9 +11,15 @@ import AddDocumentModal from "./AddDocumentModal";
 import {queryElements, queryFirstText} from "../../../utils/xmlUtils";
 import {toFiDateTimeStringInUtc} from "../../../utils/dateUtils";
 
-const DocumentList: React.FC = () => {
+interface Props {
+  schemaName: string,
+  listLabel: string,
+  addButtonLabel: string,
+}
+
+const DocumentList: React.FC<Props> = ({schemaName, listLabel, addButtonLabel}) => {
   const [user] = useContext(AuthenticationContext);
-  const {documents, saveDocument, removeDocument} = useDocuments();
+  const {documents, saveDocument, removeDocument} = useDocuments(schemaName);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
 
   const documentComparator = (a: Element, b: Element): number => {
@@ -32,10 +38,10 @@ const DocumentList: React.FC = () => {
     return (
         <tr key={i}>
           <td style={{color: tokens.colors.highlightBase}}>
-            <Link to={`/documents/${id}`}>{number}</Link>
+            <Link to={`/${schemaName}/documents/${id}`}>{number}</Link>
           </td>
           <td>
-            <Link to={`/documents/${id}`}>{title}</Link>
+            <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>
           </td>
           <td>{state}</td>
           <td>{lastModifiedDate}</td>
@@ -51,12 +57,12 @@ const DocumentList: React.FC = () => {
       <div>
         <div style={{display: "flex", justifyContent: "space-between", alignItems: "center"}}>
           <Heading.h2 style={{marginBottom: tokens.spacing.m}}>
-            Dokumentit
+            {listLabel}
           </Heading.h2>
 
           {user !== NULL_USER &&
           <Button icon={"plus"} onClick={() => setModalOpen(true)}>
-            Uusi hallituksen esitys eduskunnalle
+            {addButtonLabel}
           </Button>}
         </div>
 
@@ -81,6 +87,8 @@ const DocumentList: React.FC = () => {
         </Table>
 
         <AddDocumentModal
+            schemaName={schemaName}
+            title={addButtonLabel}
             isModalOpen={isModalOpen}
             setModalOpen={setModalOpen}
             saveDocument={saveDocument}/>

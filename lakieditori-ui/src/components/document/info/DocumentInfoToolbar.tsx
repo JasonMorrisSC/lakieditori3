@@ -4,24 +4,26 @@ import {Button, Text} from "suomifi-ui-components";
 import {Toolbar} from "../DocumentStyles";
 
 interface Props {
+  schemaName: string,
   id: string,
   title: string,
 }
 
-const DocumentInfoToolbar: React.FC<Props> = ({id, title}) => {
+const DocumentInfoToolbar: React.FC<Props> = ({schemaName, id, title}) => {
   const history = useHistory();
   return (
       <Toolbar>
         <div>
           <Text>
-            <Link to={"/documents"}>Etusivu</Link> / <Link
-              to={`/documents/${id}`}>{title}</Link> / Lisätietoja
+            <Link to={`/${schemaName}/documents`}>Etusivu</Link>&nbsp;/&nbsp;
+            <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>&nbsp;/&nbsp;
+            Lisätietoja
           </Text>
         </div>
         <div>
           <Button.secondary
               icon={"close"}
-              onClick={() => history.push(`/documents/${id}`)}>
+              onClick={() => history.push(`/${schemaName}/documents/${id}`)}>
             Sulje
           </Button.secondary>
         </div>

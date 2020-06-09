@@ -11,11 +11,12 @@ import {toFiDateTimeStringInUtc} from "../../../utils/dateUtils";
 import Terminologies from "./Terminologies";
 
 interface Props {
+  schemaName: string,
   id: string,
 }
 
-const DocumentInfo: React.FC<Props> = ({id}) => {
-  const {document} = useDocument(id);
+const DocumentInfo: React.FC<Props> = ({schemaName, id}) => {
+  const {document} = useDocument(schemaName, id);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
@@ -26,7 +27,7 @@ const DocumentInfo: React.FC<Props> = ({id}) => {
 
   return (
       <main>
-        <DocumentInfoToolbar id={id} title={title}/>
+        <DocumentInfoToolbar schemaName={schemaName} id={id} title={title}/>
 
         <Panel style={{padding: tokens.spacing.xl}}>
           <Heading.h1hero>
@@ -54,19 +55,19 @@ const DocumentInfo: React.FC<Props> = ({id}) => {
             Sanastot
           </Heading.h2>
 
-          <Terminologies id={id}/>
+          <Terminologies schemaName={schemaName} id={id}/>
 
           <Heading.h2 style={{margin: `${sdt.spacing.xl} 0 ${sdt.spacing.m} 0`}}>
             Käyttöoikeudet
           </Heading.h2>
 
-          <UserPermissions id={id}/>
+          <UserPermissions schemaName={schemaName} id={id}/>
 
           <Heading.h2 style={{margin: `${sdt.spacing.xl} 0 ${sdt.spacing.m} 0`}}>
             Muutoshistoria
           </Heading.h2>
 
-          <VersionHistory id={id}/>
+          <VersionHistory schemaName={schemaName} id={id}/>
         </Panel>
       </main>
   );

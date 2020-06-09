@@ -8,12 +8,12 @@ const config: AxiosRequestConfig = {
   }
 };
 
-export function useValidation(document: string | Document) {
+export function useValidation(schemaName: string, document: string | Document) {
   const [validationErrorMessage, setValidationErrorMessage] = useState('');
 
   useEffect(() => {
     const timer = setTimeout(() =>
-            axios.post(`/api/schemas/statute/validate`,
+            axios.post(`/api/schemas/${schemaName}/validate`,
                 typeof document === "string" ? document : toString(document),
                 config)
             .then(() => setValidationErrorMessage(""))

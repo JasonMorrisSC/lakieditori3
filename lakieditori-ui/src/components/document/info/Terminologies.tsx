@@ -6,12 +6,13 @@ import {useDocumentProperties} from "../useDocumentProperties";
 import {splitIfTruthy} from "../../../utils/arrayUtils";
 
 interface Props {
+  schemaName: string,
   id: string
 }
 
-const Terminologies: React.FC<Props> = ({id}) => {
+const Terminologies: React.FC<Props> = ({schemaName,id}) => {
   const {terminologies} = useTerminologies();
-  const {properties, saveProperties} = useDocumentProperties(id);
+  const {properties, saveProperties} = useDocumentProperties(schemaName,id);
 
   const [terminologyOptions, setTerminologyOptions] = useState<OptionTypeBase[]>([]);
   const [selectedTerminologies, setSelectedTerminologies] = useState<OptionTypeBase[]>([]);

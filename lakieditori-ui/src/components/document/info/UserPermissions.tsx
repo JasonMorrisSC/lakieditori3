@@ -6,12 +6,13 @@ import {useUsers} from "./useUsers";
 import {usePermissions} from "./usePermissions";
 
 interface Props {
+  schemaName: string,
   id: string
 }
 
-const UserPermissions: React.FC<Props> = ({id}) => {
+const UserPermissions: React.FC<Props> = ({schemaName, id}) => {
   const {users} = useUsers();
-  const {permissions, togglePermission} = usePermissions(id);
+  const {permissions, togglePermission} = usePermissions(schemaName, id);
 
   const permissionsExistsFor = (username: string) => {
     return countNodes(permissions, '/permissions/permission[@username="' + username + '"]') > 0;

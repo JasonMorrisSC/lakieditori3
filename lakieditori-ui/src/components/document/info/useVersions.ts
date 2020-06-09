@@ -3,17 +3,17 @@ import axios from "axios";
 import {AuthenticationContext} from "../../../App";
 import {parseXml} from "../../../utils/xmlUtils";
 
-export function useVersions(id: string) {
+export function useVersions(schemaName: string, id: string) {
   const [user] = useContext(AuthenticationContext);
-  const [versions, setVersions] = useState<Document>(parseXml('<documents></documents>'));
+  const [versions, setVersions] = useState<Document>(parseXml(`<documents/>`));
 
   useEffect(() => {
-    axios.get('/api/schemas/statute/documents/' + id + '/versions', {
+    axios.get(`/api/schemas/${schemaName}/documents/${id}/versions`, {
       responseType: 'document'
     }).then(res => {
       setVersions(res.data);
     });
-  }, [id, user]);
+  }, [schemaName, id, user]);
 
   return {versions};
 }

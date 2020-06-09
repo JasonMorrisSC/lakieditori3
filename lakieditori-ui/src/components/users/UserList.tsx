@@ -53,7 +53,7 @@ const UserList: React.FC = () => {
           </Heading.h2>
 
           <Button icon={'plus'} onClick={() => setModalOpen(true)}>
-            Lisää uusi käyttäjä
+            Uusi käyttäjä
           </Button>
         </div>
 

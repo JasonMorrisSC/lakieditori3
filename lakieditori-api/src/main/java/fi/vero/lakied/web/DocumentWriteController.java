@@ -4,6 +4,7 @@ import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentKey
 import static fi.vero.lakied.util.security.User.superuser;
 
 import fi.vero.lakied.service.document.DocumentKey;
+import fi.vero.lakied.service.schema.SchemaCriteria;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
@@ -37,6 +38,7 @@ import org.w3c.dom.Document;
 @RequestMapping("/api/schemas/{schemaName}/documents")
 public class DocumentWriteController {
 
+  private final ReadRepository<String, Empty> schemaReadRepository;
   private final ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository;
   private final WriteRepository<DocumentKey, Document> documentWriteRepository;
   private final WriteRepository<DocumentKey, Document> documentVersionWriteRepository;
@@ -46,10 +48,12 @@ public class DocumentWriteController {
 
   @Autowired
   public DocumentWriteController(
+      ReadRepository<String, Empty> schemaReadRepository,
       ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository,
       WriteRepository<DocumentKey, Document> documentWriteRepository,
       WriteRepository<DocumentKey, Document> documentVersionWriteRepository,
       WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository) {
+    this.schemaReadRepository = schemaReadRepository;
     this.documentLockReadRepository = documentLockReadRepository;
     this.documentWriteRepository = documentWriteRepository;
     this.documentVersionWriteRepository = documentVersionWriteRepository;
@@ -64,6 +68,10 @@ public class DocumentWriteController {
       @AuthenticationPrincipal User user,
       HttpServletResponse response) {
     UUID id = UUID.randomUUID();
+
+    if (schemaReadRepository.isEmpty(SchemaCriteria.byName(schemaName), user)) {
+      throw new NotFoundException("Schema not found");
+    }
 
     documentWriteRepository.insert(DocumentKey.of(schemaName, id), document, user);
     documentVersionWriteRepository.insert(DocumentKey.of(schemaName, id), document, user);
@@ -91,6 +99,11 @@ public class DocumentWriteController {
       @PathVariable("id") UUID id,
       @RequestBody Document document,
       @AuthenticationPrincipal User user) {
+
+    if (schemaReadRepository.isEmpty(SchemaCriteria.byName(schemaName), user)) {
+      throw new NotFoundException("Schema not found");
+    }
+
     tryUpdateLocked(schemaName, id, user, () -> {
       documentWriteRepository.update(DocumentKey.of(schemaName, id), document, user);
       documentVersionWriteRepository.insert(DocumentKey.of(schemaName, id), document, user);
@@ -103,6 +116,11 @@ public class DocumentWriteController {
       @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @AuthenticationPrincipal User user) {
+
+    if (schemaReadRepository.isEmpty(SchemaCriteria.byName(schemaName), user)) {
+      throw new NotFoundException("Schema not found");
+    }
+
     tryUpdateLocked(schemaName, id, user, () -> {
       documentWriteRepository.delete(DocumentKey.of(schemaName, id), user);
       documentVersionWriteRepository.insert(DocumentKey.of(schemaName, id), null, user);

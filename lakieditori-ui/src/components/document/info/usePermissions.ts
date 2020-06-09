@@ -4,22 +4,22 @@ import {AuthenticationContext} from "../../../App";
 import {cloneDocument, parseXml, queryFirstElement, toString} from "../../../utils/xmlUtils";
 import {toggle} from "../../../utils/arrayUtils";
 
-export function usePermissions(id: string) {
+export function usePermissions(schemaName: string, id: string) {
   const [user] = useContext(AuthenticationContext);
   const [permissions, setPermissions] = useState<Document>(parseXml('<permissions></permissions>'));
 
   useEffect(() => {
-    axios.get('/api/schemas/statute/documents/' + id + '/permissions', {
+    axios.get(`/api/schemas/${schemaName}/documents/${id}/permissions`, {
       responseType: 'document'
     }).then(res => {
       setPermissions(res.data);
     });
-  }, [id, user]);
+  }, [schemaName, id, user]);
 
   const savePermissions = (newPermissions: Document): Promise<any> => (
-      axios.post('/api/schemas/statute/documents/' + id + '/permissions', toString(newPermissions), {
+      axios.post(`/api/schemas/${schemaName}/documents/${id}/permissions`, toString(newPermissions), {
         headers: {'Content-Type': 'text/xml'}
-      }).then(() => axios.get('/api/schemas/statute/documents/' + id + '/permissions', {
+      }).then(() => axios.get(`/api/schemas/${schemaName}/documents/${id}/permissions`, {
         responseType: 'document'
       })).then(res => {
         setPermissions(res.data);

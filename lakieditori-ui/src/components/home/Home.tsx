@@ -16,8 +16,16 @@ const Home: React.FC = () => {
         </div>
         <FlexColTight>
           <PanelWithShadow>
-            <DocumentList/>
+            <DocumentList schemaName={"proposal"}
+                          listLabel={"Hallituksen esitykset"}
+                          addButtonLabel={"Uusi hallituksen esitys"}/>
           </PanelWithShadow>
+          <PanelWithShadow>
+            <DocumentList schemaName={"statute"}
+                          listLabel={"Lakiehdotukset"}
+                          addButtonLabel={"Uusi lakiehdotus"}/>
+          </PanelWithShadow>
+          <hr/>
           {user.superuser &&
           <PanelWithShadow>
             <UserList/>
