@@ -19,6 +19,7 @@ import LinkModal from "./LinkModal";
 interface Props {
   value: Element | null,
   setValue: (xmlValue: string) => void,
+  inline?: boolean,
   label?: string,
   style?: CSSProperties,
   customTools?: ReactNode,
@@ -26,11 +27,14 @@ interface Props {
 }
 
 const TextEditor: React.FC<Props> = (
-    {value, setValue, label, style, customTools, terminologyUris = []}) => {
+    {value, setValue, inline = true, label, style, customTools, terminologyUris = []}) => {
   const [focused, setFocused] = useState<boolean>(false);
 
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
-  const [editorValue, setEditorValue] = useState<SlateNode[]>([{children: [{text: ''}]}]);
+  const [editorValue, setEditorValue] = useState<SlateNode[]>(
+      inline ?
+          [{children: [{text: ''}]}] :
+          [{type: "paragraph", children: [{text: ''}]}]);
 
   const [isLinkModalOpen, setLinkModalOpen] = useState(false);
   const [linkModalSelection, setLinkModalSelection] = useState<Location>([0]);
@@ -85,7 +89,7 @@ const TextEditor: React.FC<Props> = (
                 style={{padding: tokens.spacing.s, paddingTop: 0}}
                 decorate={decorate}
                 onKeyDown={event => {
-                  if (event.keyCode === 13 /* enter */) {
+                  if (inline && event.keyCode === 13 /* enter */) {
                     event.preventDefault();
                   }
                 }}
@@ -131,6 +135,8 @@ const withInlineLinks = (editor: ReactEditor): ReactEditor => {
 const EditorElement = ({attributes, children, element}: RenderElementProps) => {
   if (element.type === 'link') {
     return <a {...attributes} href={element.url}>{children}</a>;
+  } else if (element.type === 'paragraph') {
+    return <p {...attributes}>{children}</p>
   } else {
     return <div {...attributes}>{children}</div>
   }

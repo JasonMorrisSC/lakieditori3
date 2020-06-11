@@ -81,6 +81,7 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
             label="Tiivistelmä"
             value={abstract}
             setValue={updateAbstract}
+            inline={false}
             terminologyUris={terminologyUris}
             style={{
               fontSize: tokens.values.typography.leadText.fontSize.value,

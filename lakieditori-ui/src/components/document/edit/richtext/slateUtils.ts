@@ -16,6 +16,9 @@ export function deserialize(el: Node): SlateNode[] | null {
   if (nodeName === 'a' && children.length > 0) {
     return [jsx('element', {type: 'link', url: (el as Element).getAttribute('href')}, children)];
   }
+  if (nodeName === 'p' && children.length > 0) {
+    return [jsx('element', {type: 'paragraph'}, children)];
+  }
   if (nodeName === 'strong') {
     return children.map(child => jsx('text', {bold: true}, child));
   }
@@ -44,6 +47,9 @@ export function serialize(node: SlateNode): string {
 
   if (node.type === 'link' && children.length > 0) {
     return `<a href="${encodeURI(node.url)}">${children}</a>`;
+  }
+  if (node.type === 'paragraph' && children.length > 0) {
+    return `<p>${children}</p>`;
   }
 
   return children;
