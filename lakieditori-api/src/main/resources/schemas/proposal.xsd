@@ -3,7 +3,7 @@
 
   <xs:import namespace="http://www.w3.org/XML/1998/namespace" schemaLocation="xml.xsd"/>
 
-  <xs:complexType name="localizedInlineHypertextType">
+  <xs:complexType name="i18nInlineHTextType">
     <xs:complexContent>
       <xs:extension base="inlineHypertextType">
         <xs:attribute ref="xml:lang" default=""/>
@@ -11,7 +11,7 @@
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="localizedBlockHypertextType">
+  <xs:complexType name="i18nBlockHTextType">
     <xs:complexContent>
       <xs:extension base="blockHypertextType">
         <xs:attribute ref="xml:lang" default=""/>
@@ -69,9 +69,19 @@
   <xs:element name="proposal">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="title" type="inlineHypertextType" maxOccurs="unbounded"/>
-        <xs:element name="abstract" type="localizedBlockHypertextType" minOccurs="0"
+        <xs:element name="title" type="i18nInlineHTextType" maxOccurs="unbounded"/>
+        <xs:element name="abstract" type="i18nBlockHTextType" minOccurs="0"
           maxOccurs="unbounded"/>
+        <xs:element name="chapter" type="chapterType" minOccurs="0" maxOccurs="unbounded">
+          <xs:unique name="uniqueChapterHeadingLang">
+            <xs:selector xpath="heading"/>
+            <xs:field xpath="@xml:lang"/>
+          </xs:unique>
+          <xs:unique name="uniqueChapterContentLang">
+            <xs:selector xpath="content"/>
+            <xs:field xpath="@xml:lang"/>
+          </xs:unique>
+        </xs:element>
       </xs:sequence>
       <xs:attribute name="id" type="xs:string"/>
       <xs:attribute name="number" type="xs:string" use="required"/>
@@ -91,5 +101,67 @@
       <xs:enumeration value="DEPRECATED"/>
     </xs:restriction>
   </xs:simpleType>
+
+  <xs:complexType name="chapterType">
+    <xs:sequence>
+      <xs:element name="heading" type="i18nInlineHTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="i18nBlockHTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="section" type="sectionType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueSectionHeadingLang">
+          <xs:selector xpath="heading"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+        <xs:unique name="uniqueSectionContentLang">
+          <xs:selector xpath="content"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="sectionType">
+    <xs:sequence>
+      <xs:element name="heading" type="i18nInlineHTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="i18nBlockHTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="subsection" type="subsectionType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueSubsectionHeadingLang">
+          <xs:selector xpath="heading"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+        <xs:unique name="uniqueSubsectionContentLang">
+          <xs:selector xpath="content"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="subsectionType">
+    <xs:sequence>
+      <xs:element name="heading" type="i18nInlineHTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="i18nBlockHTextType" minOccurs="0" maxOccurs="unbounded"/>
+      <xs:element name="paragraph" type="paragraphType" minOccurs="0" maxOccurs="unbounded">
+        <xs:unique name="uniqueParagraphHeadingLang">
+          <xs:selector xpath="heading"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+        <xs:unique name="uniqueParagraphContentLang">
+          <xs:selector xpath="content"/>
+          <xs:field xpath="@xml:lang"/>
+        </xs:unique>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="paragraphType">
+    <xs:sequence>
+      <xs:element name="heading" type="i18nInlineHTextType" maxOccurs="unbounded"/>
+      <xs:element name="content" type="i18nBlockHTextType" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+    <xs:attribute name="number" type="xs:string" use="required"/>
+  </xs:complexType>
 
 </xs:schema>

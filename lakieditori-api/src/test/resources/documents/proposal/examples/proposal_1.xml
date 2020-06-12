@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<proposal number="HE 80/2020 vp">
+  <title>Hallituksen esitys eduskunnalle laeiksi lääkelain, lääkkeiden velvoitevarastoinnista
+    annetun lain ja tartuntatautilain muuttamisesta
+  </title>
+  <abstract>
+    <p>Esityksessä ehdotetaan muutettavaksi lääkelakia, lääkkeiden velvoitevarastoinnista
+      annettua lakia ja tartuntatautilakia.
+    </p>
+    <p>Ehdotetuilla muutoksilla on tarkoitus parantaa lääkkeiden saatavuutta ja riittävyyttä
+      Suomessa heti covid-19-pandemian vuoksi todettujen poikkeusolojen tai valmiuslain
+      käyttöönottoasetusten voimassaolon päättymisen jälkeen.
+    </p>
+    <p>Esityksessä ehdotetaan, että lääkkeiden saatavuushäiriötilanteissa tai sellaisten
+      uhatessa, sosiaali- ja terveysministeriö voisi määräaikaisesti rajoittaa tai kohdentaa
+      eräiden lääkevalmisteiden jakelua, myyntiä ja kulutukseen luovutusta. Lääkelakiin
+      lisättäisiin lääketukkukaupoille ilmoitusvelvollisuus lääkejakelun katkoksista.
+      Lisäksi ehdotetaan, että täsmennettäisiin myyntiluvan- ja
+      rinnakkaistuontimyyntiluvanhaltijoiden ja rekisteröinnin haltijoiden ilmoitusvelvollisuutta,
+      apteekkien varastointivelvoitetta ja apteekin tiloja koskevia säännöksiä.
+    </p>
+  </abstract>
+  <chapter number="1">
+    <heading>Asian tausta ja valmistelu</heading>
+    <content>
+      <p>Hallituksen esityksen valmistelu on käynnistynyt sosiaali- ja terveysministeriön
+        aloitteesta. Lääkkeiden saatavuushäiriöt ovat maailmanlaajuinen ongelma, joka on
+        yleistynyt viime vuosina kaikkialla, myös Suomessa. Lääkealan turvallisuus- ja
+        kehittämiskeskuksen (Fimea) 9.1.2020 julkaiseman tiedon mukaan lääkeyritysten Fimealle
+        tekemien saatavuushäiriöilmoitusten määrä oli vuonna 2018 yhteensä 1213 ilmoitusta ja
+        vuonna 2019 yhteensä 1 694 ilmoitusta. Osin ilmoitusten kasvua 2018 - 2019 selittää
+        ilmoituskäytännön muutos.
+      </p>
+      <p>Lääkkeiden saatavuushäiriöiden taustalla on useita eri syitä. Ne voivat johtua
+        ongelmista lääkkeiden raaka-aineiden laadussa, saatavuudessa tai lääkkeiden valmistus-
+        tai logistiikkaketjuissa. Lääkkeiden valmistusketjut ovat keskittyneet globaalisti. Riskit
+        ovat nousseet valmistusketjuissa, joissa ei välttämättä ole korvaavia tuotantolinjoja
+        tai vaihtoehtoisia raaka-aineiden toimittajia. Yhdessä tuotantoketjun kohdassa aiheutunut
+        ongelma näyttäytyy eri pituisina lääkkeiden saatavuushäiriöinä kaikilla
+        lääkevalmisteen markkinoilla. Saatavuushäiriöiden esiintymistä Suomessa selittävät
+        lisäksi lääkemarkkinan verrattain pieni koko ja Suomen lääkehuollon vahva riippuvuus
+        lääkkeiden maahantuonnista.
+      </p>
+    </content>
+  </chapter>
+  <chapter number="2">
+    <heading>Nykytila ja sen arviointi</heading>
+    <section number="2.1">
+      <heading>Voimassa oleva lainsäädäntö</heading>
+      <subsection number="2.1.1">
+        <heading>Johdanto</heading>
+        <content>
+          <p>Lääkelaissa (395/1987), jossa on keskeisin osin toimeenpantu Euroopan parlamentin ja
+            neuvos- ton direktiivi 2001/83/EY ihmisille tarkoitettuja lääkkeitä koskevista
+            yhteisön säännöistä (<em>lääkedirektiivi</em>) ja Euroopan parlamentin ja
+            neuvoston
+            direktiivi 2001/82/EY eläinlääkkeitä koskevista yhteisön säännöistä
+            (<em>eläinlääkedirektiivi</em>), säädetään lääkkeiden saatavuudesta,
+            lääkejakelusta
+            ja apteekkitoiminnasta. Lisäksi säännöksiä on lääkeasetuksessa (693/1987) ja
+            Fimean määräyksissä. Lääkehoidon kustannusten korvaamisesta säädetään
+            sairausvakuutuslaissa (1224/2004). Tartuntatautilain (1227/2016) tarkoituksena on
+            ehkäistä tartuntatauteja ja niiden leviämistä sekä niistä ihmisille ja
+            yhteiskunnalle aiheutuvia haittoja. Tartuntatautilääkkeiden ja julkisen
+            terveydenhuollon lääkkeiden kustannuksista säädetään laissa sosiaali- ja
+            terveydenhuollon asiakasmaksuista (734/1992) ja asetuksessa sosiaali- ja
+            terveydenhuollon asiakasmak- suista (912/1992). Lääkkeiden saatavuutta ja
+            käyttömahdollisuuksia tilanteissa, joissa lääkkeiden tavanomainen saatavuus on
+            vaikeutunut tai estynyt, turvataan lääkkeiden velvoitevarastoin- nista annetulla
+            lailla (979/2008, <em>velvoitevarastointilaki</em>) ja valtioneuvoston asetuksella
+            lääkkeiden
+            velvoitevarastoinnista (1114/2008, <em>velvoitevarastointiasetus</em>).
+          </p>
+        </content>
+      </subsection>
+      <subsection number="2.1.2">
+        <heading>Lääkejakelu ja lääkkeiden saatavuus lääkelaissa</heading>
+        <content>
+          <p>Lääkelain 1 §:n mukaan lain eräänä tarkoituksena on varmistaa lääkkeiden
+            asianmukainen valmistus ja saatavuus maassa. Lääkkeiden saatavuuden
+            varmistamisvelvoite on asetettu kaikille lääkejakeluketjun toimijoille.
+          </p>
+          <p>
+            Lääkelain 26 §:n mukaan myyntiluvan haltijan ja 22 §:ssä tarkoitetun rekisteröinnin
+            haltijan on huolehdittava siitä, että myyntiluvan saanutta lääkevalmistetta sekä
+            rekisteröityä perinteistä kasvirohdosvalmistetta on jatkuvasti lääkkeiden
+            tukkukauppojen ja apteekkien saatavissa potilaiden ja muiden käyttäjien tarvetta
+            vastaavasti. Lääkelain 37 §:n mukaan lääketukkukaupan on pyrittävä varmistumaan
+            siitä, että sillä on tarvetta vastaava määrä lääkkeitä myytävänä.
+          </p>
+        </content>
+      </subsection>
+    </section>
+    <section number="2.2">
+      <heading>EU-oikeus</heading>
+      <content>
+        <p>Ehdotuksessa ehdotetaan lääkelakiin lisättävän uusi 19 a §. Sosiaali- ja
+          terveysministeriö voisi päätöksellä määräaikaisesti rajoittaa tai kohdentaa
+          lääkevalmisteen tai lääkeaineen jakelua, myyntiä tai kulutukseen luovutusta tai antaa
+          määräyksen lääkevalmisteiden tai lääkeaineiden asettamisesta etusijalle jakelussa.
+          Tartuntatautilain 72 §:n mukaista sosiaali- ja terveysministeriön asetuksenantovaltaa
+          rajoittaa lääkkeen määräämistä tai luovuttamista tai antaa oikeuksia määrätä
+          tai luovuttaa niitä laajennettaisiin tartuntataudin ennaltaehkäisyyn, oireiden ja
+          jälkitautien hoitoon käytettäviin lääkevalmisteisiin. Ehdotetuilla säännöksillä
+          on osin yhtenevä tarkoitus puuttua tilanteisiin, joissa Suomen markkinoille ei saada
+          riittävästi lääkevalmisteita kattamaan väestön lääkkeiden tarvetta. Tällaisessa
+          tilanteessa sosiaali- ja terveysministeriö voisi kohdentaa tai rajoittaa lääkkeiden
+          jakelua siten, että turvataan lääkkeiden yhdenvertainen saatavuus mahdollisimman
+          monelle niitä tarvitsevalle.
+        </p>
+        <p>Ehdotetut lääkelain ja tartuntatautilain muutokset koskisivat toimenpiteitä, jotka
+          olisivat yhteneviä Euroopan komission jäsenvaltioille 8.4.2020 antaman ohjeen kanssa
+          koskien lääkkeiden optimaalista ja järkevää tarjontaa lääkepulan välttämiseksi
+          covid-19-epidemian aikana (C(2020) 2272 final). Komission ohjeen mukaan lääkkeiden
+          paikallistason liikavarastoinnin estämiseksi jäsenvaltioiden olisi varmistettava, että
+          tukkukauppiaita, apteekkeja ja sairaala-apteekkeja estetään hankkimasta varastoihinsa
+          kohtuuttoman suuria määriä lääkkeitä. Lisäksi jäsenvaltioiden olisi kansallisen
+          koordinoinnin avulla varmistettava, että tukkukauppias-jakelijat, apteekit ja sairaalat
+          saavat tavanomaiset lääkevarastonsa ja taattava näin lääkkeiden oikeudenmukaista
+          jakelua. Jos joitakin lääkkeitä uhkaa pula tai niiden kysyntä kasvaa, jäsenvaltioiden
+          olisi komission mukaan rajoitettava tiettyjen reseptilääkkeiden ja
+          käsikauppalääkkeiden jakelua ja myyntiä (esimerkiksi sallittava reseptilääkkeistä
+          vain yhden kuukauden erä kerrallaan tai enintään yksi pakkaus käsikauppalääkkeitä
+          asiakasta kohti).
+        </p>
+      </content>
+    </section>
+  </chapter>
+</proposal>

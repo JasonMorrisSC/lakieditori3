@@ -5,6 +5,7 @@ import {Dropdown, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-compo
 import {
   cloneDocument,
   ensureElementAndUpdate,
+  queryElements,
   queryFirstElement,
   queryFirstText,
   updateElement
@@ -13,6 +14,7 @@ import {ElementEditProps} from "../ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
+import ChapterElementEdit from "./ChapterElementEdit";
 
 const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -77,6 +79,8 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               }}/>
         </Heading.h1hero>
 
+        <Heading.h2>ESITYKSEN PÄÄASIALLINEN SISÄLTÖ</Heading.h2>
+
         <TextEditor
             label="Tiivistelmä"
             value={abstract}
@@ -87,6 +91,17 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               fontSize: tokens.values.typography.leadText.fontSize.value,
               fontWeight: tokens.values.typography.leadText.fontWeight,
             }}/>
+
+        <Heading.h2>PERUSTELUT</Heading.h2>
+
+        {queryElements(currentElement, 'chapter').map((chapter, i) => (
+            <ChapterElementEdit key={i}
+                                document={document}
+                                currentElement={chapter}
+                                documentProperties={documentProperties}
+                                currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
+                                setDocument={setDocument}/>
+        ))}
 
       </article>
   );
