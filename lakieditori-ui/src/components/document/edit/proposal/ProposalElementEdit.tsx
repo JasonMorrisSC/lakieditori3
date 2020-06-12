@@ -16,7 +16,7 @@ import {splitIfTruthy} from "../../../../utils/arrayUtils";
 import styled from "@emotion/styled";
 
 const PartHeading = styled(Heading.h2)`
-  margin: ${tokens.spacing.xl} 0 ${tokens.spacing.l};
+  margin: ${tokens.spacing.xl} 0 ${tokens.spacing.s};
   text-transform: uppercase;
 `;
 
