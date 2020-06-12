@@ -5,7 +5,6 @@ import {Dropdown, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-compo
 import {
   cloneDocument,
   ensureElementAndUpdate,
-  queryElements,
   queryFirstElement,
   queryFirstText,
   updateElement
@@ -14,7 +13,12 @@ import {ElementEditProps} from "../ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
-import ChapterElementEdit from "./ChapterElementEdit";
+import styled from "@emotion/styled";
+
+const PartHeading = styled(Heading.h2)`
+  margin: ${tokens.spacing.xl} 0 ${tokens.spacing.l};
+  text-transform: uppercase;
+`;
 
 const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -42,7 +46,7 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
   function updateAbstract(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "abstract", [], (el) => el.innerHTML = newValue);
+          "abstract", ["chapter"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -79,7 +83,7 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               }}/>
         </Heading.h1hero>
 
-        <Heading.h2>ESITYKSEN PÄÄASIALLINEN SISÄLTÖ</Heading.h2>
+        <PartHeading>Esityksen pääasiallinen sisältö</PartHeading>
 
         <TextEditor
             label="Tiivistelmä"
@@ -92,16 +96,16 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
               fontWeight: tokens.values.typography.leadText.fontWeight,
             }}/>
 
-        <Heading.h2>PERUSTELUT</Heading.h2>
+        <PartHeading>Perustelut</PartHeading>
 
-        {queryElements(currentElement, 'chapter').map((chapter, i) => (
+        {/*queryElements(currentElement, 'chapter').map((chapter, i) => (
             <ChapterElementEdit key={i}
                                 document={document}
                                 currentElement={chapter}
                                 documentProperties={documentProperties}
                                 currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
                                 setDocument={setDocument}/>
-        ))}
+        ))*/}
 
       </article>
   );

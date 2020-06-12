@@ -1,10 +1,15 @@
 import {Editor, Location, Node as SlateNode, NodeEntry, Range, Text, Transforms} from "slate";
 import {jsx} from "slate-hyperscript";
 import escapeHtml from "escape-html";
+import {isBlank} from "../../../../utils/stringUtils";
 
 export function deserialize(el: Node): SlateNode[] | null {
   if (el.nodeType === Node.TEXT_NODE || el.nodeType !== Node.ELEMENT_NODE) {
-    return [jsx('text', {text: el.textContent?.replace(/\s+/g, ' ') || ''})];
+    const textContent = el.textContent?.replace(/\s+/g, ' ') || '';
+
+    if (!isBlank(textContent)) {
+      return [jsx('text', {text: textContent})];
+    }
   }
 
   const {nodeName} = el;
@@ -25,6 +30,7 @@ export function deserialize(el: Node): SlateNode[] | null {
   if (nodeName === 'em') {
     return children.map(child => jsx('text', {italic: true}, child));
   }
+
   return jsx('fragment', {}, children);
 }
 
