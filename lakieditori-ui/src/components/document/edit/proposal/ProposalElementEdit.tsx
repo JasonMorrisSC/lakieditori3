@@ -4,7 +4,7 @@ import React from "react";
 import {Dropdown, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {
   cloneDocument,
-  ensureElementAndUpdate,
+  ensureElementAndUpdate, queryElements,
   queryFirstElement,
   queryFirstText,
   updateElement
@@ -14,6 +14,7 @@ import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
 import styled from "@emotion/styled";
+import ChapterElementEdit from "./ChapterElementEdit";
 
 const PartHeading = styled(Heading.h2)`
   margin: ${tokens.spacing.xl} 0 ${tokens.spacing.s};
@@ -98,14 +99,14 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
 
         <PartHeading>Perustelut</PartHeading>
 
-        {/*queryElements(currentElement, 'chapter').map((chapter, i) => (
+        {queryElements(currentElement, 'chapter').map((chapter, i) => (
             <ChapterElementEdit key={i}
                                 document={document}
                                 currentElement={chapter}
                                 documentProperties={documentProperties}
                                 currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
                                 setDocument={setDocument}/>
-        ))*/}
+        ))}
 
       </article>
   );
