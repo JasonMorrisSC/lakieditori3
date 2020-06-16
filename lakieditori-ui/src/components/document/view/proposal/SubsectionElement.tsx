@@ -15,7 +15,7 @@ const SubsectionElement: React.FC<ElementViewProps> = ({element}) => {
   const content = queryFirstElement(element, "content");
 
   return (
-      <div className="subsection">
+      <div className="subsection" id={`subsection-${number}`}>
         <Heading.h4 style={{margin: `${sdt.spacing.l} 0 ${sdt.spacing.m}`}}>
           {number}&nbsp;&nbsp;<SanitizedInlineHtml element={heading}/>
         </Heading.h4>

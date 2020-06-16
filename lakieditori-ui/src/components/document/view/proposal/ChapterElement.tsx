@@ -15,7 +15,7 @@ const ChapterElement: React.FC<ElementViewProps> = ({element}) => {
   const content = queryFirstElement(element, "content");
 
   return (
-      <div className="chapter">
+      <div className="chapter" id={`chapter-${number}`}>
         <Heading.h2 style={{margin: `${sdt.spacing.l} 0 ${sdt.spacing.m}`}}>
           {number}&nbsp;&nbsp;<SanitizedInlineHtml element={heading}/>
         </Heading.h2>

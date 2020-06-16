@@ -2,7 +2,7 @@ import React from "react";
 import {HashLink as Link} from 'react-router-hash-link';
 import styled from '@emotion/styled'
 import {suomifiDesignTokens as tokens, Text} from "suomifi-ui-components";
-import {childElements, queryFirstText} from "../../../utils/xmlUtils";
+import {childElements, queryFirstText} from "../../../../utils/xmlUtils";
 
 const NavSticky = styled.nav`
   position: sticky;
@@ -35,7 +35,7 @@ interface Props {
   document: Document,
 }
 
-const TableOfContents: React.FC<Props> = ({document}) => {
+const StatuteTableOfContents: React.FC<Props> = ({document}) => {
   const renderSectionLink = (section: Element, key: number) => {
     const number = queryFirstText(section, "@number");
     const heading = queryFirstText(section, "heading");
@@ -154,4 +154,4 @@ const TableOfContents: React.FC<Props> = ({document}) => {
   );
 };
 
-export default TableOfContents;
+export default StatuteTableOfContents;

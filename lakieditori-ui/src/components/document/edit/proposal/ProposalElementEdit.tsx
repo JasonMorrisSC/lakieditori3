@@ -1,11 +1,14 @@
 /** @jsx jsx */
 import {css, jsx} from '@emotion/core'
 import React from "react";
-import {Dropdown, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
+import {Button, Dropdown, Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {
   cloneDocument,
-  ensureElementAndUpdate, queryElements,
+  countNodes,
+  ensureElementAndUpdate,
+  queryElements,
   queryFirstElement,
+  queryFirstNode,
   queryFirstText,
   updateElement
 } from "../../../../utils/xmlUtils";
@@ -27,6 +30,7 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
   const title = queryFirstElement(currentElement, "title");
   const abstract = queryFirstElement(currentElement, "abstract");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
+  const chapterCount = countNodes(currentElement, "chapter");
 
   function updateDocumentState(newValue: string) {
     setDocument((prevDocument) => {
@@ -48,6 +52,19 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
           "abstract", ["chapter"], (el) => el.innerHTML = newValue);
+    });
+  }
+
+  function appendNewChapter() {
+    setDocument((prevDocument) => {
+      const newDocument = cloneDocument(prevDocument);
+
+      const chapterElement = newDocument.createElement("chapter");
+      chapterElement.setAttribute("number", (chapterCount + 1) + "");
+      chapterElement.appendChild(newDocument.createElement("heading"));
+
+      queryFirstNode(newDocument, currentPath)?.appendChild(chapterElement);
+      return newDocument;
     });
   }
 
@@ -107,6 +124,13 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
                                 currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
                                 setDocument={setDocument}/>
         ))}
+
+        <Button
+            icon="plus"
+            onClick={appendNewChapter}
+            style={{marginTop: tokens.spacing.l}}>
+          Lisää uusi luku
+        </Button>
 
       </article>
   );

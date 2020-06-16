@@ -28,13 +28,17 @@ const ProposalElement: React.FC<ElementViewProps> = ({element}) => {
           <SanitizedInlineHtml element={title}/>
         </Heading.h1hero>
 
-        <PartHeading>Esityksen pääasiallinen sisältö</PartHeading>
+        <PartHeading id={"abstract"}>
+          Esityksen pääasiallinen sisältö
+        </PartHeading>
 
         <Text.lead>
           <SanitizedBlockHtml element={abstract}/>
         </Text.lead>
 
-        <PartHeading>Perustelut</PartHeading>
+        <PartHeading id={"proposal"}>
+          Perustelut
+        </PartHeading>
 
         {queryElements(element, 'chapter').map((chapter, i) => (
             <ChapterElement key={i} element={chapter}/>

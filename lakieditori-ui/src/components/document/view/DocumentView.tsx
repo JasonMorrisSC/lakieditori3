@@ -2,12 +2,13 @@ import React from "react";
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import {FlexRowPlain} from "../../common/StyledComponents";
-import TableOfContents from "./TableOfContents";
+import StatuteTableOfContents from "./statute/StatuteTableOfContents";
 import Concepts from "./Concepts";
 import {useDocument} from "../useDocument";
 import DocumentViewToolbar from "./DocumentViewToolbar";
 import StatuteElement from "./statute/StatuteElement";
 import ProposalElement from "./proposal/ProposalElement";
+import ProposalTableOfContents from "./proposal/ProposalTableOfContents";
 
 interface Props {
   schemaName: string,
@@ -34,7 +35,10 @@ const DocumentView: React.FC<Props> = ({schemaName, id}) => {
             background: tokens.colors.highlightLight53,
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
-            <TableOfContents document={document}/>
+            {schemaName === "statute" &&
+            <StatuteTableOfContents document={document}/>}
+            {schemaName === "proposal" &&
+            <ProposalTableOfContents document={document}/>}
           </div>
 
           <div style={{

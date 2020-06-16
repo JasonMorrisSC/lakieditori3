@@ -9,12 +9,13 @@ import {queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
-import TableOfContents from "../view/TableOfContents";
+import StatuteTableOfContents from "../view/statute/StatuteTableOfContents";
 import StatuteElementEdit from "./statute/StatuteElementEdit";
 import DocumentEditToolbar from "./DocumentEditToolbar";
 import Concepts from "../view/Concepts";
 import {useDocumentProperties} from "../useDocumentProperties";
 import ProposalElementEdit from "./proposal/ProposalElementEdit";
+import ProposalTableOfContents from "../view/proposal/ProposalTableOfContents";
 
 interface Props {
   schemaName: string,
@@ -44,7 +45,10 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
             background: tokens.colors.highlightLight53,
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
-            <TableOfContents document={document}/>
+            {schemaName === "statute" &&
+            <StatuteTableOfContents document={document}/>}
+            {schemaName === "proposal" &&
+            <ProposalTableOfContents document={document}/>}
           </div>
 
           <div style={{
