@@ -1,10 +1,4 @@
-/** @jsx jsx */
-import {jsx} from '@emotion/core'
 import React from "react";
-import "codemirror/lib/codemirror.css";
-import "codemirror/theme/material.css";
-import "codemirror/theme/eclipse.css";
-import "codemirror/mode/xml/xml";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";

@@ -79,7 +79,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                      lineHeight: 1,
                      marginRight: sdt.spacing.xs,
                      marginBottom: 0,
-                     width: `${(number.length + 1) * 18}px`
+                     width: `${(number.length + 1) * 14}px`
                    }}/>
             <span style={{color: sdt.colors.highlightBase}}>luku</span>
             <div style={{marginLeft: "auto"}}>

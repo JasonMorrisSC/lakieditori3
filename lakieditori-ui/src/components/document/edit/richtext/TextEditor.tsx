@@ -1,3 +1,5 @@
+/** @jsx jsx */
+import {css, jsx} from '@emotion/core'
 import React, {CSSProperties, ReactNode, useCallback, useEffect, useMemo, useState} from "react";
 import {createEditor, Location, Node as SlateNode, NodeEntry, Transforms} from 'slate'
 import {
@@ -63,7 +65,8 @@ const TextEditor: React.FC<Props> = (
   }, [focused, concepts]);
 
   return (
-      <div style={{margin: `${tokens.spacing.xxs} 0`, ...style}}>
+      <div style={{margin: `${tokens.spacing.xxs} 0`, ...style}}
+           css={css`& p:first-of-type {margin-top: 0}; & p:last-of-type {margin-bottom: 0}`}>
         <Slate
             editor={editor}
             value={editorValue}
