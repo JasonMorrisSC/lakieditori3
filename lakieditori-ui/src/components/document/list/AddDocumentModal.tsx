@@ -9,19 +9,20 @@ import {currentYear} from "../../../utils/dateUtils";
 
 interface AddDocumentModalProps {
   schemaName: string,
+  newDocumentTemplate: string,
   title: string,
   isModalOpen: boolean,
   setModalOpen: (isModalOpen: boolean) => void,
   saveDocument: (document: Document) => Promise<any>,
 }
 
-const AddDocumentModal: React.FC<AddDocumentModalProps> = ({schemaName, title, isModalOpen, setModalOpen, saveDocument}) => {
+const AddDocumentModal: React.FC<AddDocumentModalProps> = ({schemaName, newDocumentTemplate, title, isModalOpen, setModalOpen, saveDocument}) => {
   const history = useHistory();
   const [newDocumentNumber, setNewDocumentNumber] = useState<string>(`${currentYear()}/???`);
   const [newDocumentTitle, setNewDocumentTitle] = useState<string>("Nimetön dokumentti");
 
   function addNewDocument() {
-    let newDocument = parseXml(`<${schemaName}><title/></${schemaName}>`);
+    let newDocument = parseXml(newDocumentTemplate);
     updateElement(newDocument, `/${schemaName}`, (e) => e.setAttribute("number", newDocumentNumber));
     updateElement(newDocument, `/${schemaName}/title`, (e) => e.textContent = newDocumentTitle);
 

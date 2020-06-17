@@ -13,11 +13,12 @@ import {toFiDateTimeStringInUtc} from "../../../utils/dateUtils";
 
 interface Props {
   schemaName: string,
+  newDocumentTemplate: string,
   listLabel: string,
   addButtonLabel: string,
 }
 
-const DocumentList: React.FC<Props> = ({schemaName, listLabel, addButtonLabel}) => {
+const DocumentList: React.FC<Props> = ({schemaName, newDocumentTemplate, listLabel, addButtonLabel}) => {
   const [user] = useContext(AuthenticationContext);
   const {documents, saveDocument, removeDocument} = useDocuments(schemaName);
   const [isModalOpen, setModalOpen] = useState<boolean>(false);
@@ -87,6 +88,7 @@ const DocumentList: React.FC<Props> = ({schemaName, listLabel, addButtonLabel}) 
 
         <AddDocumentModal
             schemaName={schemaName}
+            newDocumentTemplate={newDocumentTemplate}
             title={addButtonLabel}
             isModalOpen={isModalOpen}
             setModalOpen={setModalOpen}
