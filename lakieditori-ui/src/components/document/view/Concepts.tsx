@@ -98,7 +98,7 @@ const Concept: React.FC<ConceptProps> = ({document: doc, element}) => {
           <Button.secondary
               icon={"preview"} onClick={scrollToLink}
               style={{margin: `${tokens.spacing.s} 0 ${tokens.spacing.xs}`}}>
-            kohdista dokumentti
+            kohdista
             {linkCount === 1 && " käsitteeseen"}
             {linkCount > 1 && ` käsitteen ${highlightedLinkIndex + 1}. esiintymään`}
           </Button.secondary>
