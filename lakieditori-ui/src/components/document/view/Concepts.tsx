@@ -56,16 +56,25 @@ interface ConceptProps extends ElementViewProps {
   document: Document
 }
 
-const Concept: React.FC<ConceptProps> = ({document, element}) => {
+const Concept: React.FC<ConceptProps> = ({document: doc, element}) => {
   const [isExpanded, setExpanded] = useState<boolean>(false);
+  const [highlightedLinkIndex, setHighlightedLink] = useState<number>(0);
 
   const uri = element.getAttribute("uri") || '';
   const label = queryFirstText(element, "label");
   const definition = queryFirstText(element, "definition");
   const terminologyLabel = queryFirstText(element, "terminology/label");
 
-  const usageCount = (uri: string): number => {
-    return countNodes(document, `//a[@href = '${uri}']`);
+  const linkCount = countNodes(doc, `//a[@href = '${uri}']`);
+  const linkHtmlElements = Array.from(document.querySelectorAll(`[href="${uri}"]`));
+
+  const scrollToLink = () => {
+    const linkElement = linkHtmlElements[highlightedLinkIndex];
+    const y = linkElement.getBoundingClientRect().top + window.pageYOffset - 65;
+
+    window.scrollTo({top: y, behavior: 'smooth'});
+
+    setHighlightedLink(highlightedLinkIndex < linkCount - 1 ? highlightedLinkIndex + 1 : 0);
   };
 
   return (
@@ -75,15 +84,29 @@ const Concept: React.FC<ConceptProps> = ({document, element}) => {
         margin: `${tokens.spacing.s} 0`,
       }}>
         <ConceptLabelButton
+            style={{
+              fontWeight: isExpanded
+                  ? tokens.values.typography.bodySemiBold.fontWeight
+                  : tokens.values.typography.bodyText.fontWeight
+            }}
             icon={isExpanded ? "expandableMinus" : "expandablePlus"}
             onClick={() => setExpanded(!isExpanded)}>
-          {label} ({usageCount(uri)})
+          {label} ({linkCount})
         </ConceptLabelButton>
         {isExpanded &&
         <div>
+          <Button.secondary
+              icon={"preview"} onClick={scrollToLink}
+              style={{margin: `${tokens.spacing.s} 0 ${tokens.spacing.xs}`}}>
+            kohdista dokumentti
+            {linkCount === 1 && " käsitteeseen"}
+            {linkCount > 1 && ` käsitteen ${highlightedLinkIndex + 1}. esiintymään`}
+          </Button.secondary>
+
           <div style={{color: tokens.colors.depthDark27, margin: `${tokens.spacing.xs} 0`}}>
             {definition}
           </div>
+
           <a href={uri} target={"_blank"}>
             {terminologyLabel}&nbsp;
             <span className={"material-icons"} style={{
