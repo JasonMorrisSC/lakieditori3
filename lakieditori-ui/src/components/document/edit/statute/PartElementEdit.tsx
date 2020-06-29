@@ -77,6 +77,7 @@ const PartElementEdit: React.FC<ElementEditProps> = ({document, setDocument, doc
           </div>
 
           <TextEditor
+              document={document}
               label={`Osan ${number} otsikko`}
               value={heading}
               setValue={updateHeading}

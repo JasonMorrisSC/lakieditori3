@@ -90,6 +90,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
 
           <TextEditor
+              document={document}
               label={`Luvun ${number} otsikko`}
               value={heading}
               setValue={updateHeading}
@@ -101,7 +102,8 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
         </Heading.h3>
 
         <TextEditor
-            label={`Luvun ${number} tekstisisältö`}
+            document={document}
+            label={`Luvun ${number} tekstisisältö!`}
             value={content}
             setValue={updateContent}
             inline={false}

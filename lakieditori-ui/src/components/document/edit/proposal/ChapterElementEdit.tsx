@@ -39,7 +39,7 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["chapter"], (el) => el.innerHTML = newValue);
+          "content", ["section"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -89,6 +89,7 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
 
           <TextEditor
+              document={document}
               label={`Luvun ${number} otsikko`}
               value={heading}
               setValue={updateHeading}
@@ -100,6 +101,7 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
         </Heading.h2>
 
         <TextEditor
+            document={document}
             label={`Luvun ${number} tekstisisältö`}
             value={content}
             setValue={updateContent}

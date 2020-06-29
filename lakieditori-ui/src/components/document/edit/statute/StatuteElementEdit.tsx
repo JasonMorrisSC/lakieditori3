@@ -179,6 +179,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
           <br/>
           <TextEditor
+              document={document}
               label="Otsikko"
               value={title}
               setValue={updateTitle}
@@ -190,6 +191,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
         </Heading.h1hero>
 
         <TextEditor
+            document={document}
             label="Johtolause"
             value={intro}
             setValue={updateIntro}

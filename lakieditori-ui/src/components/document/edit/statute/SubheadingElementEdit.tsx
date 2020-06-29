@@ -47,6 +47,7 @@ const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
   return (
       <div className="subheading" style={{marginTop: sdt.spacing.l}}>
         <TextEditor
+            document={document}
             label={`Väliotsikko ${number}`}
             value={currentElement}
             setValue={updateContent}

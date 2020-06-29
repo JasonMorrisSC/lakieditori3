@@ -78,6 +78,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
 
           <TextEditor
+              document={document}
               label={`Pykälän ${number} otsikko`}
               value={heading}
               setValue={updateHeading}

@@ -72,6 +72,7 @@ const ParagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument
           </div>
 
           <TextEditor
+              document={document}
               label={`Luvun ${number} otsikko`}
               value={heading}
               setValue={updateHeading}
@@ -83,6 +84,7 @@ const ParagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument
         </Heading.h5>
 
         <TextEditor
+            document={document}
             label={`Luvun ${number} tekstisisältö`}
             value={content}
             setValue={updateContent}

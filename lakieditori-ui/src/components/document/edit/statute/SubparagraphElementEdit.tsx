@@ -44,6 +44,7 @@ const SubparagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocum
   return (
       <li className="subparagraph" style={{color: tokens.colors.highlightLight45}}>
         <TextEditor
+            document={document}
             label={`Alakohta ${number}`}
             value={content}
             setValue={updateContent}

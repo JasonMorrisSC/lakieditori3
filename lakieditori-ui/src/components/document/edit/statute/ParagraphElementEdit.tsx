@@ -68,6 +68,7 @@ const ParagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument
   return (
       <li className="paragraph" style={{color: tokens.colors.highlightLight45}}>
         <TextEditor
+            document={document}
             label={`Kohta ${number}`}
             value={content}
             setValue={updateContent}

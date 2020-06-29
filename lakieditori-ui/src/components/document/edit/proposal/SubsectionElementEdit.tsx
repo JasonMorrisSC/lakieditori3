@@ -89,6 +89,7 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
           </div>
 
           <TextEditor
+              document={document}
               label={`Luvun ${number} otsikko`}
               value={heading}
               setValue={updateHeading}
@@ -100,6 +101,7 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
         </Heading.h4>
 
         <TextEditor
+            document={document}
             label={`Luvun ${number} tekstisisältö`}
             value={content}
             setValue={updateContent}

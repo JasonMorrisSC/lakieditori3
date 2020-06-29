@@ -2,6 +2,7 @@ import {Editor, Location, Node as SlateNode, NodeEntry, Range, Text, Transforms}
 import {jsx} from "slate-hyperscript";
 import escapeHtml from "escape-html";
 import {isBlank} from "../../../../utils/stringUtils";
+import {Concept} from "./useTextConcepts";
 
 export function deserialize(el: Node): SlateNode[] | null {
   if (el.nodeType === Node.TEXT_NODE || el.nodeType !== Node.ELEMENT_NODE) {
@@ -143,7 +144,10 @@ export function selectionOrWord(editor: Editor): null | Range {
   } : selection;
 }
 
-export function highlightMatches(predicate: (word: string) => boolean, [node, path]: NodeEntry): Range[] {
+export function highlightConceptMatches(
+    findConcept: (word: string) => Concept | undefined,
+    importantConceptPredicate: (uri: string) => boolean, [node, path]: NodeEntry): Range[] {
+
   const ranges: Range[] = [];
 
   if (Text.isText(node)) {
@@ -153,11 +157,14 @@ export function highlightMatches(predicate: (word: string) => boolean, [node, pa
     let offset = 0;
 
     words.forEach((word, i) => {
-      if (predicate(word)) {
+      const concept = findConcept(word);
+
+      if (concept) {
         ranges.push({
           anchor: {path, offset: offset + word.length},
           focus: {path, offset},
-          highlight: true
+          highlight: !importantConceptPredicate(concept.uri),
+          important: importantConceptPredicate(concept.uri)
         })
       }
       offset = offset + word.length + 1;

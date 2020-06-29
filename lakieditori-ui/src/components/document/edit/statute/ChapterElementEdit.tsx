@@ -123,6 +123,7 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
 
           <TextEditor
+              document={document}
               label={`Luvun ${number} otsikko`}
               value={heading}
               setValue={updateHeading}

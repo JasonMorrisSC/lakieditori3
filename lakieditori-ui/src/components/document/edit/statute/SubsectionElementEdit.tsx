@@ -68,6 +68,7 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
   return (
       <div className="subsection">
         <TextEditor
+            document={document}
             label={`Momentti ${number}`}
             value={content}
             setValue={updateContent}

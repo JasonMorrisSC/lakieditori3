@@ -12,13 +12,15 @@ import {
 } from 'slate-react'
 import {withHistory} from "slate-history";
 import {suomifiDesignTokens as tokens} from "suomifi-ui-components";
-import {deserialize, highlightMatches, serialize, toggleFormat} from "./slateUtils";
+import {deserialize, highlightConceptMatches, serialize, toggleFormat} from "./slateUtils";
 import {useTextConcepts} from "./useTextConcepts";
 import TextEditorToolbar from "./TextEditorToolbar";
 import TextEditorHoveringToolbar from "./TextEditorHoveringToolbar";
 import LinkModal from "./LinkModal";
+import {queryNodes} from "../../../../utils/xmlUtils";
 
 interface Props {
+  document?: Document | null,
   value: Element | null,
   setValue: (xmlValue: string) => void,
   inline?: boolean,
@@ -29,7 +31,7 @@ interface Props {
 }
 
 const TextEditor: React.FC<Props> = (
-    {value, setValue, inline = true, label, style, customTools, terminologyUris = []}) => {
+    {document, value, setValue, inline = true, label, style, customTools, terminologyUris = []}) => {
   const [focused, setFocused] = useState<boolean>(false);
 
   const editor = useMemo(() => withInlineLinks(withReact(withHistory(createEditor()))), []);
@@ -42,6 +44,15 @@ const TextEditor: React.FC<Props> = (
   const [linkModalSelection, setLinkModalSelection] = useState<Location>([0]);
 
   const {concepts} = useTextConcepts(editorValue.map(n => SlateNode.string(n)).join('\n'), terminologyUris, focused);
+  const [existingConceptUrls, setExistingConceptUrls] = useState<string[]>([]);
+
+  useEffect(() => {
+    if (document) {
+      setExistingConceptUrls(queryNodes(document.documentElement, "//a/@href")
+      .map(href => href.textContent || '')
+      .filter(url => url && url.startsWith("http://uri.suomi.fi")));
+    }
+  }, [document]);
 
   // Sets real initial editor value from properties after it is available
   useEffect(() => {
@@ -61,7 +72,10 @@ const TextEditor: React.FC<Props> = (
   }, [editor]);
 
   const decorate = useCallback(([node, path]: NodeEntry) => {
-    return focused ? highlightMatches((w) => concepts.has(w), [node, path]) : [];
+    return focused ? highlightConceptMatches(
+        (w) => concepts.get(w),
+        (uri) => existingConceptUrls.includes(uri),
+        [node, path]) : [];
   }, [focused, concepts]);
 
   return (
@@ -154,6 +168,9 @@ const EditorLeaf = ({attributes, children, leaf}: RenderLeafProps) => {
   }
   if (leaf.highlight) {
     children = <span style={{backgroundColor: tokens.colors.highlightLight50}}>{children}</span>
+  }
+  if (leaf.important) {
+    children = <span style={{backgroundColor: "hsl(166, 54%, 90%)"}}>{children}</span>
   }
   return <span {...attributes}>{children}</span>
 };

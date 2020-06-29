@@ -91,6 +91,7 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
           </div>
           <br/>
           <TextEditor
+              document={document}
               label="Otsikko"
               value={title}
               setValue={updateTitle}
@@ -104,6 +105,7 @@ const ProposalElementEdit: React.FC<ElementEditProps> = ({document, setDocument,
         <PartHeading>Esityksen pääasiallinen sisältö</PartHeading>
 
         <TextEditor
+            document={document}
             label="Tiivistelmä"
             value={abstract}
             setValue={updateAbstract}
