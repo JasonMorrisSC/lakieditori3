@@ -30,6 +30,11 @@ public class XmlDocumentBuilder {
     return this;
   }
 
+  public XmlDocumentBuilder pushElementNs(String ns, String qName) {
+    currentNode = currentNode.appendChild(document.createElementNS(ns, qName));
+    return this;
+  }
+
   public XmlDocumentBuilder pushExternal(Document document) {
     return pushExternal(document.getDocumentElement());
   }
@@ -55,6 +60,11 @@ public class XmlDocumentBuilder {
 
   public XmlDocumentBuilder attribute(String name, String value) {
     ((Element) currentNode).setAttribute(name, value);
+    return this;
+  }
+
+  public XmlDocumentBuilder attributeNs(String ns, String qName, String value) {
+    ((Element) currentNode).setAttributeNS(ns, qName, value);
     return this;
   }
 
