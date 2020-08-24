@@ -14,16 +14,25 @@ import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
 import {ElementEditProps} from "../ElementEditProps";
 import ParagraphElementEdit from "./ParagraphElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
+import {FlexRow} from "../../../common/StyledComponents";
 
-const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
+  const contentComments = queryFirstElement(currentElement, "contentComments");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["paragraph"], (el) => el.innerHTML = newValue);
+          "content", ["contentComments", "paragraph"], (el) => el.innerHTML = newValue);
+    });
+  }
+
+  function updateContentComments(newValue: string) {
+    setDocument((prevDocument) => {
+      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
+          "contentComments", ["paragraph"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -67,13 +76,32 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
 
   return (
       <div className="subsection">
-        <TextEditor
-            document={document}
-            label={`Momentti ${number}`}
-            value={content}
-            setValue={updateContent}
-            terminologyUris={terminologyUris}
-            customTools={customTools}/>
+
+        <FlexRow>
+          <TextEditor
+              document={document}
+              label={`Momentti ${number}`}
+              value={content}
+              setValue={updateContent}
+              terminologyUris={terminologyUris}
+              customTools={customTools}
+              style={{flex: 5}}/>
+
+          {showComments &&
+          <TextEditor
+              document={document}
+              label={`Kommentit`}
+              value={contentComments}
+              setValue={updateContentComments}
+              terminologyUris={terminologyUris}
+              inline={false}
+              style={{
+                flex: 3,
+                fontSize: tokens.values.typography.bodyText.fontSize.value,
+                fontWeight: tokens.values.typography.bodyText.fontWeight,
+                lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+              }}/>}
+        </FlexRow>
 
         <ul>
           {queryElements(currentElement, 'paragraph').map((paragraph, i) => (

@@ -92,7 +92,7 @@ const TextEditor: React.FC<Props> = (
                 setLinkModalOpen(true);
               }}/>
 
-          <div style={{border: `1px solid ${tokens.colors.depthLight13}`, borderRadius: "2px"}}>
+          <div style={{border: `1px solid ${tokens.colors.depthLight13}`, borderRadius: "2px", height: "100%"}}>
             <TextEditorToolbar label={label || ''} expanded={focused}
                                linkSelection={(location) => {
                                  setLinkModalSelection(location);

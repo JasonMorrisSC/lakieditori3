@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import {queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";
@@ -20,6 +20,7 @@ interface Props {
 const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   const {document, setDocument, saveDocument} = useDocument(schemaName, id);
   const {properties: documentProperties} = useDocumentProperties(schemaName, id);
+  const [showComments, setShowComments] = useState(false);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
@@ -27,7 +28,8 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   return (
       <main>
         <DocumentEditToolbar schemaName={schemaName} id={id} title={title} lock={lock}
-                             saveDocument={() => saveDocument(document)}/>
+                             saveDocument={() => saveDocument(document)}
+                             showComments={showComments} setShowComments={setShowComments}/>
 
         <FlexRowPlain style={{
           backgroundColor: tokens.colors.whiteBase,
@@ -46,8 +48,8 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
           </div>
 
           <div style={{
-            flex: 8,
-            padding: tokens.spacing.xl
+            flex: showComments ? 10 : 8,
+            padding: showComments ? `${tokens.spacing.xl} ${tokens.spacing.l}` : tokens.spacing.xl
           }}>
             {schemaName === "statute" &&
             <StatuteElementEdit
@@ -55,7 +57,8 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
                 setDocument={setDocument}
                 documentProperties={documentProperties}
                 currentPath={"/statute"}
-                currentElement={element}/>}
+                currentElement={element}
+                showComments={showComments}/>}
             {schemaName === "proposal" &&
             <ProposalElementEdit
                 document={document}
@@ -65,13 +68,14 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
                 currentElement={element}/>}
           </div>
 
+          {!showComments &&
           <div style={{
             flex: 2,
             borderLeft: `1px solid ${tokens.colors.depthLight26}`,
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
             <Concepts document={document}/>
-          </div>
+          </div>}
 
         </FlexRowPlain>
       </main>

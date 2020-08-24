@@ -6,6 +6,7 @@ import {
   childElements,
   cloneDocument,
   countNodes,
+  ensureElementAndUpdate,
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
@@ -17,10 +18,13 @@ import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
 import SubheadingElementEdit from "./SubheadingElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
+import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
+import {FlexRow} from "../../../common/StyledComponents";
 
-const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const heading = queryFirstElement(currentElement, "heading");
+  const headingComments = queryFirstElement(currentElement, "headingComments");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateNumber(newValue: string) {
@@ -31,6 +35,13 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   function updateHeading(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/heading",
         (el) => el.innerHTML = newValue));
+  }
+
+  function updateHeadingComments(newValue: string) {
+    setDocument((prevDocument) => {
+      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
+          "headingComments", ["section", "subheading"], (el) => el.innerHTML = newValue);
+    });
   }
 
   function appendNewSection() {
@@ -82,7 +93,8 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 currentElement={e}
                 documentProperties={documentProperties}
                 currentPath={currentPath + "/section[" + (sectionCounter++) + "]"}
-                setDocument={setDocument}/>
+                setDocument={setDocument}
+                showComments={showComments}/>
           </div>;
         case "subheading":
           return <div key={i} id={`chapter-${chNumber}-subheading-${e.getAttribute('number')}`}>
@@ -91,7 +103,8 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 currentElement={e}
                 documentProperties={documentProperties}
                 currentPath={currentPath + "/subheading[" + (subheadingCounter++) + "]"}
-                setDocument={setDocument}/>
+                setDocument={setDocument}
+                showComments={showComments}/>
           </div>;
         default:
           return "";
@@ -122,16 +135,34 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             </div>
           </div>
 
-          <TextEditor
-              document={document}
-              label={`Luvun ${number} otsikko`}
-              value={heading}
-              setValue={updateHeading}
-              terminologyUris={terminologyUris}
-              style={{
-                fontSize: sdt.values.typography.heading2.fontSize.value,
-                fontWeight: sdt.values.typography.heading2.fontWeight,
-              }}/>
+          <FlexRow>
+            <TextEditor
+                document={document}
+                label={`Luvun ${number} otsikko`}
+                value={heading}
+                setValue={updateHeading}
+                terminologyUris={terminologyUris}
+                style={{
+                  flex: 5,
+                  fontSize: sdt.values.typography.heading2.fontSize.value,
+                  fontWeight: sdt.values.typography.heading2.fontWeight,
+                }}/>
+
+            {showComments &&
+            <TextEditor
+                document={document}
+                label={`Kommentit`}
+                value={headingComments}
+                setValue={updateHeadingComments}
+                terminologyUris={terminologyUris}
+                inline={false}
+                style={{
+                  flex: 3,
+                  fontSize: tokens.values.typography.bodyText.fontSize.value,
+                  fontWeight: tokens.values.typography.bodyText.fontWeight,
+                  lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+                }}/>}
+          </FlexRow>
         </Heading.h2>
 
         {renderChapterChildElements(number, currentElement)}

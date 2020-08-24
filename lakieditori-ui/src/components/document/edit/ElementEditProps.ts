@@ -6,4 +6,5 @@ export interface ElementEditProps {
   documentProperties: { [name: string]: string },
   currentPath: string,
   currentElement: Element,
+  showComments?: boolean,
 }

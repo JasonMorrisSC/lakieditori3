@@ -20,12 +20,15 @@ import SectionElementEdit from "./SectionElementEdit";
 import SubheadingElementEdit from "./SubheadingElementEdit";
 import PartElementEdit from "./PartElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
+import {FlexRow} from "../../../common/StyledComponents";
 
-const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
+  const titleComments = queryFirstElement(currentElement, "titleComments");
   const intro = queryFirstElement(currentElement, "intro");
+  const introComments = queryFirstElement(currentElement, "introComments");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   const partCount = countNodes(currentElement, "part");
@@ -49,10 +52,24 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
     });
   }
 
+  function updateTitleComments(newValue: string) {
+    setDocument((prevDocument) => {
+      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
+          "titleComments", ["intro", "chapter", "section"], (el) => el.innerHTML = newValue);
+    });
+  }
+
   function updateIntro(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "intro", ["chapter", "section"], (el) => el.innerHTML = newValue);
+          "intro", ["introComments", "chapter", "section"], (el) => el.innerHTML = newValue);
+    });
+  }
+
+  function updateIntroComments(newValue: string) {
+    setDocument((prevDocument) => {
+      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
+          "introComments", ["chapter", "section"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -139,7 +156,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 currentElement={e}
                 documentProperties={documentProperties}
                 currentPath={currentPath + "/chapter[" + (chapterCounter++) + "]"}
-                setDocument={setDocument}/>
+                setDocument={setDocument}
+                showComments={showComments}/>
           </div>;
         case "part":
           return <div key={i} id={`part-${e.getAttribute('number')}`}>
@@ -178,28 +196,66 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             </Dropdown>
           </div>
           <br/>
-          <TextEditor
-              document={document}
-              label="Otsikko"
-              value={title}
-              setValue={updateTitle}
-              terminologyUris={terminologyUris}
-              style={{
-                fontSize: tokens.values.typography.heading1Hero.fontSize.value,
-                fontWeight: tokens.values.typography.heading1Hero.fontWeight,
-              }}/>
+
+          <FlexRow>
+            <TextEditor
+                document={document}
+                label="Otsikko"
+                value={title}
+                setValue={updateTitle}
+                terminologyUris={terminologyUris}
+                style={{
+                  flex: 5,
+                  fontSize: tokens.values.typography.heading1Hero.fontSize.value,
+                  fontWeight: tokens.values.typography.heading1Hero.fontWeight,
+                }}/>
+
+            {showComments &&
+            <TextEditor
+                document={document}
+                label="Kommentit"
+                value={titleComments}
+                setValue={updateTitleComments}
+                terminologyUris={terminologyUris}
+                inline={false}
+                style={{
+                  flex: 3,
+                  fontSize: tokens.values.typography.bodyText.fontSize.value,
+                  fontWeight: tokens.values.typography.bodyText.fontWeight,
+                  lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+                }}/>}
+          </FlexRow>
+
         </Heading.h1hero>
 
-        <TextEditor
-            document={document}
-            label="Johtolause"
-            value={intro}
-            setValue={updateIntro}
-            terminologyUris={terminologyUris}
-            style={{
-              fontSize: tokens.values.typography.leadText.fontSize.value,
-              fontWeight: tokens.values.typography.leadText.fontWeight,
-            }}/>
+        <FlexRow>
+          <TextEditor
+              document={document}
+              label="Johtolause"
+              value={intro}
+              setValue={updateIntro}
+              terminologyUris={terminologyUris}
+              style={{
+                flex: 5,
+                fontSize: tokens.values.typography.leadText.fontSize.value,
+                fontWeight: tokens.values.typography.leadText.fontWeight,
+              }}/>
+
+          {showComments &&
+          <TextEditor
+              document={document}
+              label="Kommentit"
+              value={introComments}
+              setValue={updateIntroComments}
+              terminologyUris={terminologyUris}
+              inline={false}
+              style={{
+                flex: 3,
+                fontSize: tokens.values.typography.bodyText.fontSize.value,
+                fontWeight: tokens.values.typography.bodyText.fontWeight,
+                lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+              }}/>}
+        </FlexRow>
 
         {renderDocumentChildElements(currentElement)}
 
