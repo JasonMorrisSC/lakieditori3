@@ -85,12 +85,14 @@ const TextEditor: React.FC<Props> = (
             editor={editor}
             value={editorValue}
             onChange={nodes => setEditorValue(nodes)}>
+
+          {focused &&
           <TextEditorHoveringToolbar
               words={concepts}
               linkSelection={(location) => {
                 setLinkModalSelection(location);
                 setLinkModalOpen(true);
-              }}/>
+              }}/>}
 
           <div style={{border: `1px solid ${tokens.colors.depthLight13}`, borderRadius: "2px", height: "100%"}}>
             <TextEditorToolbar label={label || ''} expanded={focused}
