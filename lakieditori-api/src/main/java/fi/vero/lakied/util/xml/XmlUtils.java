@@ -32,6 +32,7 @@ import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
@@ -187,16 +188,27 @@ public final class XmlUtils {
     }
   }
 
-  public static String print(Document doc, Source xslt) {
+  public static String print(Document doc, Source xsl) {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
-    print(doc, out, xslt);
+    print(doc, out, xsl);
     return new String(out.toByteArray(), StandardCharsets.UTF_8);
   }
 
-  public static void print(Document doc, OutputStream out, Source xslt) {
+  public static void print(Document doc, OutputStream out, Source xsl) {
     try {
-      Transformer transformer = TransformerFactory.newInstance().newTransformer(xslt);
+      Transformer transformer = TransformerFactory.newInstance().newTransformer(xsl);
       transformer.transform(new DOMSource(doc), new StreamResult(out));
+    } catch (TransformerException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  public static Document transform(Document doc, Source xsl) {
+    try {
+      DOMResult result = new DOMResult();
+      Transformer transformer = TransformerFactory.newInstance().newTransformer(xsl);
+      transformer.transform(new DOMSource(doc), result);
+      return (Document) result.getNode();
     } catch (TransformerException e) {
       throw new RuntimeException(e);
     }
