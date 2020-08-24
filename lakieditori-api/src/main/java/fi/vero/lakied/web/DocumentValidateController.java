@@ -13,14 +13,15 @@ import fi.vero.lakied.util.xml.PostXmlMapping;
 import fi.vero.lakied.util.xml.XmlUtils;
 import java.io.IOException;
 import java.util.List;
+import javax.servlet.http.HttpServletRequest;
 import javax.xml.transform.Source;
 import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,8 +44,8 @@ public class DocumentValidateController {
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public void validate(
       @PathVariable("schemaName") String schemaName,
-      @RequestBody Document document,
-      @AuthenticationPrincipal User user) {
+      @AuthenticationPrincipal User user,
+      HttpServletRequest request) {
 
     List<Tuple2<String, Document>> definitions = schemaDefinitionReadRepository
         .collectValues(bySchemaName(schemaName), user, toList());
@@ -60,7 +61,7 @@ public class DocumentValidateController {
             .toArray(Source[]::new));
 
     try {
-      schema.newValidator().validate(new DOMSource(document));
+      schema.newValidator().validate(new StreamSource(request.getInputStream()));
     } catch (SAXException e) {
       throw new BadRequestException(e);
     } catch (IOException e) {
