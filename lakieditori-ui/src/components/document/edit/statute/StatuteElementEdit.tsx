@@ -138,7 +138,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 currentElement={e}
                 documentProperties={documentProperties}
                 currentPath={currentPath + "/section[" + (sectionCounter++) + "]"}
-                setDocument={setDocument}/>
+                setDocument={setDocument}
+                showComments={showComments}/>
           </div>;
         case "subheading":
           return <div key={i} id={`subheading-${e.getAttribute('number')}`}>
@@ -147,7 +148,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 currentElement={e}
                 documentProperties={documentProperties}
                 currentPath={currentPath + "/subheading[" + (subheadingCounter++) + "]"}
-                setDocument={setDocument}/>
+                setDocument={setDocument}
+                showComments={showComments}/>
           </div>;
         case "chapter":
           return <div key={i} id={`chapter-${e.getAttribute('number')}`}>
@@ -166,7 +168,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 currentElement={e}
                 documentProperties={documentProperties}
                 currentPath={currentPath + "/part[" + (chapterCounter++) + "]"}
-                setDocument={setDocument}/>
+                setDocument={setDocument}
+                showComments={showComments}/>
           </div>;
         default:
           return "";
