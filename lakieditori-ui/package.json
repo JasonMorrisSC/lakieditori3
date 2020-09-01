@@ -19,6 +19,7 @@
     "@types/react-select": "^3.0.12",
     "@types/react-syntax-highlighter": "^11.0.4",
     "@types/sanitize-html": "^1.20.2",
+    "@types/uuid": "^8.3.0",
     "ace-builds": "^1.4.9",
     "axios": "^0.19.1",
     "codemirror": "^5.51.0",
@@ -41,7 +42,8 @@
     "slate-react": "^0.57.1",
     "suomifi-icons": "^0.0.12",
     "suomifi-ui-components": "^0.4.1",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "uuid": "^8.3.0"
   },
   "scripts": {
     "start": "react-scripts start",

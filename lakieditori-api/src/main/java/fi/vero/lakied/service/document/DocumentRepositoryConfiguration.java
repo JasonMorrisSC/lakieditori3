@@ -48,6 +48,16 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
+  public ReadRepository<DocumentCommentKey, Audited<Tuple2<String, String>>> documentCommentsReadRepository(
+      DataSource ds) {
+    return
+        new KeyAuthorizingReadRepository<>(
+            new JdbcDocumentCommentsReadRepository(ds),
+            documentPermissionEvaluator(ds)
+                .mapObject(o -> DocumentKey.of(o.documentSchemaName, o.documentId)));
+  }
+
+  @Bean
   public WriteRepository<DocumentKey, Document> documentWriteRepository(
       ReadRepository<Tuple2<String, Integer>, Tuple2<String, Document>> schemaDefinitionReadRepository,
       PlatformTransactionManager txm,
@@ -70,6 +80,18 @@ public class DocumentRepositoryConfiguration {
             new TransactionalJdbcWriteRepository<>(
                 new JdbcDocumentPropertiesWriteRepository(ds), txm),
             documentPermissionEvaluator(ds).mapObject(o -> DocumentKey.of(o._1, o._2)));
+  }
+
+  @Bean
+  public WriteRepository<DocumentCommentKey, Tuple2<String, String>> documentCommentsWriteRepository(
+      PlatformTransactionManager txm,
+      DataSource ds) {
+    return
+        new KeyAuthorizingWriteRepository<>(
+            new TransactionalJdbcWriteRepository<>(
+                new JdbcDocumentCommentsWriteRepository(ds), txm),
+            documentPermissionEvaluator(ds)
+                .mapObject(o -> DocumentKey.of(o.documentSchemaName, o.documentId)));
   }
 
   @Bean
@@ -147,9 +169,9 @@ public class DocumentRepositoryConfiguration {
       DataSource ds) {
 
     PermissionEvaluator<Tuple2<DocumentKey, Audited<Document>>> permitRecommendation =
-        xPathPermissionEvaluator("/document/@state = 'RECOMMENDATION'").mapObject(t -> t._2.value);
+        xPathPermissionEvaluator("/*/@state = 'RECOMMENDATION'").mapObject(t -> t._2.value);
     PermissionEvaluator<Tuple2<DocumentKey, Audited<Document>>> permitDraft =
-        xPathPermissionEvaluator("/document/@state = 'DRAFT'").mapObject(t -> t._2.value);
+        xPathPermissionEvaluator("/*/@state = 'DRAFT'").mapObject(t -> t._2.value);
 
     return PermissionEvaluator.<Tuple2<DocumentKey, Audited<Document>>>denyAll()
         // anyone can read recommendations

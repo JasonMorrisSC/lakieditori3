@@ -1,5 +1,5 @@
 // @ts-ignore
-import React, {CSSProperties, SyntheticEvent, useEffect, useRef} from "react";
+import React, {CSSProperties, RefObject, SyntheticEvent, useEffect, useRef} from "react";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 
 const inputStyle: CSSProperties = {
@@ -14,16 +14,27 @@ const inputStyle: CSSProperties = {
   width: '100%',
 };
 
+interface Props {
+  value?: string,
+  placeholder?: string,
+  onChange?: (e: SyntheticEvent<HTMLTextAreaElement>) => void,
+  style?: CSSProperties,
+  rows?: number,
+  forwardedRef?: RefObject<HTMLTextAreaElement>,
+}
+
 const TextArea: React.FC<Props> = (
     {
       value = '',
       onChange = () => null,
       placeholder = '',
       style = {},
-      rows = 1
+      rows = 1,
+      forwardedRef = null,
     }) => {
 
   const inputElement = useRef<HTMLTextAreaElement>(null);
+  React.useImperativeHandle(forwardedRef, () => inputElement.current!);
 
   function resizeContent(element: HTMLTextAreaElement) {
     element.style.height = element.scrollHeight + "px";
@@ -47,13 +58,5 @@ const TextArea: React.FC<Props> = (
                    style={{...inputStyle, verticalAlign: "middle", ...style}}
                    rows={rows}/>;
 };
-
-interface Props {
-  value?: string,
-  placeholder?: string,
-  onChange?: (e: SyntheticEvent<HTMLTextAreaElement>) => void,
-  style?: CSSProperties,
-  rows?: number
-}
 
 export default TextArea;

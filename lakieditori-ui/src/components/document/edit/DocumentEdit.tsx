@@ -10,6 +10,7 @@ import Concepts from "../view/Concepts";
 import {useDocumentProperties} from "../useDocumentProperties";
 import ProposalElementEdit from "./proposal/ProposalElementEdit";
 import ProposalTableOfContents from "../view/proposal/ProposalTableOfContents";
+import {useDocumentComments} from "../useDocumentComments";
 
 interface Props {
   schemaName: string,
@@ -20,7 +21,8 @@ interface Props {
 const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   const {document, setDocument, saveDocument} = useDocument(schemaName, id);
   const {properties: documentProperties} = useDocumentProperties(schemaName, id);
-  const [showComments, setShowComments] = useState(false);
+  const {comments: documentComments, setComments: setDocumentComments, saveComments: saveDocumentComments} = useDocumentComments(schemaName, id);
+  const [showComments, setShowComments] = useState(true);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
@@ -28,7 +30,7 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   return (
       <main>
         <DocumentEditToolbar schemaName={schemaName} id={id} title={title} lock={lock}
-                             saveDocument={() => saveDocument(document)}
+                             saveDocument={() => saveDocument(document).then(() => saveDocumentComments(documentComments))}
                              showComments={showComments} setShowComments={setShowComments}/>
 
         <FlexRowPlain style={{
@@ -56,6 +58,8 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
                 document={document}
                 setDocument={setDocument}
                 documentProperties={documentProperties}
+                documentComments={documentComments}
+                setDocumentComments={setDocumentComments}
                 currentPath={"/statute"}
                 currentElement={element}
                 showComments={showComments}/>}

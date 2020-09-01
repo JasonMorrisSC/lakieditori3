@@ -21,14 +21,14 @@ import SubheadingElementEdit from "./SubheadingElementEdit";
 import PartElementEdit from "./PartElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
 import {FlexRow} from "../../../common/StyledComponents";
+import AddCommentButton from "../../comment/AddCommentButton";
+import ListComments from "../../comment/ListComments";
 
-const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement, showComments}) => {
+const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
-  const titleComments = queryFirstElement(currentElement, "titleComments");
   const intro = queryFirstElement(currentElement, "intro");
-  const introComments = queryFirstElement(currentElement, "introComments");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   const partCount = countNodes(currentElement, "part");
@@ -52,24 +52,10 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
     });
   }
 
-  function updateTitleComments(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "titleComments", ["intro", "chapter", "section"], (el) => el.innerHTML = newValue);
-    });
-  }
-
   function updateIntro(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "intro", ["introComments", "chapter", "section"], (el) => el.innerHTML = newValue);
-    });
-  }
-
-  function updateIntroComments(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "introComments", ["chapter", "section"], (el) => el.innerHTML = newValue);
+          "intro", ["chapter", "section"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -213,20 +199,20 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                   fontWeight: tokens.values.typography.heading1Hero.fontWeight,
                 }}/>
 
-            {showComments &&
-            <TextEditor
-                document={document}
-                label="Kommentit"
-                value={titleComments}
-                setValue={updateTitleComments}
-                terminologyUris={terminologyUris}
-                inline={false}
-                style={{
-                  flex: 3,
-                  fontSize: tokens.values.typography.bodyText.fontSize.value,
-                  fontWeight: tokens.values.typography.bodyText.fontWeight,
-                  lineHeight: tokens.values.typography.bodyText.lineHeight.value,
-                }}/>}
+            {(showComments && documentComments && setDocumentComments) &&
+            <div style={{
+              flex: 3,
+              fontSize: tokens.values.typography.bodyText.fontSize.value,
+              fontWeight: tokens.values.typography.bodyText.fontWeight,
+              lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+            }}>
+              <ListComments paths={["", "/", currentPath]}
+                            comments={documentComments}
+                            setComments={setDocumentComments}/>
+              <AddCommentButton path={currentPath}
+                                comments={documentComments}
+                                setComments={setDocumentComments}/>
+            </div>}
           </FlexRow>
 
         </Heading.h1hero>
@@ -245,19 +231,14 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
               }}/>
 
           {showComments &&
-          <TextEditor
-              document={document}
-              label="Kommentit"
-              value={introComments}
-              setValue={updateIntroComments}
-              terminologyUris={terminologyUris}
-              inline={false}
-              style={{
-                flex: 3,
-                fontSize: tokens.values.typography.bodyText.fontSize.value,
-                fontWeight: tokens.values.typography.bodyText.fontWeight,
-                lineHeight: tokens.values.typography.bodyText.lineHeight.value,
-              }}/>}
+          <div style={{
+            flex: 3,
+            fontSize: tokens.values.typography.bodyText.fontSize.value,
+            fontWeight: tokens.values.typography.bodyText.fontWeight,
+            lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+          }}>
+
+          </div>}
         </FlexRow>
 
         {renderDocumentChildElements(currentElement)}

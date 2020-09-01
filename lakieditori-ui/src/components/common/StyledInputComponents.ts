@@ -100,3 +100,12 @@ export const ButtonIconOnly = styled(Button.secondaryNoborder)`
     padding: ${tokens.spacing.s};
   };
 `;
+
+export const ButtonSmallIconOnly = styled(Button.secondaryNoborder)`
+  & > svg {
+    margin: 0 !important;
+  };
+  background-color: transparent !important;
+  padding: ${tokens.spacing.xs};
+  min-height: 0;
+`;
