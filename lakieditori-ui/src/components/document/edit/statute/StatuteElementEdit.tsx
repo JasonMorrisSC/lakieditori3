@@ -123,6 +123,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 document={document}
                 currentElement={e}
                 documentProperties={documentProperties}
+                documentComments={documentComments}
+                setDocumentComments={setDocumentComments}
                 currentPath={currentPath + "/section[" + (sectionCounter++) + "]"}
                 setDocument={setDocument}
                 showComments={showComments}/>
@@ -168,7 +170,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
 
         <FlexRowTight>
           <div style={{
-            flex: 6,
+            flex: 2,
           }}>
             <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
               <div style={{
@@ -197,12 +199,12 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
             </div>
           </div>
           {(showComments && documentComments && setDocumentComments) &&
-          <div style={{flex: 3}}/>}
+          <div style={{flex: 1}}/>}
         </FlexRowTight>
 
         <FlexRowTight>
           <div style={{
-            flex: 6,
+            flex: 2,
           }}>
             <Heading.h1hero>
               <TextEditor
@@ -230,7 +232,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
           </div>
           {(showComments && documentComments && setDocumentComments) &&
           <div style={{
-            flex: 3,
+            flex: 1,
             fontSize: tokens.values.typography.bodyText.fontSize.value,
             fontWeight: tokens.values.typography.bodyText.fontWeight,
             lineHeight: tokens.values.typography.bodyText.lineHeight.value,

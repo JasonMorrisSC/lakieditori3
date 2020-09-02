@@ -15,10 +15,12 @@ import SubsectionElementEdit from "./SubsectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
-import {FlexRow} from "../../../common/StyledComponents";
+import {FlexRowTight} from "../../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
+import ListComments from "../../comment/ListComments";
+import AddCommentButton from "../../comment/AddCommentButton";
 
-const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement, showComments}) => {
+const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const heading = queryFirstElement(currentElement, "heading");
   const headingComments = queryFirstElement(currentElement, "headingComments");
@@ -67,28 +69,33 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   return (
       <div className="section" style={{marginTop: sdt.spacing.l}}>
         <Heading.h3>
-          <div style={{display: "flex", alignItems: "center"}}>
-            <Input type="text" value={number}
-                   onChange={(e) => updateNumber(e.currentTarget.value)}
-                   style={{
-                     color: sdt.colors.highlightBase,
-                     fontSize: sdt.values.typography.heading3.fontSize.value,
-                     fontWeight: sdt.values.typography.heading3.fontWeight,
-                     marginRight: sdt.spacing.xs,
-                     marginBottom: 0,
-                     width: `${(number.length + 1) * 16}px`
-                   }}/>
-            <span style={{color: sdt.colors.highlightBase}}>
-            §
-          </span>
-            <div style={{marginLeft: "auto"}}>
-              <Button.secondaryNoborder icon={"close"} onClick={() => removeSection()}>
-                Poista
-              </Button.secondaryNoborder>
-            </div>
-          </div>
 
-          <FlexRow>
+          <FlexRowTight>
+            <div style={{flex: 2}}>
+              <div style={{display: "flex", alignItems: "center"}}>
+                <Input type="text" value={number}
+                       onChange={(e) => updateNumber(e.currentTarget.value)}
+                       style={{
+                         color: sdt.colors.highlightBase,
+                         fontSize: sdt.values.typography.heading3.fontSize.value,
+                         fontWeight: sdt.values.typography.heading3.fontWeight,
+                         marginRight: sdt.spacing.xs,
+                         marginBottom: 0,
+                         width: `${(number.length + 1) * 16}px`
+                       }}/>
+                <span style={{color: sdt.colors.highlightBase}}>§</span>
+                <div style={{marginLeft: "auto"}}>
+                  <Button.secondaryNoborder icon={"close"} onClick={() => removeSection()}>
+                    Poista
+                  </Button.secondaryNoborder>
+                </div>
+              </div>
+            </div>
+            {(showComments && documentComments && setDocumentComments) &&
+            <div style={{flex: 1}}/>}
+          </FlexRowTight>
+
+          <FlexRowTight>
             <TextEditor
                 document={document}
                 label={`Pykälän ${number} otsikko`}
@@ -96,26 +103,26 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 setValue={updateHeading}
                 terminologyUris={terminologyUris}
                 style={{
-                  flex: 5,
+                  flex: 2,
                   fontSize: sdt.values.typography.heading3.fontSize.value,
                   fontWeight: sdt.values.typography.heading3.fontWeight,
                 }}/>
 
-            {showComments &&
-            <TextEditor
-                document={document}
-                label={`Kommentit`}
-                value={headingComments}
-                setValue={updateHeadingComments}
-                terminologyUris={terminologyUris}
-                inline={false}
-                style={{
-                  flex: 3,
-                  fontSize: tokens.values.typography.bodyText.fontSize.value,
-                  fontWeight: tokens.values.typography.bodyText.fontWeight,
-                  lineHeight: tokens.values.typography.bodyText.lineHeight.value,
-                }}/>}
-          </FlexRow>
+            {(showComments && documentComments && setDocumentComments) &&
+            <div style={{
+              flex: 1,
+              fontSize: tokens.values.typography.bodyText.fontSize.value,
+              fontWeight: tokens.values.typography.bodyText.fontWeight,
+              lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+            }}>
+              <ListComments paths={[currentPath]}
+                            comments={documentComments}
+                            setComments={setDocumentComments}/>
+              <AddCommentButton path={currentPath}
+                                comments={documentComments}
+                                setComments={setDocumentComments}/>
+            </div>}
+          </FlexRowTight>
         </Heading.h3>
 
         {queryElements(currentElement, 'subsection').map((subsection, i) => {
