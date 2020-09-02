@@ -20,9 +20,9 @@ import SectionElementEdit from "./SectionElementEdit";
 import SubheadingElementEdit from "./SubheadingElementEdit";
 import PartElementEdit from "./PartElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
-import {FlexRow} from "../../../common/StyledComponents";
-import AddCommentButton from "../../comment/AddCommentButton";
+import {FlexRowTight} from "../../../common/StyledComponents";
 import ListComments from "../../comment/ListComments";
+import AddCommentButton from "../../comment/AddCommentButton";
 
 const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
@@ -165,81 +165,84 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
 
   return (
       <article>
-        <Heading.h1hero>
-          <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
-            <small style={{color: tokens.colors.accentBase}}>{number}</small>
-            <Dropdown name={"Tila: " + documentStateLabelFi(state)} changeNameToSelection={false}
-                      css={css`button { margin: 0; }`}>
-              <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
-                {documentStateLabelFi(DocumentState.UNSTABLE)}
-              </Dropdown.item>
-              <Dropdown.item onSelect={() => updateDocumentState('DRAFT')}>
-                {documentStateLabelFi(DocumentState.DRAFT)}
-              </Dropdown.item>
-              <Dropdown.item onSelect={() => updateDocumentState('RECOMMENDATION')}>
-                {documentStateLabelFi(DocumentState.RECOMMENDATION)}
-              </Dropdown.item>
-              <Dropdown.item onSelect={() => updateDocumentState('DEPRECATED')}>
-                {documentStateLabelFi(DocumentState.DEPRECATED)}
-              </Dropdown.item>
-            </Dropdown>
-          </div>
-          <br/>
 
-          <FlexRow>
+        <FlexRowTight>
+          <div style={{
+            flex: 6,
+          }}>
+            <div style={{display: 'inline-flex', justifyContent: "space-between", width: "100%"}}>
+              <div style={{
+                color: tokens.colors.accentBase,
+                fontSize: tokens.values.typography.heading1SmallScreen.fontSize.value,
+                fontWeight: tokens.values.typography.bodySemiBold.fontWeight,
+                lineHeight: 1,
+              }}>
+                {number}
+              </div>
+              <Dropdown name={"Tila: " + documentStateLabelFi(state)} changeNameToSelection={false}
+                        css={css`button { margin: 0; }`}>
+                <Dropdown.item onSelect={() => updateDocumentState('UNSTABLE')}>
+                  {documentStateLabelFi(DocumentState.UNSTABLE)}
+                </Dropdown.item>
+                <Dropdown.item onSelect={() => updateDocumentState('DRAFT')}>
+                  {documentStateLabelFi(DocumentState.DRAFT)}
+                </Dropdown.item>
+                <Dropdown.item onSelect={() => updateDocumentState('RECOMMENDATION')}>
+                  {documentStateLabelFi(DocumentState.RECOMMENDATION)}
+                </Dropdown.item>
+                <Dropdown.item onSelect={() => updateDocumentState('DEPRECATED')}>
+                  {documentStateLabelFi(DocumentState.DEPRECATED)}
+                </Dropdown.item>
+              </Dropdown>
+            </div>
+          </div>
+          {(showComments && documentComments && setDocumentComments) &&
+          <div style={{flex: 3}}/>}
+        </FlexRowTight>
+
+        <FlexRowTight>
+          <div style={{
+            flex: 6,
+          }}>
+            <Heading.h1hero>
+              <TextEditor
+                  document={document}
+                  label="Otsikko"
+                  value={title}
+                  setValue={updateTitle}
+                  terminologyUris={terminologyUris}
+                  style={{
+                    fontSize: tokens.values.typography.heading1Hero.fontSize.value,
+                    fontWeight: tokens.values.typography.heading1Hero.fontWeight,
+                  }}/>
+            </Heading.h1hero>
+
             <TextEditor
                 document={document}
-                label="Otsikko"
-                value={title}
-                setValue={updateTitle}
+                label="Johtolause"
+                value={intro}
+                setValue={updateIntro}
                 terminologyUris={terminologyUris}
                 style={{
-                  flex: 5,
-                  fontSize: tokens.values.typography.heading1Hero.fontSize.value,
-                  fontWeight: tokens.values.typography.heading1Hero.fontWeight,
+                  fontSize: tokens.values.typography.leadText.fontSize.value,
+                  fontWeight: tokens.values.typography.leadText.fontWeight,
                 }}/>
-
-            {(showComments && documentComments && setDocumentComments) &&
-            <div style={{
-              flex: 3,
-              fontSize: tokens.values.typography.bodyText.fontSize.value,
-              fontWeight: tokens.values.typography.bodyText.fontWeight,
-              lineHeight: tokens.values.typography.bodyText.lineHeight.value,
-            }}>
-              <ListComments paths={["", "/", currentPath]}
-                            comments={documentComments}
-                            setComments={setDocumentComments}/>
-              <AddCommentButton path={currentPath}
-                                comments={documentComments}
-                                setComments={setDocumentComments}/>
-            </div>}
-          </FlexRow>
-
-        </Heading.h1hero>
-
-        <FlexRow>
-          <TextEditor
-              document={document}
-              label="Johtolause"
-              value={intro}
-              setValue={updateIntro}
-              terminologyUris={terminologyUris}
-              style={{
-                flex: 5,
-                fontSize: tokens.values.typography.leadText.fontSize.value,
-                fontWeight: tokens.values.typography.leadText.fontWeight,
-              }}/>
-
-          {showComments &&
+          </div>
+          {(showComments && documentComments && setDocumentComments) &&
           <div style={{
             flex: 3,
             fontSize: tokens.values.typography.bodyText.fontSize.value,
             fontWeight: tokens.values.typography.bodyText.fontWeight,
             lineHeight: tokens.values.typography.bodyText.lineHeight.value,
           }}>
-
+            <ListComments paths={["", "/", currentPath]}
+                          comments={documentComments}
+                          setComments={setDocumentComments}/>
+            <AddCommentButton path={currentPath}
+                              comments={documentComments}
+                              setComments={setDocumentComments}/>
           </div>}
-        </FlexRow>
+        </FlexRowTight>
 
         {renderDocumentChildElements(currentElement)}
 
