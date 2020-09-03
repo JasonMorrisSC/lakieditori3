@@ -79,7 +79,9 @@ public class DocumentRepositoryConfiguration {
         new KeyAuthorizingWriteRepository<>(
             new TransactionalJdbcWriteRepository<>(
                 new JdbcDocumentPropertiesWriteRepository(ds), txm),
-            documentPermissionEvaluator(ds).mapObject(o -> DocumentKey.of(o._1, o._2)));
+            documentPermissionEvaluator(ds)
+                .mapPermission(p -> p == Permission.DELETE ? Permission.UPDATE : p)
+                .mapObject(o -> DocumentKey.of(o._1, o._2)));
   }
 
   @Bean
@@ -91,6 +93,7 @@ public class DocumentRepositoryConfiguration {
             new TransactionalJdbcWriteRepository<>(
                 new JdbcDocumentCommentsWriteRepository(ds), txm),
             documentPermissionEvaluator(ds)
+                .mapPermission(p -> p == Permission.DELETE ? Permission.UPDATE : p)
                 .mapObject(o -> DocumentKey.of(o.documentSchemaName, o.documentId)));
   }
 

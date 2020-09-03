@@ -8,11 +8,14 @@ import {
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
-import {ElementEditProps} from "../ElementEditProps";
 import {suomifiDesignTokens as sdt} from "suomifi-design-tokens";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
+import {FlexRowTight} from "../../../common/StyledComponents";
+import ListComments from "../../comment/ListComments";
+import AddCommentButton from "../../comment/AddCommentButton";
+import {CommentableElementEditProps} from "../CommentableElementEditProps";
 
-const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const SubheadingElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
@@ -46,14 +49,34 @@ const SubheadingElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
 
   return (
       <div className="subheading" style={{marginTop: sdt.spacing.l}}>
-        <TextEditor
-            document={document}
-            label={`Väliotsikko ${number}`}
-            value={currentElement}
-            setValue={updateContent}
-            terminologyUris={terminologyUris}
-            style={{color: tokens.colors.blackBase}}
-            customTools={customTools}/>
+        <FlexRowTight>
+          <div style={{
+            flex: 2,
+          }}>
+            <TextEditor
+                document={document}
+                label={`Väliotsikko ${number}`}
+                value={currentElement}
+                setValue={updateContent}
+                terminologyUris={terminologyUris}
+                style={{color: tokens.colors.blackBase}}
+                customTools={customTools}/>
+          </div>
+          {showComments &&
+          <div style={{
+            flex: 1,
+            fontSize: tokens.values.typography.bodyText.fontSize.value,
+            fontWeight: tokens.values.typography.bodyText.fontWeight,
+            lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+          }}>
+            <ListComments paths={[currentPath]}
+                          comments={documentComments}
+                          setComments={setDocumentComments}/>
+            <AddCommentButton path={currentPath}
+                              comments={documentComments}
+                              setComments={setDocumentComments}/>
+          </div>}
+        </FlexRowTight>
       </div>
   );
 };

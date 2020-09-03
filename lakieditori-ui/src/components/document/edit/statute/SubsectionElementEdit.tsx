@@ -11,28 +11,22 @@ import {
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
-import {ElementEditProps} from "../ElementEditProps";
 import ParagraphElementEdit from "./ParagraphElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
-import {FlexRow} from "../../../common/StyledComponents";
+import {FlexRowTight} from "../../../common/StyledComponents";
+import ListComments from "../../comment/ListComments";
+import AddCommentButton from "../../comment/AddCommentButton";
+import {CommentableElementEditProps} from "../CommentableElementEditProps";
 
-const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement, showComments}) => {
+const SubsectionElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
-  const contentComments = queryFirstElement(currentElement, "contentComments");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateContent(newValue: string) {
     setDocument((prevDocument) => {
       return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "content", ["contentComments", "paragraph"], (el) => el.innerHTML = newValue);
-    });
-  }
-
-  function updateContentComments(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "contentComments", ["paragraph"], (el) => el.innerHTML = newValue);
+          "content", ["paragraph"], (el) => el.innerHTML = newValue);
     });
   }
 
@@ -76,8 +70,7 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
 
   return (
       <div className="subsection">
-
-        <FlexRow>
+        <FlexRowTight>
           <TextEditor
               document={document}
               label={`Momentti ${number}`}
@@ -85,23 +78,23 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
               setValue={updateContent}
               terminologyUris={terminologyUris}
               customTools={customTools}
-              style={{flex: 5}}/>
+              style={{flex: 2}}/>
 
           {showComments &&
-          <TextEditor
-              document={document}
-              label={`Kommentit`}
-              value={contentComments}
-              setValue={updateContentComments}
-              terminologyUris={terminologyUris}
-              inline={false}
-              style={{
-                flex: 3,
-                fontSize: tokens.values.typography.bodyText.fontSize.value,
-                fontWeight: tokens.values.typography.bodyText.fontWeight,
-                lineHeight: tokens.values.typography.bodyText.lineHeight.value,
-              }}/>}
-        </FlexRow>
+          <div style={{
+            flex: 1,
+            fontSize: tokens.values.typography.bodyText.fontSize.value,
+            fontWeight: tokens.values.typography.bodyText.fontWeight,
+            lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+          }}>
+            <ListComments paths={[currentPath]}
+                          comments={documentComments}
+                          setComments={setDocumentComments}/>
+            <AddCommentButton path={currentPath}
+                              comments={documentComments}
+                              setComments={setDocumentComments}/>
+          </div>}
+        </FlexRowTight>
 
         <ul>
           {queryElements(currentElement, 'paragraph').map((paragraph, i) => (
@@ -109,8 +102,11 @@ const SubsectionElementEdit: React.FC<ElementEditProps> = ({document, setDocumen
                                     document={document}
                                     currentElement={paragraph}
                                     documentProperties={documentProperties}
+                                    documentComments={documentComments}
+                                    setDocumentComments={setDocumentComments}
                                     currentPath={currentPath + "/paragraph[" + (i + 1) + "]"}
-                                    setDocument={setDocument}/>
+                                    setDocument={setDocument}
+                                    showComments={showComments}/>
           ))}
         </ul>
       </div>

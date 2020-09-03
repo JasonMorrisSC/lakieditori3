@@ -10,7 +10,6 @@ import {
   queryFirstText,
   updateElement
 } from "../../../../utils/xmlUtils";
-import {ElementEditProps} from "../ElementEditProps";
 import SubsectionElementEdit from "./SubsectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
@@ -19,8 +18,9 @@ import {FlexRowTight} from "../../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
 import ListComments from "../../comment/ListComments";
 import AddCommentButton from "../../comment/AddCommentButton";
+import {CommentableElementEditProps} from "../CommentableElementEditProps";
 
-const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
+const SectionElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const heading = queryFirstElement(currentElement, "heading");
   const headingComments = queryFirstElement(currentElement, "headingComments");
@@ -91,7 +91,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 </div>
               </div>
             </div>
-            {(showComments && documentComments && setDocumentComments) &&
+            {showComments &&
             <div style={{flex: 1}}/>}
           </FlexRowTight>
 
@@ -108,7 +108,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                   fontWeight: sdt.values.typography.heading3.fontWeight,
                 }}/>
 
-            {(showComments && documentComments && setDocumentComments) &&
+            {showComments &&
             <div style={{
               flex: 1,
               fontSize: tokens.values.typography.bodyText.fontSize.value,
@@ -130,6 +130,8 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                                         document={document}
                                         currentElement={subsection}
                                         documentProperties={documentProperties}
+                                        documentComments={documentComments}
+                                        setDocumentComments={setDocumentComments}
                                         currentPath={currentPath + "/subsection[" + (i + 1) + "]"}
                                         setDocument={setDocument}
                                         showComments={showComments}/>

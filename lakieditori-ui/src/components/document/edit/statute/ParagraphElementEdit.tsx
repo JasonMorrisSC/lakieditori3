@@ -11,11 +11,14 @@ import {
 } from "../../../../utils/xmlUtils";
 import TextEditor from "../richtext/TextEditor";
 import {StyledToolbarButton} from "../richtext/TextEditorToolbar";
-import {ElementEditProps} from "../ElementEditProps";
 import SubparagraphElementEdit from "./SubparagraphElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
+import {FlexRowTight} from "../../../common/StyledComponents";
+import ListComments from "../../comment/ListComments";
+import AddCommentButton from "../../comment/AddCommentButton";
+import {CommentableElementEditProps} from "../CommentableElementEditProps";
 
-const ParagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const ParagraphElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const content = queryFirstElement(currentElement, "content");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
@@ -67,14 +70,31 @@ const ParagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument
 
   return (
       <li className="paragraph" style={{color: tokens.colors.highlightLight45}}>
-        <TextEditor
-            document={document}
-            label={`Kohta ${number}`}
-            value={content}
-            setValue={updateContent}
-            terminologyUris={terminologyUris}
-            style={{color: tokens.colors.blackBase}}
-            customTools={customTools}/>
+        <FlexRowTight>
+          <TextEditor
+              document={document}
+              label={`Kohta ${number}`}
+              value={content}
+              setValue={updateContent}
+              terminologyUris={terminologyUris}
+              style={{flex: 2, color: tokens.colors.blackBase}}
+              customTools={customTools}/>
+
+          {showComments &&
+          <div style={{
+            flex: 1,
+            fontSize: tokens.values.typography.bodyText.fontSize.value,
+            fontWeight: tokens.values.typography.bodyText.fontWeight,
+            lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+          }}>
+            <ListComments paths={[currentPath]}
+                          comments={documentComments}
+                          setComments={setDocumentComments}/>
+            <AddCommentButton path={currentPath}
+                              comments={documentComments}
+                              setComments={setDocumentComments}/>
+          </div>}
+        </FlexRowTight>
 
         <ul>
           {queryElements(currentElement, 'subparagraph').map((paragraph, i) => (
@@ -83,8 +103,11 @@ const ParagraphElementEdit: React.FC<ElementEditProps> = ({document, setDocument
                   document={document}
                   currentElement={paragraph}
                   documentProperties={documentProperties}
+                  documentComments={documentComments}
+                  setDocumentComments={setDocumentComments}
                   currentPath={currentPath + "/subparagraph[" + (i + 1) + "]"}
-                  setDocument={setDocument}/>
+                  setDocument={setDocument}
+                  showComments={showComments}/>
           ))}
         </ul>
       </li>

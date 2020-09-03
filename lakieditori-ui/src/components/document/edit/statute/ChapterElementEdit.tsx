@@ -6,25 +6,25 @@ import {
   childElements,
   cloneDocument,
   countNodes,
-  ensureElementAndUpdate,
   queryFirstElement,
   queryFirstNode,
   queryFirstText,
   updateElement
 } from "../../../../utils/xmlUtils";
-import {ElementEditProps} from "../ElementEditProps";
 import SectionElementEdit from "./SectionElementEdit";
 import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
 import SubheadingElementEdit from "./SubheadingElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
-import {FlexRow} from "../../../common/StyledComponents";
+import {FlexRowTight} from "../../../common/StyledComponents";
+import ListComments from "../../comment/ListComments";
+import AddCommentButton from "../../comment/AddCommentButton";
+import {CommentableElementEditProps} from "../CommentableElementEditProps";
 
-const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement, showComments}) => {
+const ChapterElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const heading = queryFirstElement(currentElement, "heading");
-  const headingComments = queryFirstElement(currentElement, "headingComments");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateNumber(newValue: string) {
@@ -35,13 +35,6 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   function updateHeading(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/heading",
         (el) => el.innerHTML = newValue));
-  }
-
-  function updateHeadingComments(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "headingComments", ["section", "subheading"], (el) => el.innerHTML = newValue);
-    });
   }
 
   function appendNewSection() {
@@ -92,6 +85,8 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 document={document}
                 currentElement={e}
                 documentProperties={documentProperties}
+                documentComments={documentComments}
+                setDocumentComments={setDocumentComments}
                 currentPath={currentPath + "/section[" + (sectionCounter++) + "]"}
                 setDocument={setDocument}
                 showComments={showComments}/>
@@ -102,6 +97,8 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 document={document}
                 currentElement={e}
                 documentProperties={documentProperties}
+                documentComments={documentComments}
+                setDocumentComments={setDocumentComments}
                 currentPath={currentPath + "/subheading[" + (subheadingCounter++) + "]"}
                 setDocument={setDocument}
                 showComments={showComments}/>
@@ -115,27 +112,35 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
   return (
       <div className="chapter" style={{margin: `${sdt.spacing.xl} 0`}}>
         <Heading.h2>
-          <div style={{display: "flex", alignItems: "center"}}>
-            <Input type="text" value={number}
-                   onChange={(e) => updateNumber(e.currentTarget.value)}
-                   style={{
-                     color: sdt.colors.highlightBase,
-                     fontSize: sdt.values.typography.heading2.fontSize.value,
-                     fontWeight: sdt.values.typography.heading2.fontWeight,
-                     lineHeight: 1,
-                     marginRight: sdt.spacing.xs,
-                     marginBottom: 0,
-                     width: `${(number.length + 1) * 18}px`
-                   }}/>
-            <span style={{color: sdt.colors.highlightBase}}>luku</span>
-            <div style={{marginLeft: "auto"}}>
-              <Button.secondaryNoborder icon={"close"} onClick={() => removeChapter()}>
-                Poista
-              </Button.secondaryNoborder>
+          <FlexRowTight>
+            <div style={{
+              flex: 2,
+            }}>
+              <div style={{display: "flex", alignItems: "center"}}>
+                <Input type="text" value={number}
+                       onChange={(e) => updateNumber(e.currentTarget.value)}
+                       style={{
+                         color: sdt.colors.highlightBase,
+                         fontSize: sdt.values.typography.heading2.fontSize.value,
+                         fontWeight: sdt.values.typography.heading2.fontWeight,
+                         lineHeight: 1,
+                         marginRight: sdt.spacing.xs,
+                         marginBottom: 0,
+                         width: `${(number.length + 1) * 18}px`
+                       }}/>
+                <span style={{color: sdt.colors.highlightBase}}>luku</span>
+                <div style={{marginLeft: "auto"}}>
+                  <Button.secondaryNoborder icon={"close"} onClick={() => removeChapter()}>
+                    Poista
+                  </Button.secondaryNoborder>
+                </div>
+              </div>
             </div>
-          </div>
+            {showComments &&
+            <div style={{flex: 1}}/>}
+          </FlexRowTight>
 
-          <FlexRow>
+          <FlexRowTight>
             <TextEditor
                 document={document}
                 label={`Luvun ${number} otsikko`}
@@ -143,26 +148,25 @@ const ChapterElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 setValue={updateHeading}
                 terminologyUris={terminologyUris}
                 style={{
-                  flex: 5,
+                  flex: 2,
                   fontSize: sdt.values.typography.heading2.fontSize.value,
                   fontWeight: sdt.values.typography.heading2.fontWeight,
                 }}/>
-
             {showComments &&
-            <TextEditor
-                document={document}
-                label={`Kommentit`}
-                value={headingComments}
-                setValue={updateHeadingComments}
-                terminologyUris={terminologyUris}
-                inline={false}
-                style={{
-                  flex: 3,
-                  fontSize: tokens.values.typography.bodyText.fontSize.value,
-                  fontWeight: tokens.values.typography.bodyText.fontWeight,
-                  lineHeight: tokens.values.typography.bodyText.lineHeight.value,
-                }}/>}
-          </FlexRow>
+            <div style={{
+              flex: 1,
+              fontSize: tokens.values.typography.bodyText.fontSize.value,
+              fontWeight: tokens.values.typography.bodyText.fontWeight,
+              lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+            }}>
+              <ListComments paths={[currentPath]}
+                            comments={documentComments}
+                            setComments={setDocumentComments}/>
+              <AddCommentButton path={currentPath}
+                                comments={documentComments}
+                                setComments={setDocumentComments}/>
+            </div>}
+          </FlexRowTight>
         </Heading.h2>
 
         {renderChapterChildElements(number, currentElement)}

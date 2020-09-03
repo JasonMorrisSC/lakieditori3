@@ -44,8 +44,9 @@ const Comment: React.FC<Props> = ({comment, setComment, removeComment}) => {
       <div style={{
         backgroundColor: isAuthor ? tokens.colors.highlightLight45 : tokens.colors.highlightLight50,
         borderRadius: "4px",
+        color: tokens.colors.blackBase,
         padding: `${tokens.spacing.xs} ${tokens.spacing.s}`,
-        margin: `${tokens.spacing.xs} 0`
+        margin: `${tokens.spacing.xxs} 0 ${tokens.spacing.xs}`
       }}>
         <div style={{display: "flex", justifyContent: "space-between"}}>
           <div style={{fontWeight: tokens.values.typography.bodySemiBold.fontWeight}}>

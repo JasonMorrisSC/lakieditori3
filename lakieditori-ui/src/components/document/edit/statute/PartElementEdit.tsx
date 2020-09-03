@@ -9,13 +9,17 @@ import {
   queryFirstText,
   updateElement
 } from "../../../../utils/xmlUtils";
-import {ElementEditProps} from "../ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
 import {Input} from "../../../common/StyledInputComponents";
 import ChapterElementEdit from "./ChapterElementEdit";
 import {splitIfTruthy} from "../../../../utils/arrayUtils";
+import {FlexRowTight} from "../../../common/StyledComponents";
+import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
+import ListComments from "../../comment/ListComments";
+import AddCommentButton from "../../comment/AddCommentButton";
+import {CommentableElementEditProps} from "../CommentableElementEditProps";
 
-const PartElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, currentPath, currentElement}) => {
+const PartElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const heading = queryFirstElement(currentElement, "heading");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
@@ -56,36 +60,61 @@ const PartElementEdit: React.FC<ElementEditProps> = ({document, setDocument, doc
   return (
       <div className="part" style={{margin: `${sdt.spacing.xl} 0`}}>
         <Heading.h2>
-          <div style={{display: "flex", alignItems: "center"}}>
-            <Input type="text" value={number}
-                   onChange={(e) => updateNumber(e.currentTarget.value)}
-                   style={{
-                     color: sdt.colors.highlightBase,
-                     fontSize: sdt.values.typography.heading2.fontSize.value,
-                     fontWeight: sdt.values.typography.heading2.fontWeight,
-                     lineHeight: 1,
-                     marginRight: sdt.spacing.xs,
-                     marginBottom: 0,
-                     width: `${(number.length + 1) * 18}px`
-                   }}/>
-            <span style={{color: sdt.colors.highlightBase}}>osa</span>
-            <div style={{marginLeft: "auto"}}>
-              <Button.secondaryNoborder icon={"close"} onClick={() => removePart()}>
-                Poista
-              </Button.secondaryNoborder>
+          <FlexRowTight>
+            <div style={{
+              flex: 2,
+            }}>
+              <div style={{display: "flex", alignItems: "center"}}>
+                <Input type="text" value={number}
+                       onChange={(e) => updateNumber(e.currentTarget.value)}
+                       style={{
+                         color: sdt.colors.highlightBase,
+                         fontSize: sdt.values.typography.heading2.fontSize.value,
+                         fontWeight: sdt.values.typography.heading2.fontWeight,
+                         lineHeight: 1,
+                         marginRight: sdt.spacing.xs,
+                         marginBottom: 0,
+                         width: `${(number.length + 1) * 18}px`
+                       }}/>
+                <span style={{color: sdt.colors.highlightBase}}>osa</span>
+                <div style={{marginLeft: "auto"}}>
+                  <Button.secondaryNoborder icon={"close"} onClick={() => removePart()}>
+                    Poista
+                  </Button.secondaryNoborder>
+                </div>
+              </div>
             </div>
-          </div>
+            {showComments &&
+            <div style={{flex: 1}}/>}
+          </FlexRowTight>
 
-          <TextEditor
-              document={document}
-              label={`Osan ${number} otsikko`}
-              value={heading}
-              setValue={updateHeading}
-              terminologyUris={terminologyUris}
-              style={{
-                fontSize: sdt.values.typography.heading2.fontSize.value,
-                fontWeight: sdt.values.typography.heading2.fontWeight,
-              }}/>
+          <FlexRowTight>
+            <TextEditor
+                document={document}
+                label={`Osan ${number} otsikko`}
+                value={heading}
+                setValue={updateHeading}
+                terminologyUris={terminologyUris}
+                style={{
+                  flex: 2,
+                  fontSize: sdt.values.typography.heading2.fontSize.value,
+                  fontWeight: sdt.values.typography.heading2.fontWeight,
+                }}/>
+            {showComments &&
+            <div style={{
+              flex: 1,
+              fontSize: tokens.values.typography.bodyText.fontSize.value,
+              fontWeight: tokens.values.typography.bodyText.fontWeight,
+              lineHeight: tokens.values.typography.bodyText.lineHeight.value,
+            }}>
+              <ListComments paths={[currentPath]}
+                            comments={documentComments}
+                            setComments={setDocumentComments}/>
+              <AddCommentButton path={currentPath}
+                                comments={documentComments}
+                                setComments={setDocumentComments}/>
+            </div>}
+          </FlexRowTight>
         </Heading.h2>
 
         {queryElements(currentElement, 'chapter').map((chapter, i) => {
@@ -93,8 +122,11 @@ const PartElementEdit: React.FC<ElementEditProps> = ({document, setDocument, doc
                                      document={document}
                                      currentElement={chapter}
                                      documentProperties={documentProperties}
+                                     documentComments={documentComments}
+                                     setDocumentComments={setDocumentComments}
                                      currentPath={currentPath + "/chapter[" + (i + 1) + "]"}
-                                     setDocument={setDocument}/>
+                                     setDocument={setDocument}
+                                     showComments={showComments}/>
         })}
 
         <Button.secondaryNoborder

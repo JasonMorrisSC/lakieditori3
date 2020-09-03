@@ -12,7 +12,6 @@ import {
   queryFirstText,
   updateElement
 } from "../../../../utils/xmlUtils";
-import {ElementEditProps} from "../ElementEditProps";
 import TextEditor from "../richtext/TextEditor";
 import {DocumentState, documentStateLabelFi, parseDocumentState} from "../../DocumentTypes";
 import ChapterElementEdit from "./ChapterElementEdit";
@@ -23,8 +22,9 @@ import {splitIfTruthy} from "../../../../utils/arrayUtils";
 import {FlexRowTight} from "../../../common/StyledComponents";
 import ListComments from "../../comment/ListComments";
 import AddCommentButton from "../../comment/AddCommentButton";
+import {CommentableElementEditProps} from "../CommentableElementEditProps";
 
-const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
+const StatuteElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const state = parseDocumentState(queryFirstText(currentElement, "@state"));
   const title = queryFirstElement(currentElement, "title");
@@ -135,6 +135,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 document={document}
                 currentElement={e}
                 documentProperties={documentProperties}
+                documentComments={documentComments}
+                setDocumentComments={setDocumentComments}
                 currentPath={currentPath + "/subheading[" + (subheadingCounter++) + "]"}
                 setDocument={setDocument}
                 showComments={showComments}/>
@@ -145,6 +147,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 document={document}
                 currentElement={e}
                 documentProperties={documentProperties}
+                documentComments={documentComments}
+                setDocumentComments={setDocumentComments}
                 currentPath={currentPath + "/chapter[" + (chapterCounter++) + "]"}
                 setDocument={setDocument}
                 showComments={showComments}/>
@@ -155,6 +159,8 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                 document={document}
                 currentElement={e}
                 documentProperties={documentProperties}
+                documentComments={documentComments}
+                setDocumentComments={setDocumentComments}
                 currentPath={currentPath + "/part[" + (chapterCounter++) + "]"}
                 setDocument={setDocument}
                 showComments={showComments}/>
@@ -198,7 +204,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
               </Dropdown>
             </div>
           </div>
-          {(showComments && documentComments && setDocumentComments) &&
+          {showComments &&
           <div style={{flex: 1}}/>}
         </FlexRowTight>
 
@@ -230,7 +236,7 @@ const StatuteElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
                   fontWeight: tokens.values.typography.leadText.fontWeight,
                 }}/>
           </div>
-          {(showComments && documentComments && setDocumentComments) &&
+          {showComments &&
           <div style={{
             flex: 1,
             fontSize: tokens.values.typography.bodyText.fontSize.value,
