@@ -2,6 +2,11 @@ export const currentIsoDate = (): string => {
   return new Date().toISOString().substring(0, 10);
 };
 
+export const currentLocalIsoDatetime = (): string => {
+  const timezoneOffsetInMillis = new Date().getTimezoneOffset() * 60000;
+  return new Date(Date.now() - timezoneOffsetInMillis).toISOString().slice(0, -1);
+}
+
 export const currentTimestamp = (): string => {
   return Date.now().toString(10);
 };

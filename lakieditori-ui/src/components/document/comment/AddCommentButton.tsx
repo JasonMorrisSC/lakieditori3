@@ -2,7 +2,7 @@ import React, {Dispatch, SetStateAction, useContext} from "react";
 import {v4 as uuidv4} from 'uuid';
 import {AuthenticationContext} from "../../../App";
 import {cloneDocument} from "../../../utils/xmlUtils";
-import {currentIsoDate} from "../../../utils/dateUtils";
+import {currentLocalIsoDatetime} from "../../../utils/dateUtils";
 import {ButtonLink} from "../../common/StyledInputComponents";
 
 interface Props {
@@ -23,7 +23,7 @@ const AddCommentButton: React.FC<Props> = ({path, comments, setComments}) => {
           newComment.setAttribute("id", uuidv4());
           newComment.setAttribute("path", path);
           newComment.setAttribute("user", user.username);
-          newComment.setAttribute("date", currentIsoDate());
+          newComment.setAttribute("date", currentLocalIsoDatetime());
 
           clone.documentElement.appendChild(newComment);
           setComments(clone);
