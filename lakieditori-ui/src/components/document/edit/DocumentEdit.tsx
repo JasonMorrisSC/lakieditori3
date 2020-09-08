@@ -1,5 +1,5 @@
-import React, {useState} from "react";
-import {queryFirstText} from "../../../utils/xmlUtils";
+import React, {useEffect, useState} from "react";
+import {countNodes, queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
@@ -22,16 +22,24 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   const {document, setDocument, saveDocument} = useDocument(schemaName, id);
   const {properties: documentProperties} = useDocumentProperties(schemaName, id);
   const {comments: documentComments, setComments: setDocumentComments, saveComments: saveDocumentComments} = useDocumentComments(schemaName, id);
-  const [showComments, setShowComments] = useState(true);
+  const [showComments, setShowComments] = useState(false);
+  const [commentCount, setCommentCount] = useState(0);
 
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
+
+  useEffect(() => {
+    const count = countNodes(documentComments, "/comments/comment");
+    setCommentCount(count);
+    setShowComments(count > 0);
+  }, [documentComments]);
 
   return (
       <main>
         <DocumentEditToolbar schemaName={schemaName} id={id} title={title} lock={lock}
                              saveDocument={() => saveDocument(document).then(() => saveDocumentComments(documentComments))}
-                             showComments={showComments} setShowComments={setShowComments}/>
+                             showComments={showComments} commentCount={commentCount}
+                             setShowComments={setShowComments}/>
 
         <FlexRowPlain style={{
           backgroundColor: tokens.colors.whiteBase,
