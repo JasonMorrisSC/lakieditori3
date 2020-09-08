@@ -67,7 +67,7 @@
             </saa:SaadosKappaleKooste>
           </saa:Johtolause>
           <saa:Pykalisto>
-            <xsl:apply-templates select="chapter"/>
+            <xsl:apply-templates select="part|chapter|section|subheading"/>
           </saa:Pykalisto>
         </saa:Saados>
       </saa:SaadosOsa>
@@ -96,6 +96,26 @@
     </vah:VahvistettavaLaki>
   </xsl:template>
 
+  <xsl:template match="part">
+    <saa:Osa>
+      <xsl:attribute name="saa1:identifiointiTunnus">
+        <xsl:value-of select="@number"/>
+        <xsl:text> osa</xsl:text>
+      </xsl:attribute>
+
+      <saa:OsaTunnusKooste>
+        <xsl:value-of select="@number"/>
+        <xsl:text> osa</xsl:text>
+      </saa:OsaTunnusKooste>
+
+      <saa:SaadosOtsikkoKooste>
+        <xsl:value-of select="heading"/>
+      </saa:SaadosOtsikkoKooste>
+
+      <xsl:apply-templates select="chapter"/>
+    </saa:Osa>
+  </xsl:template>
+
   <xsl:template match="chapter">
     <saa:Luku>
       <xsl:attribute name="saa1:identifiointiTunnus">
@@ -112,7 +132,7 @@
         <xsl:value-of select="heading"/>
       </saa:SaadosOtsikkoKooste>
 
-      <xsl:apply-templates select="section"/>
+      <xsl:apply-templates select="section|subheading"/>
     </saa:Luku>
   </xsl:template>
 
@@ -140,10 +160,36 @@
     </saa:Pykala>
   </xsl:template>
 
+  <xsl:template match="subheading">
+    <saa:SaadosValiotsikkoKooste>
+      <xsl:value-of select="."/>
+    </saa:SaadosValiotsikkoKooste>
+  </xsl:template>
+
   <xsl:template match="subsection">
     <saa:MomenttiKooste>
       <xsl:value-of select="content"/>
     </saa:MomenttiKooste>
+
+    <xsl:if test="count(paragraph) > 0">
+      <saa:KohdatMomentti>
+        <xsl:apply-templates select="paragraph"/>
+      </saa:KohdatMomentti>
+    </xsl:if>
+  </xsl:template>
+
+  <xsl:template match="paragraph">
+    <saa:MomenttiKohtaKooste>
+      <xsl:value-of select="content"/>
+
+      <xsl:apply-templates select="subparagraph"/>
+    </saa:MomenttiKohtaKooste>
+  </xsl:template>
+
+  <xsl:template match="subparagraph">
+    <saa:MomenttiAlakohtaKooste>
+      <xsl:value-of select="content"/>
+    </saa:MomenttiAlakohtaKooste>
   </xsl:template>
 
 </xsl:stylesheet>
