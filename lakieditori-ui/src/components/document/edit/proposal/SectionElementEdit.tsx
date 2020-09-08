@@ -103,7 +103,7 @@ const SectionElementEdit: React.FC<ElementEditProps> = ({document, setDocument, 
 
         <TextEditor
             document={document}
-            label={`Luvun ${number} tekstisisältö!`}
+            label={`Luvun ${number} tekstisisältö`}
             value={content}
             setValue={updateContent}
             inline={false}
