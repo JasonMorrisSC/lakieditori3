@@ -10,12 +10,13 @@ interface Props {
   title: string,
   lock: null | string,
   saveDocument: () => Promise<any>,
+  enableComments: boolean,
   showComments: boolean,
   commentCount: number,
   setShowComments: (comments: boolean) => void,
 }
 
-const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, saveDocument, showComments, commentCount, setShowComments}) => {
+const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, saveDocument, enableComments, showComments, commentCount, setShowComments}) => {
   const [user] = useContext(AuthenticationContext);
   const history = useHistory();
   const [errorMessage, setErrorMessage] = useState("");
@@ -36,12 +37,13 @@ const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, save
           Muokkaa
         </div>
         <div>
+          {enableComments &&
           <Button.secondaryNoborder
               icon={"chatQuestion"}
               style={{marginRight: tokens.spacing.xl, background: "none"}}
               onClick={() => setShowComments(!showComments)}>
             {showComments ? 'Piilota' : 'Näytä'} kommentit ({commentCount})
-          </Button.secondaryNoborder>
+          </Button.secondaryNoborder>}
           <Button.secondaryNoborder
               icon={"close"}
               style={{marginRight: tokens.spacing.s, background: "none"}}

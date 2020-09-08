@@ -38,7 +38,9 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
       <main>
         <DocumentEditToolbar schemaName={schemaName} id={id} title={title} lock={lock}
                              saveDocument={() => saveDocument(document).then(() => saveDocumentComments(documentComments))}
-                             showComments={showComments} commentCount={commentCount}
+                             enableComments={schemaName === "statute"}
+                             showComments={showComments}
+                             commentCount={commentCount}
                              setShowComments={setShowComments}/>
 
         <FlexRowPlain style={{
