@@ -15,15 +15,15 @@ const DocumentInfoToolbar: React.FC<Props> = ({schemaName, id, title}) => {
       <Toolbar>
         <div>
           <Text>
-            <Link to={`/${schemaName}/documents`}>Etusivu</Link>&nbsp;/&nbsp;
-            <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>&nbsp;/&nbsp;
+            <Link to={`/${schemaName}`}>Etusivu</Link>&nbsp;/&nbsp;
+            <Link to={`/${schemaName}/${id}`}>{title}</Link>&nbsp;/&nbsp;
             Lisätietoja
           </Text>
         </div>
         <div>
           <Button.secondary
               icon={"close"}
-              onClick={() => history.push(`/${schemaName}/documents/${id}`)}>
+              onClick={() => history.push(`/${schemaName}/${id}`)}>
             Sulje
           </Button.secondary>
         </div>

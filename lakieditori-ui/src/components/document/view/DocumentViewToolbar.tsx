@@ -24,18 +24,18 @@ const DocumentViewToolbar: React.FC<Props> = ({schemaName, id, title}) => {
           <Button.secondaryNoborder
               icon={"registers"}
               style={{marginRight: tokens.spacing.s, background: "none"}}
-              onClick={() => history.push(`/${schemaName}/documents/${id}/source`)}>
+              onClick={() => history.push(`/${schemaName}/${id}/source`)}>
             XML
           </Button.secondaryNoborder>
           <Button.secondary
               icon={"info"}
               style={{marginRight: tokens.spacing.s}}
-              onClick={() => history.push(`/${schemaName}/documents/${id}/info`)}>
+              onClick={() => history.push(`/${schemaName}/${id}/info`)}>
             Lisätietoja
           </Button.secondary>
           <Button
               icon={"edit"}
-              onClick={() => history.push(`/${schemaName}/documents/${id}/edit`)}>
+              onClick={() => history.push(`/${schemaName}/${id}/edit`)}>
             Muokkaa
           </Button>
         </div>}

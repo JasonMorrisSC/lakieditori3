@@ -22,7 +22,7 @@ const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, save
 
   function saveAndClose() {
     saveDocument().then(() => {
-      history.push(`/${schemaName}/documents/${id}`);
+      history.push(`/${schemaName}/${id}`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
     });
@@ -32,7 +32,7 @@ const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, save
       <Toolbar>
         <div>
           <Link to={"/"}>Etusivu</Link>&nbsp;/&nbsp;
-          <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>&nbsp;/&nbsp;
+          <Link to={`/${schemaName}/${id}`}>{title}</Link>&nbsp;/&nbsp;
           Muokkaa
         </div>
         <div>
@@ -45,7 +45,7 @@ const DocumentEditToolbar: React.FC<Props> = ({schemaName, id, title, lock, save
           <Button.secondaryNoborder
               icon={"close"}
               style={{marginRight: tokens.spacing.s, background: "none"}}
-              onClick={() => history.push(`/${schemaName}/documents/${id}`)}>
+              onClick={() => history.push(`/${schemaName}/${id}`)}>
             Peruuta
           </Button.secondaryNoborder>
           <Button

@@ -39,10 +39,10 @@ const DocumentList: React.FC<Props> = ({schemaName, newDocumentTemplate, listLab
     return (
         <tr key={i}>
           <td style={{color: tokens.colors.highlightBase}}>
-            <Link to={`/${schemaName}/documents/${id}`}>{number}</Link>
+            <Link to={`/${schemaName}/${id}`}>{number}</Link>
           </td>
           <td>
-            <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>
+            <Link to={`/${schemaName}/${id}`}>{title}</Link>
           </td>
           <td>{state}</td>
           <td>{lastModifiedDate}</td>

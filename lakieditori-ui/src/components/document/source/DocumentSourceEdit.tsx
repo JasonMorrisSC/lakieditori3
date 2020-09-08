@@ -76,7 +76,7 @@ const DocumentSourceEdit: React.FC<Props> = ({schemaName, id, lock}) => {
     if (annotatedDocument) {
       const newLineNumberMap: LineNumberElementId[] = [];
 
-      queryElements(annotatedDocument, 'document/chapter').forEach(chapter => {
+      queryElements(annotatedDocument, 'statute/chapter').forEach(chapter => {
         const chapterNumber = queryFirstText(chapter, "@number");
         queryElements(chapter, 'section').forEach(section => {
           const sectionNumber = queryFirstText(section, "@number");
@@ -119,7 +119,7 @@ const DocumentSourceEdit: React.FC<Props> = ({schemaName, id, lock}) => {
 
   function saveAndClose() {
     saveDocument(editorValue).then(() => {
-      history.push(`/${schemaName}/documents/${id}`);
+      history.push(`/${schemaName}/${id}`);
     }).catch((error) => {
       setErrorMessage(error.response.data.message);
     });
@@ -129,15 +129,15 @@ const DocumentSourceEdit: React.FC<Props> = ({schemaName, id, lock}) => {
       <main>
         <Toolbar style={{zIndex: 5}}>
           <Text>
-            <Link to={`/${schemaName}/documents`}>Etusivu</Link>&nbsp;/&nbsp;
-            <Link to={`/${schemaName}/documents/${id}`}>{title}</Link>&nbsp;/&nbsp;
+            <Link to={`/${schemaName}`}>Etusivu</Link>&nbsp;/&nbsp;
+            <Link to={`/${schemaName}/${id}`}>{title}</Link>&nbsp;/&nbsp;
             XML
           </Text>
           <div>
             <Button.secondaryNoborder
                 style={{marginRight: tokens.spacing.s, background: "none"}}
                 icon={"close"}
-                onClick={() => history.push(`/${schemaName}/documents/${id}`)}>
+                onClick={() => history.push(`/${schemaName}/${id}`)}>
               Peruuta
             </Button.secondaryNoborder>
             <Button
