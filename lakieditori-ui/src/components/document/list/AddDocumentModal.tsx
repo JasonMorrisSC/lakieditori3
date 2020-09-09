@@ -29,7 +29,7 @@ const AddDocumentModal: React.FC<AddDocumentModalProps> = ({schemaName, newDocum
     saveDocument(newDocument).then((response) => {
       const location = response.headers.location;
       const createdId = location.substring(location.lastIndexOf('/') + 1);
-      history.push(`${schemaName}/documents/${createdId}/edit`);
+      history.push(`${schemaName}/${createdId}/edit`);
     });
   }
 
