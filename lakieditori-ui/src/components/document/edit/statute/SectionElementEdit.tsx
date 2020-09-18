@@ -3,7 +3,6 @@ import {Button, Heading, suomifiDesignTokens as sdt} from "suomifi-ui-components
 import {
   cloneDocument,
   countNodes,
-  ensureElementAndUpdate,
   queryElements,
   queryFirstElement,
   queryFirstNode,
@@ -23,7 +22,6 @@ import {CommentableElementEditProps} from "../CommentableElementEditProps";
 const SectionElementEdit: React.FC<CommentableElementEditProps> = ({document, setDocument, documentProperties, documentComments, setDocumentComments, currentPath, currentElement, showComments}) => {
   const number = queryFirstText(currentElement, "@number");
   const heading = queryFirstElement(currentElement, "heading");
-  const headingComments = queryFirstElement(currentElement, "headingComments");
   const terminologyUris = splitIfTruthy(documentProperties["terminologies"], ",");
 
   function updateNumber(newValue: string) {
@@ -34,13 +32,6 @@ const SectionElementEdit: React.FC<CommentableElementEditProps> = ({document, se
   function updateHeading(newValue: string) {
     setDocument((prevDocument) => updateElement(cloneDocument(prevDocument), currentPath + "/heading",
         (el) => el.innerHTML = newValue));
-  }
-
-  function updateHeadingComments(newValue: string) {
-    setDocument((prevDocument) => {
-      return ensureElementAndUpdate(cloneDocument(prevDocument), currentPath,
-          "headingComments", ["subsection"], (el) => el.innerHTML = newValue);
-    });
   }
 
   function appendNewSubsection() {
