@@ -11,6 +11,7 @@ import {useDocumentProperties} from "../useDocumentProperties";
 import ProposalElementEdit from "./proposal/ProposalElementEdit";
 import ProposalTableOfContents from "../view/proposal/ProposalTableOfContents";
 import {useDocumentComments} from "../useDocumentComments";
+import StatuteTableOfContentsEdit from "./statute/StatuteTableOfContentsEdit";
 
 interface Props {
   schemaName: string,
@@ -54,7 +55,7 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
             {schemaName === "statute" &&
-            <StatuteTableOfContents document={document}/>}
+            <StatuteTableOfContentsEdit document={document} setDocument={setDocument}/>}
             {schemaName === "proposal" &&
             <ProposalTableOfContents document={document}/>}
           </div>
