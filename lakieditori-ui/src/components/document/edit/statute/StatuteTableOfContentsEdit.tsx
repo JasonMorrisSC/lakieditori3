@@ -44,26 +44,40 @@ interface Props {
 
 const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) => {
 
-  const renderSectionLink = (section: Element, key: number) => {
+  const renderSectionLink = (section: Element, elementPath: string, index: number) => {
     const number = queryFirstText(section, "@number");
     const heading = queryFirstText(section, "heading");
+
     return (
-        <li key={key}>
-          <NavLink to={`#section-${number}`}>
-            {number} § - {heading}
-          </NavLink>
-        </li>
+        <Draggable draggableId={elementPath} index={index} key={elementPath}>
+          {providedDraggable => (
+              <li {...providedDraggable.draggableProps}
+                  {...providedDraggable.dragHandleProps}
+                  ref={providedDraggable.innerRef}>
+                <NavLink to={`#section-${number}`}>
+                  {number} § - {heading}
+                </NavLink>
+              </li>
+          )}
+        </Draggable>
     );
   };
 
-  const renderSubheadingLink = (subheading: Element, key: number) => {
+  const renderSubheadingLink = (subheading: Element, elementPath: string, index: number) => {
     const number = queryFirstText(subheading, "@number");
+
     return (
-        <li key={key}>
-          <NavLink to={`#subheading-${number}`}>
-            {subheading.textContent}
-          </NavLink>
-        </li>
+        <Draggable draggableId={elementPath} index={index} key={elementPath}>
+          {providedDraggable => (
+              <li {...providedDraggable.draggableProps}
+                  {...providedDraggable.dragHandleProps}
+                  ref={providedDraggable.innerRef}>
+                <NavLink to={`#subheading-${number}`}>
+                  {subheading.textContent}
+                </NavLink>
+              </li>)
+          }
+        </Draggable>
     );
   };
 
@@ -73,7 +87,7 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
 
     return (
         <Draggable draggableId={elementPath} index={index} key={elementPath}>
-          {(providedDraggable => (
+          {providedDraggable => (
               <li {...providedDraggable.draggableProps}
                   {...providedDraggable.dragHandleProps}
                   ref={providedDraggable.innerRef}>
@@ -85,6 +99,7 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
                 <Droppable droppableId={elementPath} type={elementPath}>
                   {(providedDroppable => {
                     let sectionCounter = 1;
+                    let subheadingCounter = 1;
 
                     return (
                         <ul style={{listStyle: "none"}}
@@ -95,7 +110,7 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
                               case "section":
                                 return renderChapterSectionLink(number, e, `${elementPath}/section[${sectionCounter++}]`, i);
                               case "subheading":
-                                return renderChapterSubheadingLink(number, e, i);
+                                return renderChapterSubheadingLink(number, e, `${elementPath}/subheading[${subheadingCounter++}]`, i);
                               default:
                                 return "";
                             }
@@ -106,30 +121,50 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
                   })}
                 </Droppable>
               </li>
-          ))}
+          )}
         </Draggable>
     );
   };
 
-  const renderPartLink = (part: Element, key: number) => {
+  const renderPartLink = (part: Element, elementPath: string, index: number) => {
     const number = queryFirstText(part, "@number");
     const heading = queryFirstText(part, "heading");
+
     return (
-        <li key={key}>
-          <NavLink to={`#part-${number}`}>
-            {number} osa - {heading}
-          </NavLink>
-          <ul style={{listStyle: "none"}}>
-            {childElements(part).map((e, i) => {
-              switch (e.tagName) {
-                case "chapter":
-                  return renderChapterLink(e, "", i);
-                default:
-                  return "";
-              }
-            })}
-          </ul>
-        </li>
+        <Draggable draggableId={elementPath} index={index} key={elementPath}>
+          {providedDraggable => (
+              <li {...providedDraggable.draggableProps}
+                  {...providedDraggable.dragHandleProps}
+                  ref={providedDraggable.innerRef}>
+
+                <NavLink to={`#part-${number}`}>
+                  {number} osa - {heading}
+                </NavLink>
+
+                <Droppable droppableId={elementPath} type={elementPath}>
+                  {(providedDroppable => {
+                    let chapterCounter = 1;
+
+                    return (
+                        <ul style={{listStyle: "none"}}
+                            {...providedDroppable.droppableProps}
+                            ref={providedDroppable.innerRef}>
+                          {childElements(part).map((e, i) => {
+                            switch (e.tagName) {
+                              case "chapter":
+                                return renderChapterLink(e, `${elementPath}/chapter[${chapterCounter++}]`, i);
+                              default:
+                                return "";
+                            }
+                          })}
+                          {providedDroppable.placeholder}
+                        </ul>
+                    );
+                  })}
+                </Droppable>
+              </li>)
+          }
+        </Draggable>
     );
   };
 
@@ -142,7 +177,7 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
             draggableId={elementPath}
             index={index}
             key={elementPath}>
-          {(providedDraggable => (
+          {providedDraggable => (
               <li {...providedDraggable.draggableProps}
                   {...providedDraggable.dragHandleProps}
                   ref={providedDraggable.innerRef}>
@@ -150,19 +185,29 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
                   {number} § - {heading}
                 </NavLinkSecondary>
               </li>
-          ))}
+          )}
         </Draggable>
     );
   };
 
-  const renderChapterSubheadingLink = (chapterNumber: string, subheading: Element, key: number) => {
+  const renderChapterSubheadingLink = (chapterNumber: string, subheading: Element, elementPath: string, index: number) => {
     const number = queryFirstText(subheading, "@number");
+
     return (
-        <li key={key}>
-          <NavLinkSecondary to={`#chapter-${chapterNumber}-subheading-${number}`}>
-            {subheading.textContent}
-          </NavLinkSecondary>
-        </li>
+        <Draggable
+            draggableId={elementPath}
+            index={index}
+            key={elementPath}>
+          {providedDraggable => (
+              <li {...providedDraggable.draggableProps}
+                  {...providedDraggable.dragHandleProps}
+                  ref={providedDraggable.innerRef}>
+                <NavLinkSecondary to={`#chapter-${chapterNumber}-subheading-${number}`}>
+                  {subheading.textContent}
+                </NavLinkSecondary>
+              </li>
+          )}
+        </Draggable>
     );
   };
 
@@ -216,8 +261,11 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
 
         <DragDropContext onDragEnd={onDragEnd}>
           <Droppable droppableId={"statute"} type={"statute"}>
-            {(provided) => {
+            {provided => {
+              let sectionCounter = 1;
+              let subheadingCounter = 1;
               let chapterCounter = 1;
+              let partCounter = 1;
 
               return (
                   <ul style={{listStyle: 'none'}}
@@ -226,13 +274,13 @@ const StatuteTableOfContentsEdit: React.FC<Props> = ({document, setDocument}) =>
                     {childElements(document.documentElement).map((e, i) => {
                       switch (e.tagName) {
                         case "section":
-                          return renderSectionLink(e, i);
+                          return renderSectionLink(e, `/statute/section[${sectionCounter++}]`, i);
                         case "subheading":
-                          return renderSubheadingLink(e, i);
+                          return renderSubheadingLink(e, `/statute/subheading[${subheadingCounter++}]`, i);
                         case "chapter":
                           return renderChapterLink(e, `/statute/chapter[${chapterCounter++}]`, i);
                         case "part":
-                          return renderPartLink(e, i);
+                          return renderPartLink(e, `/statute/part[${partCounter++}]`, i);
                         default:
                           return "";
                       }
