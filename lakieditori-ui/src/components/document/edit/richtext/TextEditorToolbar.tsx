@@ -1,10 +1,11 @@
-import React, {CSSProperties, ReactNode} from "react";
+import React, {CSSProperties, ReactNode, useEffect, useState} from "react";
 import {Location} from 'slate'
 import {useSlate} from 'slate-react'
 import {Button, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {isLinkActive, isMarkActive, selectionOrEnd, toggleMark} from "./slateUtils";
 import {ButtonLinkSmall} from "../../../common/StyledInputComponents";
 import styled from "@emotion/styled";
+import {HistoryEditor} from "slate-history";
 
 export const StyledToolbar = styled.div`
   display: flex;
@@ -75,6 +76,8 @@ const TextEditorToolbar: React.FC<Props> = ({label, expanded, linkSelection, cus
           <FormatButton format="bold" icon="format_bold"/>
           <FormatButton format="italic" icon="format_italic"/>
           <LinkButton linkSelection={linkSelection}/>
+          <UndoButton/>
+          <RedoButton/>
         </div>}
         <div style={{marginLeft: "auto"}}>
           {customTools}
@@ -112,12 +115,64 @@ const LinkButton: React.FC<LinkButtonProps> = ({linkSelection}) => {
 
   return (
       <StyledToolbarIconButton
-          style={{color: active ? tokens.colors.blackBase : ''}}
+          style={{color: active ? tokens.colors.blackBase : '', marginRight: tokens.spacing.m}}
           onMouseDown={(e) => {
             e.preventDefault();
             linkSelection(selectionOrEnd(editor));
           }}>
         <span className={"material-icons"}>link</span>
+      </StyledToolbarIconButton>
+  )
+};
+
+const UndoButton: React.FC = () => {
+  const editor = useSlate();
+  const [historyEditor, setHistoryEditor] = useState<HistoryEditor>();
+
+  useEffect(() => {
+    if (HistoryEditor.isHistoryEditor(editor)) {
+      setHistoryEditor(editor);
+    }
+  }, [editor]);
+
+  return (
+      <StyledToolbarIconButton
+          style={{
+            color: (historyEditor && historyEditor.history.undos.length > 1) ? tokens.colors.depthDark27 : tokens.colors.depthBase
+          }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            if (HistoryEditor.isHistoryEditor(editor)) {
+              HistoryEditor.undo(editor as HistoryEditor);
+            }
+          }}>
+        <span className={"material-icons"}>undo</span>
+      </StyledToolbarIconButton>
+  )
+};
+
+const RedoButton: React.FC = () => {
+  const editor = useSlate();
+  const [historyEditor, setHistoryEditor] = useState<HistoryEditor>();
+
+  useEffect(() => {
+    if (HistoryEditor.isHistoryEditor(editor)) {
+      setHistoryEditor(editor);
+    }
+  }, [editor]);
+
+  return (
+      <StyledToolbarIconButton
+          style={{
+            color: (historyEditor && historyEditor.history.redos.length > 0) ? tokens.colors.depthDark27 : tokens.colors.depthBase
+          }}
+          onMouseDown={(e) => {
+            e.preventDefault();
+            if (historyEditor) {
+              historyEditor.redo();
+            }
+          }}>
+        <span className={"material-icons"}>redo</span>
       </StyledToolbarIconButton>
   )
 };
