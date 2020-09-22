@@ -1,6 +1,6 @@
 package fi.vero.lakied.web;
 
-import fi.vero.lakied.service.textanalysis.TextAnalysisService;
+import fi.vero.lakied.repository.textanalysis.TextAnalysisService;
 import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

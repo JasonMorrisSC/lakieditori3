@@ -2,8 +2,8 @@ package fi.vero.lakied.web;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
-import fi.vero.lakied.service.document.DocumentCommentKey;
-import fi.vero.lakied.service.document.DocumentCommentsCriteria;
+import fi.vero.lakied.repository.document.DocumentCommentKey;
+import fi.vero.lakied.repository.document.DocumentCommentsCriteria;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;

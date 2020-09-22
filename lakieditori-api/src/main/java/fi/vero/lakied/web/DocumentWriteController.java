@@ -1,10 +1,10 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.service.document.DocumentLockCriteria.byDocumentKey;
+import static fi.vero.lakied.repository.document.DocumentLockCriteria.byDocumentKey;
 import static fi.vero.lakied.util.security.User.superuser;
 
-import fi.vero.lakied.service.document.DocumentKey;
-import fi.vero.lakied.service.schema.SchemaCriteria;
+import fi.vero.lakied.repository.document.DocumentKey;
+import fi.vero.lakied.repository.schema.SchemaCriteria;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;

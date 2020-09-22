@@ -1,7 +1,7 @@
 package fi.vero.lakied.web;
 
-import fi.vero.lakied.service.document.DocumentCriteria;
-import fi.vero.lakied.service.document.DocumentKey;
+import fi.vero.lakied.repository.document.DocumentCriteria;
+import fi.vero.lakied.repository.document.DocumentKey;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.exception.NotFoundException;

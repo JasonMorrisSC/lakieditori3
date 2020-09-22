@@ -1,6 +1,6 @@
 package fi.vero.lakied.web;
 
-import fi.vero.lakied.service.document.DocumentUserPermissionCriteria;
+import fi.vero.lakied.repository.document.DocumentUserPermissionCriteria;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;

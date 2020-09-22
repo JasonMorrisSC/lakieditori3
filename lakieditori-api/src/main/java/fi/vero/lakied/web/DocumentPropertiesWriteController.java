@@ -1,7 +1,7 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.service.document.DocumentPropertiesCriteria.byDocumentKey;
-import static fi.vero.lakied.service.document.DocumentPropertiesCriteria.byKey;
+import static fi.vero.lakied.repository.document.DocumentPropertiesCriteria.byDocumentKey;
+import static fi.vero.lakied.repository.document.DocumentPropertiesCriteria.byKey;
 import static fi.vero.lakied.util.criteria.Criteria.and;
 
 import com.google.common.collect.MapDifference;

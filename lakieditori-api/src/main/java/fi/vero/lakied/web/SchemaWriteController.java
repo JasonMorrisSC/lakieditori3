@@ -1,7 +1,7 @@
 package fi.vero.lakied.web;
 
-import fi.vero.lakied.service.schema.SchemaCriteria;
-import fi.vero.lakied.service.schema.SchemaDefinitionCriteria;
+import fi.vero.lakied.repository.schema.SchemaCriteria;
+import fi.vero.lakied.repository.schema.SchemaDefinitionCriteria;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;

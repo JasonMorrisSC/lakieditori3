@@ -1,7 +1,7 @@
 package fi.vero.lakied.web;
 
-import fi.vero.lakied.service.concept.ConceptCriteria;
-import fi.vero.lakied.service.textanalysis.TextAnalysisService;
+import fi.vero.lakied.repository.concept.ConceptCriteria;
+import fi.vero.lakied.repository.textanalysis.TextAnalysisService;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.security.User;

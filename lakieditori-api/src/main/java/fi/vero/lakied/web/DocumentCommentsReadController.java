@@ -1,10 +1,10 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.service.document.DocumentCommentsCriteria.byDocumentKey;
+import static fi.vero.lakied.repository.document.DocumentCommentsCriteria.byDocumentKey;
 
-import fi.vero.lakied.service.document.DocumentCommentKey;
-import fi.vero.lakied.service.document.DocumentCriteria;
-import fi.vero.lakied.service.document.DocumentKey;
+import fi.vero.lakied.repository.document.DocumentCommentKey;
+import fi.vero.lakied.repository.document.DocumentCriteria;
+import fi.vero.lakied.repository.document.DocumentKey;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;

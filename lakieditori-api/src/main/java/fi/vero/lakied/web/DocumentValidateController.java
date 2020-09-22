@@ -1,6 +1,6 @@
 package fi.vero.lakied.web;
 
-import static fi.vero.lakied.service.schema.SchemaDefinitionCriteria.bySchemaName;
+import static fi.vero.lakied.repository.schema.SchemaDefinitionCriteria.bySchemaName;
 import static java.util.stream.Collectors.toList;
 
 import fi.vero.lakied.util.common.ReadRepository;

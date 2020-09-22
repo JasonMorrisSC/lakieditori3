@@ -5,7 +5,7 @@ import static org.apache.http.HttpStatus.SC_FORBIDDEN;
 import static org.apache.http.HttpStatus.SC_NO_CONTENT;
 import static org.apache.http.HttpStatus.SC_UNAUTHORIZED;
 
-import fi.vero.lakied.service.user.UserCriteria;
+import fi.vero.lakied.repository.user.UserCriteria;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.security.AuthenticationEventPrinter;
 import fi.vero.lakied.util.security.User;
