@@ -45,9 +45,11 @@ const VersionHistory: React.FC<Props> = ({schemaName, id}) => {
                   </div>
                 </TableStyleRow>
                 {selectedVersion === version &&
-                <VersionDiff id={id}
-                             leftVersion={version - 1}
-                             rightVersion={version}/>}
+                <VersionDiff
+                    schemaName={schemaName}
+                    id={id}
+                    leftVersion={version - 1}
+                    rightVersion={version}/>}
               </div>
           );
         })}

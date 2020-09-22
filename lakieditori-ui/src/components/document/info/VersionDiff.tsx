@@ -22,13 +22,14 @@ export const Path = styled.div`
 `;
 
 interface Props {
+  schemaName: string,
   id: string,
   leftVersion: number,
   rightVersion: number,
 }
 
-const VersionDiff: React.FC<Props> = ({id, leftVersion, rightVersion}) => {
-  const {diff} = useDiff(id, leftVersion, rightVersion);
+const VersionDiff: React.FC<Props> = ({schemaName, id, leftVersion, rightVersion}) => {
+  const {diff} = useDiff(schemaName, id, leftVersion, rightVersion);
   return (
       <div>
         {queryElements(diff.documentElement, 'difference')

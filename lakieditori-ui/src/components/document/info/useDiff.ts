@@ -3,12 +3,12 @@ import axios from "axios";
 import {AuthenticationContext} from "../../../App";
 import {parseXml} from "../../../utils/xmlUtils";
 
-export function useDiff(id: string, leftVersion: number, rightVersion: number) {
+export function useDiff(schemaName: string, id: string, leftVersion: number, rightVersion: number) {
   const [user] = useContext(AuthenticationContext);
   const [diff, setDiff] = useState<Document>(parseXml('<documents></documents>'));
 
   useEffect(() => {
-    axios.get('/api/documents/' + id + '/diff', {
+    axios.get(`/api/schemas/${schemaName}/documents/${id}/diff`, {
       params: {leftVersion, rightVersion},
       responseType: 'document'
     }).then(res => {
