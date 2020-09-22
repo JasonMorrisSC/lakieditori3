@@ -50,7 +50,7 @@ public class DocumentVersionReadController {
       throw new NotFoundException();
     }
 
-    XmlDocumentBuilder builder = XmlDocumentBuilder.builder().pushElement("documents");
+    XmlDocumentBuilder builder = XmlDocumentBuilder.builder("documents");
 
     try (Stream<Tuple2<DocumentKey, Audited<Document>>> entries = documentVersionReadRepository
         .entries(DocumentCriteria.byKey(schemaName, id), user)) {
@@ -141,10 +141,10 @@ public class DocumentVersionReadController {
     }
 
     Document left = leftVersionNumber == 0
-        ? XmlUtils.parseUnchecked("<document></document>")
+        ? XmlDocumentBuilder.builder("document").build()
         : getDocumentVersion(schemaName, id, leftVersionNumber, user);
     Document right = rightVersionNumber == 0
-        ? XmlUtils.parseUnchecked("<document></document>")
+        ? XmlDocumentBuilder.builder("document").build()
         : getDocumentVersion(schemaName, id, rightVersionNumber, user);
 
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder()

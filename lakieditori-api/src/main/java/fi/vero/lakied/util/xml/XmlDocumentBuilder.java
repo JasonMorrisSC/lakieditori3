@@ -21,6 +21,10 @@ public class XmlDocumentBuilder {
     return new XmlDocumentBuilder();
   }
 
+  public static XmlDocumentBuilder builder(String element) {
+    return new XmlDocumentBuilder().pushElement(element);
+  }
+
   public Node currentNode() {
     return currentNode;
   }

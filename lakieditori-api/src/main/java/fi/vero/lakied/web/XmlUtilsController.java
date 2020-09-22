@@ -16,7 +16,7 @@ import org.xml.sax.SAXException;
 
 @RestController
 @RequestMapping("/api")
-public class DocumentUtilsController {
+public class XmlUtilsController {
 
   @PostXmlMapping(path = "/annotateLineNumbers", produces = {
       MediaType.TEXT_XML_VALUE,
