@@ -10,7 +10,7 @@ import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.common.WriteRepository;
-import fi.vero.lakied.util.json.PostJsonMapping;
+import fi.vero.lakied.util.json.PutJsonMapping;
 import fi.vero.lakied.util.security.User;
 import java.util.Map;
 import java.util.UUID;
@@ -42,9 +42,9 @@ public class DocumentPropertiesWriteController {
     this.documentPropertiesWriteRepository = documentPropertiesWriteRepository;
   }
 
-  @PostJsonMapping(produces = {})
+  @PutJsonMapping(produces = {})
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void post(
+  public void put(
       @PathVariable("schemaName") String schemaName,
       @PathVariable("id") UUID id,
       @RequestBody Map<String, String> newProps,

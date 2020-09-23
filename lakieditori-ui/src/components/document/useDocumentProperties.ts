@@ -14,7 +14,7 @@ export function useDocumentProperties(schemaName: string, id: string) {
 
   const saveProperties = (properties: { [name: string]: string }): Promise<any> => {
     return axios
-    .post(`/api/schemas/${schemaName}/documents/${id}/properties`, properties)
+    .put(`/api/schemas/${schemaName}/documents/${id}/properties`, properties)
     .then(() => axios.get(`/api/schemas/${schemaName}/documents/${id}/properties`))
     .then((res) => setProperties(res.data));
   };
