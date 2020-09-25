@@ -4,6 +4,7 @@ import {countNodes, queryFirstText} from "../../../utils/xmlUtils";
 import {ElementViewProps} from "./ElementViewProps";
 import styled from "@emotion/styled";
 import {useDocumentConcepts} from "./useDocumentConcept";
+import {useHistory} from "react-router-dom";
 
 const ConceptList = styled.div`
   position: sticky;
@@ -32,10 +33,14 @@ const ConceptLabelButton = styled(Button.secondaryNoborder)`
 `;
 
 interface Props {
+  schemaName: string,
+  id: string,
+  showLinkToConnections: boolean,
   document: Document
 }
 
-const Concepts: React.FC<Props> = ({document}) => {
+const Concepts: React.FC<Props> = ({schemaName, id, showLinkToConnections, document}) => {
+  const history = useHistory();
   const {concepts} = useDocumentConcepts(document);
 
   return (
@@ -48,6 +53,13 @@ const Concepts: React.FC<Props> = ({document}) => {
         </div>
 
         {concepts.map((concept, i) => <Concept key={i} document={document} element={concept}/>)}
+
+        {concepts.length > 0 && showLinkToConnections &&
+        <Button.tertiary
+            style={{marginTop: tokens.spacing.m}}
+            onClick={() => history.push(`/${schemaName}/${id}/connections`)}>
+          Näytä käsitteiden tietomalliyhteydet
+        </Button.tertiary>}
       </ConceptList>
   );
 };

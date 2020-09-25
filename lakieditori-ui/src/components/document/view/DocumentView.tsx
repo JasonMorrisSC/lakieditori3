@@ -56,7 +56,9 @@ const DocumentView: React.FC<Props> = ({schemaName, id}) => {
             borderLeft: `1px solid ${tokens.colors.depthLight26}`,
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
-            <Concepts document={document}/>
+            <Concepts schemaName={schemaName} id={id}
+                      showLinkToConnections={true}
+                      document={document}/>
           </div>
 
         </FlexRowPlain>

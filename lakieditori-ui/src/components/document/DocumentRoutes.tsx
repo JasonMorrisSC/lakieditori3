@@ -5,6 +5,7 @@ import DocumentInfo from "./info/DocumentInfo";
 import DocumentSourceEdit from "./source/DocumentSourceEdit";
 import DocumentEdit from "./edit/DocumentEdit";
 import {useDocumentLock} from "./useDocumentLock";
+import DocumentConnections from "./connections/DocumentConnections";
 
 const DocumentRoutes: React.FC = () => {
   const match = useRouteMatch();
@@ -34,6 +35,10 @@ const DocumentRoutes: React.FC = () => {
         <Route path={`${match.path}/info`}>
           {schemaName && documentId &&
           <DocumentInfo schemaName={schemaName} id={documentId}/>}
+        </Route>
+        <Route path={`${match.path}/connections`}>
+          {schemaName && documentId &&
+          <DocumentConnections schemaName={schemaName} id={documentId}/>}
         </Route>
         <Route path={match.path}>
           {schemaName && documentId &&

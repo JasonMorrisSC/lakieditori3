@@ -3,7 +3,6 @@ import {countNodes, queryFirstText} from "../../../utils/xmlUtils";
 import {useDocument} from "../useDocument";
 import {FlexRowPlain} from "../../common/StyledComponents";
 import {suomifiDesignTokens as tokens} from "suomifi-design-tokens";
-import StatuteTableOfContents from "../view/statute/StatuteTableOfContents";
 import StatuteElementEdit from "./statute/StatuteElementEdit";
 import DocumentEditToolbar from "./DocumentEditToolbar";
 import Concepts from "../view/Concepts";
@@ -89,7 +88,9 @@ const DocumentEdit: React.FC<Props> = ({schemaName, id, lock}) => {
             borderLeft: `1px solid ${tokens.colors.depthLight26}`,
             padding: `${tokens.spacing.xl} ${tokens.spacing.l}`
           }}>
-            <Concepts document={document}/>
+            <Concepts schemaName={schemaName} id={id}
+                      showLinkToConnections={false}
+                      document={document}/>
           </div>}
 
         </FlexRowPlain>
