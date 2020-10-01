@@ -13,6 +13,10 @@ public class StringMultimapCriteria<K, V> implements Criteria<K, V> {
     this.multimap = ImmutableMultimap.copyOf(multimap);
   }
 
+  public static <K, V> StringMultimapCriteria<K, V> of(Multimap<String, String> multimap) {
+    return new StringMultimapCriteria<>(multimap);
+  }
+
   public ImmutableMultimap<String, String> getMultimap() {
     return multimap;
   }

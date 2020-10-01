@@ -25,6 +25,14 @@ export const PanelWithShadow = styled.div`
   padding: ${tokens.spacing.l};
 `;
 
+export const PanelSmallWithShadow = styled.div`
+  background-color: ${tokens.colors.whiteBase};
+  box-shadow: #29292924 0px 1px 2px 0px, #2929291f 0px 1px 5px 0px;
+  border-radius: 2px;
+  font-size: ${tokens.values.typography.bodyTextSmall.fontSize.value}${tokens.values.typography.bodyTextSmall.fontSize.unit};
+  padding: ${tokens.spacing.s};
+`;
+
 export const PageHeading = styled(Heading.h1)`
   border-bottom: 1px solid ${tokens.colors.depthLight13};
   padding-bottom: ${tokens.spacing.s};
