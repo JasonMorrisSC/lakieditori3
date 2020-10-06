@@ -6,6 +6,7 @@ import {useDocument} from "../useDocument";
 import DocumentConnectionsToolbar from "./DocumentConnectionsToolbar";
 import {useDocumentConcepts} from "../view/useDocumentConcept";
 import {useClassesAndAttributes} from "./useClassesAndAttributes";
+import Tree from "./Tree";
 
 interface Props {
   schemaName: string,
@@ -47,6 +48,20 @@ const DocumentConnections: React.FC<Props> = ({schemaName, id}) => {
               concepts={concepts}
               classes={classes}
               attributes={attributes}/>
+
+          {/*
+          <Tree data={{
+            name: "foo",
+            children: [
+              {
+                name: "bar",
+                children: [{name: "1"}, {name: "2"}, {name: "3"}]
+              }, {
+                name: "baz",
+                children: [{name: "1"}, {name: "2"}, {name: "3"}]
+              }]
+          }}/>
+          */}
 
         </Panel>
       </main>
