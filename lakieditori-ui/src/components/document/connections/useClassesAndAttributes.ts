@@ -2,7 +2,12 @@ import {useEffect, useState} from "react";
 import axios, {AxiosRequestConfig} from "axios";
 import {parseXml} from "../../../utils/xmlUtils";
 
-const getConfig: AxiosRequestConfig = {responseType: 'document'};
+const getConfig: AxiosRequestConfig = {
+  headers: {
+    accept: "text/xml"
+  },
+  responseType: 'document'
+};
 
 export function useClassesAndAttributes(conceptUri: string) {
   const [classesAndAttributes, setClassesAndAttributes] = useState<Document>(parseXml("<classesAndAttributes/>"));

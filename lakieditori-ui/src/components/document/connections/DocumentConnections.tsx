@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {Dispatch, SetStateAction, useEffect, useState} from "react";
 import {Heading, suomifiDesignTokens as tokens} from "suomifi-ui-components";
 import {queryElements, queryFirstText} from "../../../utils/xmlUtils";
 import {FlexRow, Panel, PanelSmallWithShadow} from "../../common/StyledComponents";
@@ -41,82 +41,102 @@ const DocumentConnections: React.FC<Props> = ({schemaName, id}) => {
             {title}
           </Heading.h1hero>
 
-          <PanelSmallWithShadow style={{
-            backgroundColor: tokens.colors.accentSecondaryLight40,
-            margin: `${tokens.spacing.l} 0`
-          }}>
-            Klikkaa käsitteen nimeä ja näet käsitteeseen pohjautuvat luokat ja attribuutit.
-            Tarkempiin määrittelyihin pääset klikkaamalla aineiston nimeä.
-          </PanelSmallWithShadow>
-
-          <FlexRow>
-            <div>
-              <Heading.h2 style={{marginBottom: tokens.spacing.m}}>Käsitteet</Heading.h2>
-
-              <ul>
-                {concepts.map((concept, i) => (
-                    <li key={i}
-                        style={{fontWeight: selectedConcept === queryFirstText(concept, "@uri") ? 600 : 400}}>
-                      <a onClick={() => setSelectedConcept(queryFirstText(concept, "@uri"))}>
-                        {queryFirstText(concept, "label")}
-                      </a>
-                      <br/>
-                      <a target={"_blank"} href={queryFirstText(concept, "@uri")}
-                         style={{
-                           fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-                           color: tokens.colors.depthBase
-                         }}>
-                        {queryFirstText(concept, "terminology/label")}
-                      </a>
-                    </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <Heading.h2 style={{marginBottom: tokens.spacing.m}}>Luokat</Heading.h2>
-
-              <ul>
-                {classes.map((cls, i) => (
-                    <li key={i}>
-                      {queryFirstText(cls, "label")}
-                      <br/>
-                      <a target={"_blank"} href={queryFirstText(cls, "@uri")}
-                         style={{
-                           fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-                           color: tokens.colors.depthBase
-                         }}>
-                        {queryFirstText(cls, "graph/label")}
-                      </a>
-                    </li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <Heading.h2 style={{marginBottom: tokens.spacing.m}}>Attribuutit</Heading.h2>
-
-              <ul>
-                {attributes.map((attr, i) => (
-                    <li key={i}>
-                      {queryFirstText(attr, "label")}
-                      <br/>
-                      <a target={"_blank"} href={queryFirstText(attr, "@uri")}
-                         style={{
-                           fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
-                           color: tokens.colors.depthBase
-                         }}>
-                        {queryFirstText(attr, "graph/label")}
-                      </a>
-                    </li>
-                ))}
-              </ul>
-            </div>
-          </FlexRow>
-
+          <DocumentConnectionsTable
+              selectedConcept={selectedConcept}
+              setSelectedConcept={setSelectedConcept}
+              concepts={concepts}
+              classes={classes}
+              attributes={attributes}/>
 
         </Panel>
       </main>
+  );
+};
+
+interface DocumentConnectionsTableProps {
+  selectedConcept: string,
+  setSelectedConcept: Dispatch<SetStateAction<string>>,
+  concepts: Element[],
+  classes: Element[],
+  attributes: Element[],
+}
+
+const DocumentConnectionsTable: React.FC<DocumentConnectionsTableProps> = ({selectedConcept, setSelectedConcept, concepts, classes, attributes}) => {
+  return (
+      <div>
+        <PanelSmallWithShadow style={{
+          backgroundColor: tokens.colors.accentSecondaryLight40,
+          margin: `${tokens.spacing.l} 0`
+        }}>
+          Klikkaa käsitteen nimeä ja näet käsitteeseen pohjautuvat luokat ja attribuutit.
+          Tarkempiin määrittelyihin pääset klikkaamalla aineiston nimeä.
+        </PanelSmallWithShadow>
+
+        <FlexRow>
+          <div>
+            <Heading.h2 style={{marginBottom: tokens.spacing.m}}>Käsitteet</Heading.h2>
+
+            <ul>
+              {concepts.map((concept, i) => (
+                  <li key={i}
+                      style={{fontWeight: selectedConcept === queryFirstText(concept, "@uri") ? 600 : 400}}>
+                    <a onClick={() => setSelectedConcept(queryFirstText(concept, "@uri"))}>
+                      {queryFirstText(concept, "label")}
+                    </a>
+                    <br/>
+                    <a target={"_blank"} href={queryFirstText(concept, "@uri")}
+                       style={{
+                         fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+                         color: tokens.colors.depthBase
+                       }}>
+                      {queryFirstText(concept, "terminology/label")}
+                    </a>
+                  </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <Heading.h2 style={{marginBottom: tokens.spacing.m}}>Luokat</Heading.h2>
+
+            <ul>
+              {classes.map((cls, i) => (
+                  <li key={i}>
+                    {queryFirstText(cls, "label")}
+                    <br/>
+                    <a target={"_blank"} href={queryFirstText(cls, "@uri")}
+                       style={{
+                         fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+                         color: tokens.colors.depthBase
+                       }}>
+                      {queryFirstText(cls, "graph/label")}
+                    </a>
+                  </li>
+              ))}
+            </ul>
+          </div>
+
+          <div>
+            <Heading.h2 style={{marginBottom: tokens.spacing.m}}>Attribuutit</Heading.h2>
+
+            <ul>
+              {attributes.map((attr, i) => (
+                  <li key={i}>
+                    {queryFirstText(attr, "label")}
+                    <br/>
+                    <a target={"_blank"} href={queryFirstText(attr, "@uri")}
+                       style={{
+                         fontSize: tokens.values.typography.bodyTextSmall.fontSize.value,
+                         color: tokens.colors.depthBase
+                       }}>
+                      {queryFirstText(attr, "graph/label")}
+                    </a>
+                  </li>
+              ))}
+            </ul>
+          </div>
+        </FlexRow>
+      </div>
   );
 };
 
