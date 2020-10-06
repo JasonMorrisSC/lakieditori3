@@ -40,13 +40,25 @@ public class ConceptRepositoryConfiguration {
                     new ConceptsJsonToXmlStream(terminologiesSupplier))));
   }
 
+  // read concept related classes and attributes as XML Documents
   @Bean
-  public ReadRepository<String, Document> conceptUsageReadRepository() {
+  public ReadRepository<String, Document> conceptUsageDocumentReadRepository() {
     return
         new CachingReadRepository<>(
             new HttpJsonReadRepository<>(
                 datamodelApiUrl + "usage",
-                new DataVocabsJsonldToXmlStream(),
+                new DataVocabJsonToXmlStream(),
+                ImmutableMap.of(ACCEPT, "application/ld+json")));
+  }
+
+  // read concept related classes and attributes as Resource objects
+  @Bean
+  public ReadRepository<String, Resource> conceptUsageResourceReadRepository() {
+    return
+        new CachingReadRepository<>(
+            new HttpJsonReadRepository<>(
+                datamodelApiUrl + "usage",
+                new DataVocabJsonToResourceStream(),
                 ImmutableMap.of(ACCEPT, "application/ld+json")));
   }
 
