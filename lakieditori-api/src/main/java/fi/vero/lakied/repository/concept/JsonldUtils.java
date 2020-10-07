@@ -33,7 +33,9 @@ public final class JsonldUtils {
 
   private static final ImmutableSet<String> attributeTypeUris = ImmutableSet.of(
       "http://www.w3.org/2002/07/owl#ObjectProperty",
-      "owl:ObjectProperty");
+      "http://www.w3.org/2002/07/owl#DatatypeProperty",
+      "owl:ObjectProperty",
+      "owl:DatatypeProperty");
 
 
   public static Map<String, String> label(JsonElement label) {
