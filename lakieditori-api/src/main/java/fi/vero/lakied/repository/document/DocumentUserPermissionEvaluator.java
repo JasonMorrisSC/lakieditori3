@@ -12,10 +12,10 @@ import java.util.UUID;
 
 public class DocumentUserPermissionEvaluator implements PermissionEvaluator<DocumentKey> {
 
-  private final ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissions;
+  private final ReadRepository<DocumentUserPermissionKey, Empty> documentUserPermissions;
 
   public DocumentUserPermissionEvaluator(
-      ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissions) {
+      ReadRepository<DocumentUserPermissionKey, Empty> documentUserPermissions) {
     this.documentUserPermissions = documentUserPermissions;
   }
 

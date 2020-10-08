@@ -1,12 +1,11 @@
 package fi.vero.lakied.web;
 
 import fi.vero.lakied.repository.document.DocumentUserPermissionCriteria;
+import fi.vero.lakied.repository.document.DocumentUserPermissionKey;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.Tuple4;
-import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.User;
 import fi.vero.lakied.util.xml.GetXmlMapping;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
@@ -25,11 +24,11 @@ import org.w3c.dom.Document;
 @RequestMapping("/api/schemas/{schemaName}/documents/{id}/permissions")
 public class DocumentUserPermissionReadController {
 
-  private final ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository;
+  private final ReadRepository<DocumentUserPermissionKey, Empty> documentUserPermissionReadRepository;
 
   @Autowired
   public DocumentUserPermissionReadController(
-      ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository) {
+      ReadRepository<DocumentUserPermissionKey, Empty> documentUserPermissionReadRepository) {
     this.documentUserPermissionReadRepository = documentUserPermissionReadRepository;
   }
 
@@ -41,13 +40,13 @@ public class DocumentUserPermissionReadController {
     XmlDocumentBuilder builder = XmlDocumentBuilder.builder();
     builder.pushElement("permissions");
 
-    try (Stream<Tuple2<Tuple4<String, UUID, String, Permission>, Empty>> entries =
+    try (Stream<Tuple2<DocumentUserPermissionKey, Empty>> entries =
         documentUserPermissionReadRepository.entries(
             DocumentUserPermissionCriteria.byDocumentKey(schemaName, id), user)) {
 
       Map<String, String> permissionsByUsername = entries
           // keep only username and permission
-          .map(e -> Tuple.of(e._1._3, e._1._4))
+          .map(e -> Tuple.of(e._1.username, e._1.permission))
           // group permissions by username
           .collect(
               Collectors.groupingBy(e -> e._1,

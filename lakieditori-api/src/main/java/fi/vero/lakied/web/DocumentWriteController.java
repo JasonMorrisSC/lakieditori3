@@ -4,12 +4,11 @@ import static fi.vero.lakied.repository.document.DocumentLockCriteria.byDocument
 import static fi.vero.lakied.util.security.User.superuser;
 
 import fi.vero.lakied.repository.document.DocumentKey;
+import fi.vero.lakied.repository.document.DocumentUserPermissionKey;
 import fi.vero.lakied.repository.schema.SchemaCriteria;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.exception.BadRequestException;
 import fi.vero.lakied.util.exception.NotFoundException;
@@ -42,7 +41,7 @@ public class DocumentWriteController {
   private final ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository;
   private final WriteRepository<DocumentKey, Document> documentWriteRepository;
   private final WriteRepository<DocumentKey, Document> documentVersionWriteRepository;
-  private final WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository;
+  private final WriteRepository<DocumentUserPermissionKey, Empty> documentUserPermissionWriteRepository;
   private final User documentPermissionInitializer = superuser("documentPermissionInitializer");
   private final User documentLockHelper = superuser("documentLockHelper");
 
@@ -52,7 +51,7 @@ public class DocumentWriteController {
       ReadRepository<DocumentKey, Tuple2<String, LocalDateTime>> documentLockReadRepository,
       WriteRepository<DocumentKey, Document> documentWriteRepository,
       WriteRepository<DocumentKey, Document> documentVersionWriteRepository,
-      WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository) {
+      WriteRepository<DocumentUserPermissionKey, Empty> documentUserPermissionWriteRepository) {
     this.schemaReadRepository = schemaReadRepository;
     this.documentLockReadRepository = documentLockReadRepository;
     this.documentWriteRepository = documentWriteRepository;
@@ -78,13 +77,16 @@ public class DocumentWriteController {
 
     // add read and write permissions to the new document
     documentUserPermissionWriteRepository.insert(
-        Tuple.of(schemaName, id, user.getUsername(), Permission.READ), Empty.INSTANCE,
+        DocumentUserPermissionKey.of(schemaName, id, user.getUsername(), Permission.READ),
+        Empty.INSTANCE,
         documentPermissionInitializer);
     documentUserPermissionWriteRepository.insert(
-        Tuple.of(schemaName, id, user.getUsername(), Permission.UPDATE), Empty.INSTANCE,
+        DocumentUserPermissionKey.of(schemaName, id, user.getUsername(), Permission.UPDATE),
+        Empty.INSTANCE,
         documentPermissionInitializer);
     documentUserPermissionWriteRepository.insert(
-        Tuple.of(schemaName, id, user.getUsername(), Permission.DELETE), Empty.INSTANCE,
+        DocumentUserPermissionKey.of(schemaName, id, user.getUsername(), Permission.DELETE),
+        Empty.INSTANCE,
         documentPermissionInitializer);
 
     String resultUrl = "/api/documents/" + schemaName + "/" + id;

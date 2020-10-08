@@ -9,7 +9,6 @@ import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
 import fi.vero.lakied.util.security.EntryAuthorizingReadRepository;
@@ -18,7 +17,6 @@ import fi.vero.lakied.util.security.KeyAuthorizingWriteRepository;
 import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.PermissionEvaluator;
 import java.time.LocalDateTime;
-import java.util.UUID;
 import javax.sql.DataSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -120,7 +118,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository(
+  public ReadRepository<DocumentUserPermissionKey, Empty> documentUserPermissionReadRepository(
       DataSource ds) {
     return new KeyAuthorizingReadRepository<>(
         new JdbcDocumentUserPermissionReadRepository(ds),
@@ -128,7 +126,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository(
+  public WriteRepository<DocumentUserPermissionKey, Empty> documentUserPermissionWriteRepository(
       DataSource ds) {
     return new KeyAuthorizingWriteRepository<>(
         new JdbcDocumentUserPermissionWriteRepository(ds),
@@ -154,11 +152,11 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public PermissionEvaluator<Tuple4<String, UUID, String, Permission>> documentUserPermissionPermissionEvaluator(
+  public PermissionEvaluator<DocumentUserPermissionKey> documentUserPermissionPermissionEvaluator(
       DataSource ds) {
     // delegate to document evaluator by extracting a document key from the permission tuple
-    PermissionEvaluator<Tuple4<String, UUID, String, Permission>> delegate =
-        documentPermissionEvaluator(ds).mapObject(o -> DocumentKey.of(o._1, o._2));
+    PermissionEvaluator<DocumentUserPermissionKey> delegate =
+        documentPermissionEvaluator(ds).mapObject(o -> o.documentKey);
 
     // document permission modifications always require an update permission to the document
     return delegate

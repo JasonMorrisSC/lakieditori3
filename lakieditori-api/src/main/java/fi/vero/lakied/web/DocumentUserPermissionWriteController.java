@@ -2,11 +2,10 @@ package fi.vero.lakied.web;
 
 import com.google.common.collect.Sets;
 import fi.vero.lakied.repository.document.DocumentUserPermissionCriteria;
+import fi.vero.lakied.repository.document.DocumentUserPermissionKey;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.security.Permission;
 import fi.vero.lakied.util.security.User;
@@ -16,8 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -32,15 +29,13 @@ import org.w3c.dom.Document;
 @RequestMapping("/api/schemas/{schemaName}/documents/{id}/permissions")
 public class DocumentUserPermissionWriteController {
 
-  private final Logger log = LoggerFactory.getLogger(getClass());
-
-  private final ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository;
-  private final WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository;
+  private final ReadRepository<DocumentUserPermissionKey, Empty> documentUserPermissionReadRepository;
+  private final WriteRepository<DocumentUserPermissionKey, Empty> documentUserPermissionWriteRepository;
 
   @Autowired
   public DocumentUserPermissionWriteController(
-      ReadRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionReadRepository,
-      WriteRepository<Tuple4<String, UUID, String, Permission>, Empty> documentUserPermissionWriteRepository) {
+      ReadRepository<DocumentUserPermissionKey, Empty> documentUserPermissionReadRepository,
+      WriteRepository<DocumentUserPermissionKey, Empty> documentUserPermissionWriteRepository) {
     this.documentUserPermissionReadRepository = documentUserPermissionReadRepository;
     this.documentUserPermissionWriteRepository = documentUserPermissionWriteRepository;
   }
@@ -53,30 +48,30 @@ public class DocumentUserPermissionWriteController {
       @RequestBody Document permissions,
       @AuthenticationPrincipal User user) {
 
-    Set<Tuple4<String, UUID, String, Permission>> newPermissionSet =
+    Set<DocumentUserPermissionKey> newPermissionSet =
         XmlUtils.queryNodes(permissions, "/permissions/permission")
             .flatMap(permission -> {
               String username = XmlUtils.queryText(permission, "@username");
               return Stream.of(XmlUtils.queryText(permission, "@value").split(","))
                   .filter(s -> !s.isEmpty())
                   .map(Permission::valueOf)
-                  .map(value -> Tuple.of(schemaName, id, username, value));
+                  .map(value -> DocumentUserPermissionKey.of(schemaName, id, username, value));
             })
             .collect(Collectors.toSet());
 
-    Set<Tuple4<String, UUID, String, Permission>> oldPermissionSet;
-    try (Stream<Tuple2<Tuple4<String, UUID, String, Permission>, Empty>> entries =
+    Set<DocumentUserPermissionKey> oldPermissionSet;
+    try (Stream<Tuple2<DocumentUserPermissionKey, Empty>> entries =
         documentUserPermissionReadRepository.entries(
             DocumentUserPermissionCriteria.byDocumentKey(schemaName, id),
             User.superuser("permissionReader"))) {
       oldPermissionSet = entries.map(e -> e._1).collect(Collectors.toSet());
     }
 
-    for (Tuple4<String, UUID, String, Permission> removed : Sets
+    for (DocumentUserPermissionKey removed : Sets
         .difference(oldPermissionSet, newPermissionSet)) {
       documentUserPermissionWriteRepository.delete(removed, user);
     }
-    for (Tuple4<String, UUID, String, Permission> inserted : Sets
+    for (DocumentUserPermissionKey inserted : Sets
         .difference(newPermissionSet, oldPermissionSet)) {
       documentUserPermissionWriteRepository.insert(inserted, Empty.INSTANCE, user);
     }
