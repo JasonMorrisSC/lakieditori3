@@ -5,24 +5,20 @@ import java.util.UUID;
 
 public final class DocumentCommentKey {
 
-  public final String documentSchemaName;
-  public final UUID documentId;
+  public final DocumentKey documentKey;
   public final UUID id;
 
-  public DocumentCommentKey(
-      String documentSchemaName,
-      UUID documentId,
-      UUID id) {
-    this.documentSchemaName = documentSchemaName;
-    this.documentId = documentId;
-    this.id = id;
+  public DocumentCommentKey(DocumentKey documentKey, UUID id) {
+    this.documentKey = Objects.requireNonNull(documentKey);
+    this.id = Objects.requireNonNull(id);
   }
 
-  public static DocumentCommentKey of(
-      String documentSchemaName,
-      UUID documentId,
-      UUID id) {
-    return new DocumentCommentKey(documentSchemaName, documentId, id);
+  public static DocumentCommentKey of(String documentSchemaName, UUID documentId, UUID id) {
+    return new DocumentCommentKey(DocumentKey.of(documentSchemaName, documentId), id);
+  }
+
+  public static DocumentCommentKey of(DocumentKey documentKey, UUID id) {
+    return new DocumentCommentKey(documentKey, id);
   }
 
   @Override
@@ -34,22 +30,18 @@ public final class DocumentCommentKey {
       return false;
     }
     DocumentCommentKey that = (DocumentCommentKey) o;
-    return Objects.equals(documentSchemaName, that.documentSchemaName) &&
-        Objects.equals(documentId, that.documentId) &&
+    return Objects.equals(documentKey, that.documentKey) &&
         Objects.equals(id, that.id);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(documentSchemaName, documentId, id);
+    return Objects.hash(documentKey, id);
   }
 
   @Override
   public String toString() {
-    return "("
-        + documentSchemaName + ", "
-        + documentId + ", "
-        + id + ")";
+    return "(" + documentKey + ", " + id + ")";
   }
 
 }

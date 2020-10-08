@@ -31,8 +31,8 @@ public class JdbcDocumentCommentsWriteRepository implements
             + "last_modified_date, "
             + "path, "
             + "comment) values (?, ?, ?, ?, ?, ?, ?, ?, ?)",
-        key.documentSchemaName,
-        key.documentId,
+        key.documentKey.schemaName,
+        key.documentKey.id,
         key.id,
         user.getUsername(),
         now,
@@ -57,8 +57,8 @@ public class JdbcDocumentCommentsWriteRepository implements
         pathAndComment._2,
         user.getUsername(),
         LocalDateTime.now(),
-        key.documentSchemaName,
-        key.documentId,
+        key.documentKey.schemaName,
+        key.documentKey.id,
         key.id);
   }
 
@@ -69,8 +69,8 @@ public class JdbcDocumentCommentsWriteRepository implements
             + "where document_schema_name = ? "
             + "  and document_id = ? "
             + "  and id = ?",
-        key.documentSchemaName,
-        key.documentId,
+        key.documentKey.schemaName,
+        key.documentKey.id,
         key.id);
   }
 

@@ -23,8 +23,9 @@ public class JdbcDocumentCommentsReadRepository implements
     this.jdbc = new JdbcTemplate(dataSource);
     this.rowMapper = (rs, rowNum) -> Tuple.of(
         DocumentCommentKey.of(
-            rs.getString("document_schema_name"),
-            UUID.fromString(rs.getString("document_id")),
+            DocumentKey.of(
+                rs.getString("document_schema_name"),
+                UUID.fromString(rs.getString("document_id"))),
             UUID.fromString(rs.getString("id"))),
         new Audited<>(
             rs.getString("created_by"),

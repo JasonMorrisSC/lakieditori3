@@ -19,14 +19,14 @@ public final class DocumentCommentsCriteria {
   public static SqlCriteria<DocumentCommentKey, Audited<Tuple2<String, String>>> byDocumentSchemaName(
       String schemaName) {
     return Criteria.sql(
-        (k, v) -> schemaName.equals(k.documentSchemaName),
+        (k, v) -> schemaName.equals(k.documentKey.schemaName),
         "document_schema_name = ?", schemaName);
   }
 
   public static SqlCriteria<DocumentCommentKey, Audited<Tuple2<String, String>>> byDocumentId(
       UUID id) {
     return Criteria.sql(
-        (k, v) -> id.equals(k.documentId),
+        (k, v) -> id.equals(k.documentKey.id),
         "document_id = ?", id);
   }
 

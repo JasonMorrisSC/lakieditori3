@@ -54,7 +54,7 @@ public class DocumentRepositoryConfiguration {
         new KeyAuthorizingReadRepository<>(
             new JdbcDocumentCommentsReadRepository(ds),
             documentPermissionEvaluator(ds)
-                .mapObject(o -> DocumentKey.of(o.documentSchemaName, o.documentId)));
+                .mapObject(o -> o.documentKey));
   }
 
   @Bean
@@ -94,7 +94,7 @@ public class DocumentRepositoryConfiguration {
                 new JdbcDocumentCommentsWriteRepository(ds), txm),
             documentPermissionEvaluator(ds)
                 .mapPermission(p -> p == Permission.DELETE ? Permission.UPDATE : p)
-                .mapObject(o -> DocumentKey.of(o.documentSchemaName, o.documentId)));
+                .mapObject(o -> o.documentKey));
   }
 
   @Bean
