@@ -1,6 +1,5 @@
 package fi.vero.lakied.repository.document;
 
-import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.criteria.Criteria;
 import fi.vero.lakied.util.criteria.SqlCriteria;
 import java.util.UUID;
@@ -10,27 +9,27 @@ public final class DocumentPropertiesCriteria {
   private DocumentPropertiesCriteria() {
   }
 
-  public static SqlCriteria<Tuple3<String, UUID, String>, String> byDocumentKey(
+  public static SqlCriteria<DocumentPropertyKey, String> byDocumentKey(
       String schemaName, UUID id) {
     return Criteria.and(byDocumentSchemaName(schemaName), byDocumentId(id));
   }
 
-  public static SqlCriteria<Tuple3<String, UUID, String>, String> byDocumentSchemaName(
+  public static SqlCriteria<DocumentPropertyKey, String> byDocumentSchemaName(
       String schemaName) {
     return Criteria.sql(
-        (k, v) -> schemaName.equals(k._1),
+        (k, v) -> schemaName.equals(k.documentKey.schemaName),
         "document_schema_name = ?", schemaName);
   }
 
-  public static SqlCriteria<Tuple3<String, UUID, String>, String> byDocumentId(UUID id) {
+  public static SqlCriteria<DocumentPropertyKey, String> byDocumentId(UUID id) {
     return Criteria.sql(
-        (k, v) -> id.equals(k._2),
+        (k, v) -> id.equals(k.documentKey.id),
         "document_id = ?", id);
   }
 
-  public static SqlCriteria<Tuple3<String, UUID, String>, String> byKey(String id) {
+  public static SqlCriteria<DocumentPropertyKey, String> byKey(String id) {
     return Criteria.sql(
-        (k, v) -> id.equals(k._3),
+        (k, v) -> id.equals(k.key),
         "key = ?", id);
   }
 

@@ -9,7 +9,6 @@ import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.Empty;
 import fi.vero.lakied.util.common.ReadRepository;
 import fi.vero.lakied.util.common.Tuple2;
-import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.common.Tuple4;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.jdbc.TransactionalJdbcWriteRepository;
@@ -39,12 +38,12 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public ReadRepository<Tuple3<String, UUID, String>, String> documentPropertiesReadRepository(
+  public ReadRepository<DocumentPropertyKey, String> documentPropertiesReadRepository(
       DataSource ds) {
     return
         new KeyAuthorizingReadRepository<>(
             new JdbcDocumentPropertiesReadRepository(ds),
-            documentPermissionEvaluator(ds).mapObject(o -> DocumentKey.of(o._1, o._2)));
+            documentPermissionEvaluator(ds).mapObject(o -> o.documentKey));
   }
 
   @Bean
@@ -72,7 +71,7 @@ public class DocumentRepositoryConfiguration {
   }
 
   @Bean
-  public WriteRepository<Tuple3<String, UUID, String>, String> documentPropertiesWriteRepository(
+  public WriteRepository<DocumentPropertyKey, String> documentPropertiesWriteRepository(
       PlatformTransactionManager txm,
       DataSource ds) {
     return
@@ -81,7 +80,7 @@ public class DocumentRepositoryConfiguration {
                 new JdbcDocumentPropertiesWriteRepository(ds), txm),
             documentPermissionEvaluator(ds)
                 .mapPermission(p -> p == Permission.DELETE ? Permission.UPDATE : p)
-                .mapObject(o -> DocumentKey.of(o._1, o._2)));
+                .mapObject(o -> o.documentKey));
   }
 
   @Bean

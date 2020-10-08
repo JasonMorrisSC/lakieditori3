@@ -4,9 +4,9 @@ import static fi.vero.lakied.repository.document.DocumentPropertiesCriteria.byDo
 
 import fi.vero.lakied.repository.document.DocumentCriteria;
 import fi.vero.lakied.repository.document.DocumentKey;
+import fi.vero.lakied.repository.document.DocumentPropertyKey;
 import fi.vero.lakied.util.common.Audited;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.exception.NotFoundException;
 import fi.vero.lakied.util.json.GetJsonMapping;
 import fi.vero.lakied.util.security.User;
@@ -25,12 +25,12 @@ import org.w3c.dom.Document;
 public class DocumentPropertiesReadController {
 
   private final ReadRepository<DocumentKey, Audited<Document>> documentReadRepository;
-  private final ReadRepository<Tuple3<String, UUID, String>, String> documentPropertiesReadRepository;
+  private final ReadRepository<DocumentPropertyKey, String> documentPropertiesReadRepository;
 
   @Autowired
   public DocumentPropertiesReadController(
       ReadRepository<DocumentKey, Audited<Document>> documentReadRepository,
-      ReadRepository<Tuple3<String, UUID, String>, String> documentPropertiesReadRepository) {
+      ReadRepository<DocumentPropertyKey, String> documentPropertiesReadRepository) {
     this.documentReadRepository = documentReadRepository;
     this.documentPropertiesReadRepository = documentPropertiesReadRepository;
   }
@@ -46,7 +46,7 @@ public class DocumentPropertiesReadController {
     }
 
     return documentPropertiesReadRepository.collectEntries(
-        byDocumentKey(schemaName, id), user, Collectors.toMap(e -> e._1._3, e -> e._2));
+        byDocumentKey(schemaName, id), user, Collectors.toMap(e -> e._1.key, e -> e._2));
   }
 
 }

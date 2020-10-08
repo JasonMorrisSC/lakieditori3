@@ -6,9 +6,8 @@ import static fi.vero.lakied.util.criteria.Criteria.and;
 
 import com.google.common.collect.MapDifference;
 import com.google.common.collect.Maps;
+import fi.vero.lakied.repository.document.DocumentPropertyKey;
 import fi.vero.lakied.util.common.ReadRepository;
-import fi.vero.lakied.util.common.Tuple;
-import fi.vero.lakied.util.common.Tuple3;
 import fi.vero.lakied.util.common.WriteRepository;
 import fi.vero.lakied.util.json.PutJsonMapping;
 import fi.vero.lakied.util.security.User;
@@ -31,13 +30,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/schemas/{schemaName}/documents/{id}/properties")
 public class DocumentPropertiesWriteController {
 
-  private final ReadRepository<Tuple3<String, UUID, String>, String> documentPropertiesReadRepository;
-  private final WriteRepository<Tuple3<String, UUID, String>, String> documentPropertiesWriteRepository;
+  private final ReadRepository<DocumentPropertyKey, String> documentPropertiesReadRepository;
+  private final WriteRepository<DocumentPropertyKey, String> documentPropertiesWriteRepository;
 
   @Autowired
   public DocumentPropertiesWriteController(
-      ReadRepository<Tuple3<String, UUID, String>, String> documentPropertiesReadRepository,
-      WriteRepository<Tuple3<String, UUID, String>, String> documentPropertiesWriteRepository) {
+      ReadRepository<DocumentPropertyKey, String> documentPropertiesReadRepository,
+      WriteRepository<DocumentPropertyKey, String> documentPropertiesWriteRepository) {
     this.documentPropertiesReadRepository = documentPropertiesReadRepository;
     this.documentPropertiesWriteRepository = documentPropertiesWriteRepository;
   }
@@ -51,20 +50,20 @@ public class DocumentPropertiesWriteController {
       @AuthenticationPrincipal User user) {
 
     Map<String, String> oldProps = documentPropertiesReadRepository.collectEntries(
-        byDocumentKey(schemaName, id), user, Collectors.toMap(e -> e._1._3, e -> e._2));
+        byDocumentKey(schemaName, id), user, Collectors.toMap(e -> e._1.key, e -> e._2));
 
     MapDifference<String, String> propertiesDiff = Maps
         .difference(newProps, oldProps);
 
     propertiesDiff.entriesOnlyOnLeft()
         .forEach((k, v) -> documentPropertiesWriteRepository.
-            insert(Tuple.of(schemaName, id, k), v, user));
+            insert(DocumentPropertyKey.of(schemaName, id, k), v, user));
     propertiesDiff.entriesDiffering()
         .forEach((k, v) -> documentPropertiesWriteRepository
-            .update(Tuple.of(schemaName, id, k), v.leftValue(), user));
+            .update(DocumentPropertyKey.of(schemaName, id, k), v.leftValue(), user));
     propertiesDiff.entriesOnlyOnRight()
         .forEach((k, v) -> documentPropertiesWriteRepository
-            .delete(Tuple.of(schemaName, id, k), user));
+            .delete(DocumentPropertyKey.of(schemaName, id, k), user));
   }
 
   @PutMapping(value = "/{key}", consumes = MediaType.TEXT_PLAIN_VALUE)
@@ -77,9 +76,11 @@ public class DocumentPropertiesWriteController {
       @AuthenticationPrincipal User user) {
     if (documentPropertiesReadRepository
         .isEmpty(and(byDocumentKey(schemaName, id), byKey(key)), user)) {
-      documentPropertiesWriteRepository.insert(Tuple.of(schemaName, id, key), value, user);
+      documentPropertiesWriteRepository
+          .insert(DocumentPropertyKey.of(schemaName, id, key), value, user);
     } else {
-      documentPropertiesWriteRepository.update(Tuple.of(schemaName, id, key), value, user);
+      documentPropertiesWriteRepository
+          .update(DocumentPropertyKey.of(schemaName, id, key), value, user);
     }
   }
 
@@ -90,7 +91,7 @@ public class DocumentPropertiesWriteController {
       @PathVariable("id") UUID id,
       @PathVariable("key") String key,
       @AuthenticationPrincipal User user) {
-    documentPropertiesWriteRepository.delete(Tuple.of(schemaName, id, key), user);
+    documentPropertiesWriteRepository.delete(DocumentPropertyKey.of(schemaName, id, key), user);
   }
 
   @DeleteMapping()
