@@ -23,7 +23,8 @@ const Comment: React.FC<Props> = ({comment, setComment, removeComment}) => {
   const username = queryFirstText(comment, "@user");
   const isAuthor = user.username === username;
   const date = toFiDateTimeStringInUtc(queryFirstText(comment, "@date"));
-  const value = comment.textContent;
+
+  const [value, setValue] = useState(comment.textContent);
 
   useEffect(() => {
     if (!isEditMode && (!value || value.length === 0)) {
@@ -60,10 +61,15 @@ const Comment: React.FC<Props> = ({comment, setComment, removeComment}) => {
           {!isEditMode ? value :
               <div>
                 <TextArea forwardedRef={textAreaRef}
-                          style={{margin: `${tokens.spacing.s} 0`}} value={value || undefined}
+                          style={{margin: `${tokens.spacing.s} 0`}}
+                          value={value || undefined}
                           onChange={(e) => {
+                            const newValue = e.currentTarget.value;
+                            setValue(newValue);
+                          }}
+                          onBlur={() => {
                             const newComment = comment.cloneNode(true) as Element;
-                            newComment.textContent = e.currentTarget.value;
+                            newComment.textContent = value;
                             setComment(newComment);
                           }}/>
               </div>}

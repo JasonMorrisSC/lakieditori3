@@ -18,6 +18,7 @@ interface Props {
   value?: string,
   placeholder?: string,
   onChange?: (e: SyntheticEvent<HTMLTextAreaElement>) => void,
+  onBlur?: (e: SyntheticEvent<HTMLTextAreaElement>) => void,
   style?: CSSProperties,
   rows?: number,
   forwardedRef?: RefObject<HTMLTextAreaElement>,
@@ -27,6 +28,7 @@ const TextArea: React.FC<Props> = (
     {
       value = '',
       onChange = () => null,
+      onBlur = () => null,
       placeholder = '',
       style = {},
       rows = 1,
@@ -55,6 +57,7 @@ const TextArea: React.FC<Props> = (
                    value={value}
                    placeholder={placeholder}
                    onChange={resizeAndApplyOnChange}
+                   onBlur={onBlur}
                    style={{...inputStyle, verticalAlign: "middle", ...style}}
                    rows={rows}/>;
 };
