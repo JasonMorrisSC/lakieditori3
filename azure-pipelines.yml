@@ -16,6 +16,8 @@ jobs:
           tasks: 'build jacocoTestReport publishToMavenLocal'
           publishJUnitResults: true
           testResultsFiles: '**/TEST-*.xml'
+          codeCoverageToolOption: 'JaCoCo'
+          codeCoverageClassFilesDirectories: 'build/classes/main/'
           javaHomeOption: 'JDKVersion'
           sonarQubeRunAnalysis: false
       - task: Maven@3
