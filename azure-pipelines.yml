@@ -13,13 +13,16 @@ jobs:
         inputs:
           gradleWrapperFile: 'lakieditori-api/gradlew'
           workingDirectory: 'lakieditori-api'
-          tasks: 'build jacocoTestReport publishToMavenLocal'
+          tasks: 'build publishToMavenLocal'
           publishJUnitResults: true
           testResultsFiles: '**/TEST-*.xml'
-          codeCoverageToolOption: 'JaCoCo'
-          codeCoverageClassFilesDirectories: 'build/classes/main/'
           javaHomeOption: 'JDKVersion'
           sonarQubeRunAnalysis: false
+      - task: PublishCodeCoverageResults@1
+        inputs:
+          codeCoverageTool: 'JaCoCo'
+          summaryFileLocation: '$(Build.SourcesDirectory)/build/reports/jacoco/test/jacocoTestReport.xml'
+          reportDirectory: '$(Build.SourcesDirectory)/build/reports/jacoco/test/html'
       - task: Maven@3
         displayName: Build UI
         inputs:
