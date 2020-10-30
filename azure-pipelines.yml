@@ -19,10 +19,11 @@ jobs:
           javaHomeOption: 'JDKVersion'
           sonarQubeRunAnalysis: false
       - task: PublishCodeCoverageResults@1
+        displayName: Report API test coverage
         inputs:
           codeCoverageTool: 'JaCoCo'
-          summaryFileLocation: '$(Build.SourcesDirectory)/build/reports/jacoco/test/jacocoTestReport.xml'
-          reportDirectory: '$(Build.SourcesDirectory)/build/reports/jacoco/test/html'
+          summaryFileLocation: '$(System.DefaultWorkingDirectory)/lakieditori-api/build/reports/jacoco/test/jacocoTestReport.xml'
+          reportDirectory: '$(System.DefaultWorkingDirectory)/lakieditori-api/build/reports/jacoco/test/html'
       - task: Maven@3
         displayName: Build UI
         inputs:
