@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?><statute createdBy="admin" createdDate="2021-04-25T09:20:17.695" id="3f2d020d-19a1-4631-823f-51b29e4936a3" lastModifiedBy="admin" lastModifiedDate="2021-04-25T09:23:38.192" number="2021/666">
+  <title>Rahanvähennyslakiehdotus</title>
+  <intro>Tässä täsmennetään tarkemmin lakiehdotuksen asiat jne. yms.</intro>
+  <chapter number="1">
+    <heading>Ensimmäisen luvun otsikko</heading>
+    <section number="23">
+      <heading>Pykälän 23 otsikko</heading>
+      <subsection number="1">
+        <content><a href="http://uri.suomi.fi/terminology/verotus/concept-3022">Henkilö</a> saa rahavähennyksen, jos hän on naimisissa ja asuu kerrostalossa.</content>
+      </subsection>
+    </section>
+  </chapter>
+</statute>

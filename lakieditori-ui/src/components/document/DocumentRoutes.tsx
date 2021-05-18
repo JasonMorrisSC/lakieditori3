@@ -3,6 +3,7 @@ import {Route, Switch, useLocation, useParams, useRouteMatch} from "react-router
 import DocumentView from "./view/DocumentView";
 import DocumentInfo from "./info/DocumentInfo";
 import DocumentSourceEdit from "./source/DocumentSourceEdit";
+import DocumentPseudoEdit from "./source/DocumentPseudoEdit";
 import DocumentEdit from "./edit/DocumentEdit";
 import {useDocumentLock} from "./useDocumentLock";
 import DocumentConnections from "./connections/DocumentConnections";
@@ -31,6 +32,10 @@ const DocumentRoutes: React.FC = () => {
         <Route path={`${match.path}/source`}>
           {schemaName && documentId &&
           <DocumentSourceEdit schemaName={schemaName} id={documentId} lock={lock}/>}
+        </Route>
+        <Route path={`${match.path}/pseudo`}>
+          {schemaName && documentId &&
+          <DocumentPseudoEdit schemaName={schemaName} id={documentId} lock={lock}/>}
         </Route>
         <Route path={`${match.path}/info`}>
           {schemaName && documentId &&

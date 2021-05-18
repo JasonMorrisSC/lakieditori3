@@ -122,3 +122,22 @@ export function childElements(node: Node): Element[] {
   .filter(n => n.nodeType === Node.ELEMENT_NODE)
   .map(n => n as Element);
 }
+
+// use the following with pseudocode editor
+
+export const getStatuteProps = (doc: Document): object => {
+  const statute = Array.from(doc.getElementsByTagName('statute'))[0];
+  // const title   = Array.from(doc.getElementsByTagName('title'))[0].textContent;
+  return statute ? {
+    id: statute.getAttribute('id'),
+    number: statute.getAttribute('number'),
+    title: '',
+    created: statute.getAttribute('createdDate'),
+    modified: statute.getAttribute('lastModifiedDate'),
+  } : {};
+}
+
+export const getContents = (doc: Document): string =>
+  Array.from(doc.getElementsByTagName("content"))
+       .map(each => each.textContent)
+       .join('\n') || '!!unable to get <content>!!';
