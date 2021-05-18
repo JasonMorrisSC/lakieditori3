@@ -27,6 +27,12 @@ const DocumentViewToolbar: React.FC<Props> = ({schemaName, id, title}) => {
               onClick={() => history.push(`/${schemaName}/${id}/source`)}>
             XML
           </Button.secondaryNoborder>
+          <Button.secondaryNoborder
+              icon={"registers"}
+              style={{marginRight: tokens.spacing.s, background: "none"}}
+              onClick={() => history.push(`/${schemaName}/${id}/pseudo`)}>
+            PseudoView
+          </Button.secondaryNoborder>
           <Button.secondary
               icon={"info"}
               style={{marginRight: tokens.spacing.s}}

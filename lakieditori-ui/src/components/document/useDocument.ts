@@ -12,6 +12,7 @@ export function useDocument(schemaName: string, id: string) {
 
   useEffect(() => {
     axios
+    // JAVA: [api]/web/DocumentReadController.java:20
     .get(`/api/schemas/${schemaName}/documents/${id}`, getConfig)
     .then(res => setDocument(res.data));
   }, [schemaName, id, user]);
@@ -20,6 +21,7 @@ export function useDocument(schemaName: string, id: string) {
     const xmlData = typeof document === "string" ? document : toString(document);
 
     return axios
+    // JAVA: [api]/web/DocumentWriteController.java:20
     .put(`/api/schemas/${schemaName}/documents/${id}`, xmlData, putConfig)
     .then(() => axios.get(`/api/schemas/${schemaName}/documents/${id}`, getConfig))
     .then((res) => setDocument(res.data));
