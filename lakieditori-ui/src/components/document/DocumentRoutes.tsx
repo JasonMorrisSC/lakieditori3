@@ -16,7 +16,9 @@ const DocumentRoutes: React.FC = () => {
       useDocumentLock(schemaName || null, documentId || null);
 
   useEffect(() => {
-    if (location.pathname.endsWith("edit") || location.pathname.endsWith("source")) {
+    if (location.pathname.endsWith("edit")
+        || location.pathname.endsWith("source")
+        || location.pathname.endsWith("pseudo")) {
       acquireDocumentLock().catch(error => console.error(error));
     } else {
       releaseDocumentLock().catch(error => console.error(error));
