@@ -7,6 +7,8 @@ import DocumentConnectionsToolbar from "./DocumentConnectionsToolbar";
 import {useDocumentConcepts} from "../view/useDocumentConcept";
 import {useClassesAndAttributes} from "./useClassesAndAttributes";
 
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 interface Props {
   schemaName: string,
   id: string,

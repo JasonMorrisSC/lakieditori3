@@ -76,7 +76,7 @@ const TextEditor: React.FC<Props> = (
         (w) => concepts.get(w),
         (uri) => existingConceptUrls.includes(uri),
         [node, path]) : [];
-  }, [focused, concepts]);
+  }, [focused, concepts]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
       <div style={{margin: `${tokens.spacing.xxs} 0`, ...style}}
