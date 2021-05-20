@@ -52,8 +52,7 @@ interface Props {
 const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   const [user] = useContext(AuthenticationContext);
   const history = useHistory();
-
-  const {document, saveDocument} = useDocument(schemaName, id);
+  const {document} = useDocument(schemaName, id);
   const {formattedDocument} = useFormat(document);
   const element = document.documentElement;
   const title = queryFirstText(element, "title");
@@ -64,7 +63,7 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   // PseudoStatute conversion:
   const docText            = getContents(document);
   let   pseudoStatute      = getStatuteProps(document);
-  const statementStructure = new Statements(docText).getStructure();
+  const statementStructure = new Statements(docText).buildStructure();
 
   pseudoStatute = {
     ...pseudoStatute,
@@ -75,7 +74,6 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   const statements = JSON.stringify(pseudoStatute, null, 2)
 
   const previewElementRef = useRef<HTMLDivElement>(null);
-  const [lineNumberMap, setLineNumberMap] = useState<LineNumberElementId[]>([]);
   const {annotatedDocument} = useLineNumberAnnotations(editorValue);
   const {validationErrorMessage} = useValidation(schemaName, editorValue);
 
@@ -84,7 +82,7 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
   }, [document, formattedDocument]);
 
   useEffect(() => {
-    // setErrorMessage(validationErrorMessage);
+    setErrorMessage(validationErrorMessage);
   }, [validationErrorMessage]);
 
   useEffect(() => {
@@ -107,38 +105,8 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
       newLineNumberMap.sort((a, b) => {
         return a.lineNumber < b.lineNumber ? -1 : (a.lineNumber > b.lineNumber ? 1 : 0);
       });
-
-      setLineNumberMap(newLineNumberMap);
     }
   }, [annotatedDocument]);
-
-  const scrollPreviewToLine = (lineNumber: number) => {
-    let elementId;
-
-    for (let i = 0; i < lineNumberMap.length - 1; i++) {
-      const curr = lineNumberMap[i];
-      const next = lineNumberMap[i + 1];
-
-      if (lineNumber >= curr.lineNumber && lineNumber < next.lineNumber) {
-        elementId = curr.elementId;
-        break;
-      }
-    }
-
-    const elementToScroll = window.document.getElementById(elementId || '');
-
-    if (previewElementRef.current && elementToScroll) {
-      previewElementRef.current.scrollTop = elementToScroll.offsetTop - previewElementRef.current.offsetTop - 32;
-    }
-  };
-
-  function saveAndClose() {
-    saveDocument(editorValue).then(() => {
-      history.push(`/${schemaName}/${id}`);
-    }).catch((error) => {
-      setErrorMessage(error.response.data.message);
-    });
-  }
 
   return (
       <main>
@@ -146,7 +114,7 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
           <Text>
             <Link to={`/${schemaName}`}>Etusivu</Link>&nbsp;/&nbsp;
             <Link to={`/${schemaName}/${id}`}>{title}</Link>&nbsp;/&nbsp;
-            XML
+            PseudoCode
           </Text>
           <div>
             <Button.secondaryNoborder
@@ -155,12 +123,6 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
                 onClick={() => history.push(`/${schemaName}/${id}`)}>
               Peruuta
             </Button.secondaryNoborder>
-            {/* <Button
-                icon={"save"}
-                disabled={!!validationErrorMessage}
-                onClick={saveAndClose}>
-              Tallenna
-            </Button> */}
           </div>
           {errorMessage &&
           <ErrorPanel>
@@ -183,11 +145,9 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
                 height={"100%"}
                 fontSize={14}
                 wrapEnabled={true}
+                readOnly={true}
                 showPrintMargin={false}
-                // fontSize={tokens.values.typography.bodyTextSmall.fontSize.value}
                 value={statements}
-                // onChange={(value) => setEditorValue(value)}
-                // onCursorChange={(value) => scrollPreviewToLine(value.cursor.row)}
             />
           </Source>
           <Preview ref={previewElementRef}>
