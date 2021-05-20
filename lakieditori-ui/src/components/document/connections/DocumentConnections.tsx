@@ -8,6 +8,8 @@ import {useDocumentConcepts} from "../view/useDocumentConcept";
 import {useClassesAndAttributes} from "./useClassesAndAttributes";
 import Tree from "./Tree";
 
+/* eslint-disable jsx-a11y/anchor-is-valid */
+
 interface Props {
   schemaName: string,
   id: string,

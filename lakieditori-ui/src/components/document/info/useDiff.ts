@@ -14,7 +14,7 @@ export function useDiff(schemaName: string, id: string, leftVersion: number, rig
     }).then(res => {
       setDiff(res.data);
     });
-  }, [user, id, leftVersion, rightVersion]);
+  }, [user, id, leftVersion, rightVersion]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return {diff};
 }
