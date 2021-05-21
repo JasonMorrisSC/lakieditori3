@@ -81,8 +81,10 @@ export default class Statements {
          let mainSentenceLast = false;
          sentences.forEach((sentence, index) => {
             if (index === 0) {
-               if (this.sentenceIsConditional(sentence))
+               if (this.sentenceIsConditional(sentence)) {
                   mainSentenceLast = true;
+                  stObj.conditions = this.buildStatement(sentence) + ' '
+               }
                else stObj.statement = this.buildStatement(sentence);
             } else {
                if (index === sentences.length - 1 && mainSentenceLast)
