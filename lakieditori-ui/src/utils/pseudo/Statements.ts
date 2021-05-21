@@ -87,7 +87,7 @@ export default class Statements {
             } else {
                if (index === sentences.length - 1 && mainSentenceLast)
                   stObj.statement = this.buildStatement(sentence);
-               else stObj.conditions += this.buildStatement(sentence);
+               else stObj.conditions += this.buildStatement(sentence) + ' ';
             }
          })
          structure.push(stObj);
