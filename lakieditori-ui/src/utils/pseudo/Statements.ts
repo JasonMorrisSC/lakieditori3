@@ -5,7 +5,7 @@ export default class Statements {
          throw Error('ERROR: Statements.constructor: source invalid\n\n');
       this.source =
          src.toLowerCase()
-            .replace(/, /g, ',')
+            // .replace(/, /g, ',')
             .replace('. ',  '.')
             .replace(/\n/g, ' ')
             .split('.')
@@ -15,8 +15,8 @@ export default class Statements {
    getStatements = () => this.source;
 
    getSentences = (str: string[]|undefined) =>
-      !str ? this.source.map(each => each.split(','))
-           : str.map(each => each.split(','));
+      !str ? this.source.map(each => each.split(', '))
+           : str.map(each => each.split(', '));
 
    encodeExpressions = (str: string) =>
       str.replace(/ tai | taikka |,tai |,taikka /g,
@@ -27,44 +27,40 @@ export default class Statements {
                   ' AND ')
          .replace(/ muuten |,muuten /g,
                   ' ELSE ')
-         .replace(/ enemmän kuin /g,
+         .replace(/ enemmän kuin | yli /g,
                   ' MORETHAN ')
-         .replace(/ vähemmän kuin /g,
+         .replace(/ vähemmän kuin | alle /g,
                   ' LESSTHAN ')
          .replace(/ enintään | enintään| viimeisintään | viimeisintään| viimeistään | viimeistään/g,
                   ' ATMOST ')
          .replace(/ aikaisintaan | aikaisintaan| vähintään | vähintään/g,
                   ' ATLEAST ')
-         .replace(/ prosenttia | prosenttia/g,
+         .replace(/ prosenttia | prosenttia|%| % /g,
                   ' @MATH.PERCENT ')
          .replace(/ euroa | euroa/g,
                   ' @CURRENCY.EUR ')
          .replace(/ metriä | metriä| kilometriä | kilometriä/g,
-                  ' @MEASURE.LEN ')
+                  ' @MEASURE.KM ')
          .replace(/ neliömetriä | neliömetriä| neliökilometriä | neliökilometriä/g,
-                  ' @MEASURE.AREA ')
+                  ' @MEASURE.KM2 ')
          .replace(/[äå]/g, 'a')
          .replace(/ö/g, 'o')
 
    sentenceIsConditional = (sentence: string) =>
-      sentence.indexOf('IF') === 0 ? true : false;
+      sentence.indexOf(' IF') === 0 || sentence.indexOf('IF') === 0;
 
    wordMatch = (word: string, comparisons: string[]) =>
       comparisons.filter(comparison => word === comparison).length > 0
-         ? true
-         : false;
 
    buildStatement = (sentence: string) => {
       const comparisons = ['MORETHAN', 'LESSTHAN', 'ATMOST', 'ATLEAST'];
-      const words = sentence.trim().split(' ');
+      const words = sentence.split(' ');
       let statementWords: string[] = [];
 
-      words.forEach((word, index) => {
-         if (word === 'on' && this.wordMatch(words[index + 1], comparisons))
-            statementWords.push('EQUALS');
-         else
-            statementWords.push(word);
-      });
+      words.forEach((word, index) =>
+         word === 'on' && this.wordMatch(words[index + 1], comparisons)
+            ? statementWords.push('EQUALS')
+            : statementWords.push(word.trim()));
 
       return statementWords.join(' ');
    }
@@ -84,18 +80,16 @@ export default class Statements {
          }
          let mainSentenceLast = false;
          sentences.forEach((sentence, index) => {
-            index < 1 && this.sentenceIsConditional(sentence)
-               ? mainSentenceLast = true
-               : stObj.statement = this.buildStatement(sentence);
-
-            index < sentences.length + 1
-               ? stObj.conditions += this.buildStatement(sentence)
-               : (mainSentenceLast
-                  ? stObj.statement = this.buildStatement(sentence)
-                  : stObj.conditions += this.buildStatement(sentence)
-               );
+            if (index === 0) {
+               if (this.sentenceIsConditional(sentence))
+                  mainSentenceLast = true;
+               else stObj.statement = this.buildStatement(sentence);
+            } else {
+               if (index === sentences.length - 1 && mainSentenceLast)
+                  stObj.statement = this.buildStatement(sentence);
+               else stObj.conditions += this.buildStatement(sentence);
             }
-         )
+         })
          structure.push(stObj);
       });
 

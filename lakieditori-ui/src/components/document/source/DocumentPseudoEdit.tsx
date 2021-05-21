@@ -121,7 +121,7 @@ const DocumentPseudoEdit: React.FC<Props> = ({schemaName, id, lock}) => {
                 style={{marginRight: tokens.spacing.s, background: "none"}}
                 icon={"close"}
                 onClick={() => history.push(`/${schemaName}/${id}`)}>
-              Peruuta
+              Sulje
             </Button.secondaryNoborder>
           </div>
           {errorMessage &&
