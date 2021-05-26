@@ -137,7 +137,36 @@ export const getStatuteProps = (doc: Document): object => {
   } : {};
 }
 
-export const getContents = (doc: Document): string =>
+// export const getContents = (doc: Document): string => Array.from(doc.getElementsByTagName("content")).map(each => each.textContent).join('\n') || '!!unable to get <content>!!';
+
+export const getContents = (doc: Document) => {
+  // let result: string[] = [];
+  let result: string = '';
   Array.from(doc.getElementsByTagName("content"))
-       .map(each => each.textContent)
-       .join('\n') || '!!unable to get <content>!!';
+        .forEach(content => {
+          let wordLinks: { term: string; link: string|undefined; }[] = [];
+          if (content.textContent && content.textContent.length > 0) {
+            const urlPrefix = 'http://uri.suomi.fi/terminology/rac/concept-';
+            let text = content.textContent;
+
+            Array.from(content.getElementsByTagName('a'))
+                 .forEach(elm => { wordLinks.push({
+                    term: elm.innerHTML,
+                    link: elm.getAttribute('href')?.replace(urlPrefix, '#')
+                 })});
+
+            console.log("LINKING: " + JSON.stringify(wordLinks));
+
+            wordLinks.forEach(wl => {
+              const link = wl.term.substring(wl.term.length - 1, wl.term.length) === ' '
+                            ? wl.term.substring(0, wl.term.length - 1) + wl.link + ' '
+                            : wl.term + wl.link;
+              text = text.replace(new RegExp(`\\b${wl.term}\\b`), link);
+            });
+
+            // result.push(text + '\n');
+            result += text;
+          }
+      });
+  return result || '!! unable to get <content> !!';
+};

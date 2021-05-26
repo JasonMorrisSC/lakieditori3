@@ -35,13 +35,15 @@ export default class Statements {
                   ' ATMOST ')
          .replace(/ aikaisintaan | aikaisintaan| vähintään | vähintään/g,
                   ' ATLEAST ')
-         .replace(/ prosenttia | prosenttia|%| % /g,
+         .replace(/ prosenttia | prosenttia|%| % | %/g,
                   ' @MATH.PERCENT ')
          .replace(/ euroa | euroa/g,
                   ' @CURRENCY.EUR ')
-         .replace(/ metriä | metriä| kilometriä | kilometriä/g,
+         .replace(/ metriä | metriä| kilometriä | kilometriä | km | km/g,
                   ' @MEASURE.KM ')
-         .replace(/ neliömetriä | neliömetriä| neliökilometriä | neliökilometriä/g,
+         .replace(/ neliömetriä | neliömetriä| neliökilometriä | neliökilometriä| m2 | m2/g,
+                  ' @MEASURE.KM2 ')
+         .replace(/ neliömetriä | neliömetriä| neliökilometriä | neliökilometriä| km2 | km2/g,
                   ' @MEASURE.KM2 ')
          .replace(/[äå]/g, 'a')
          .replace(/ö/g, 'o')
