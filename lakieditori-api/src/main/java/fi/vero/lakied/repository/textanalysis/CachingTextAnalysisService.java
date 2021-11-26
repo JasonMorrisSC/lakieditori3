@@ -13,7 +13,7 @@ public class CachingTextAnalysisService implements TextAnalysisService {
 
   public CachingTextAnalysisService(TextAnalysisService delegate) {
     this.queryCache = CacheBuilder.newBuilder()
-        .softValues()
+        .softValues().maximumSize(100_000)
         .build(CacheLoader.from(
             tuple -> tuple != null ? delegate.lemma(tuple._1, tuple._2, tuple._3) : ""));
   }
