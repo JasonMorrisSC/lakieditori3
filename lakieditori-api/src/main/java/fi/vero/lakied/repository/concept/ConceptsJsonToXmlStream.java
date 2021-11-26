@@ -1,5 +1,6 @@
 package fi.vero.lakied.repository.concept;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.Streams;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -12,6 +13,7 @@ import fi.vero.lakied.util.common.Tuple;
 import fi.vero.lakied.util.common.Tuple2;
 import fi.vero.lakied.util.xml.XmlDocumentBuilder;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -21,12 +23,12 @@ import org.w3c.dom.Document;
 public class ConceptsJsonToXmlStream implements
     Function<JsonElement, Stream<Tuple2<String, Document>>> {
 
-  private final Map<String, Document> terminologies;
+  private final Supplier<Map<String, Document>> terminologiesSupplier;
 
-  public ConceptsJsonToXmlStream(
-      Supplier<Stream<Tuple2<String, Document>>> terminologiesSupplier) {
-    this.terminologies = terminologiesSupplier.get()
-        .collect(Collectors.toMap(t -> t._1, t -> t._2));
+  public ConceptsJsonToXmlStream(Supplier<Stream<Tuple2<String, Document>>> terminologiesSupplier) {
+    this.terminologiesSupplier = Suppliers.memoizeWithExpiration(
+            () -> terminologiesSupplier.get().collect(Collectors.toMap(t -> t._1, t -> t._2)),
+            1, TimeUnit.HOURS);
   }
 
   @Override
@@ -61,7 +63,7 @@ public class ConceptsJsonToXmlStream implements
         .pop();
 
     String terminologyUri = conceptJsonContext.read("$.container");
-    builder.appendExternal(terminologies.get(terminologyUri).getDocumentElement());
+    builder.appendExternal(terminologiesSupplier.get().get(terminologyUri).getDocumentElement());
 
     return builder.build();
   }
